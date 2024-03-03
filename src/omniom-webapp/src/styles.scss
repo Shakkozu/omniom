@@ -1,1 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+@include mat.core();
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'avalanche-css/avalanche';
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+@import 'app/variables';
+
+html,
+body {
+	height: 100% !important;
+}
+
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

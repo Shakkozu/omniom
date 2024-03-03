@@ -1,1 +1,18 @@
-<router-outlet></router-outlet>
+<mat-toolbar color="primary" class="">
+  <button class="mat-sidenav" mat-icon-button (click)="drawer.toggle()">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Omniom</span>
+</mat-toolbar>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer mode="side" opened class="sidenav">
+    <mat-nav-list class="sidenav-links">
+      <a mat-list-item routerLink="/">Dashboard</a>
+      <a mat-list-item routerLink="/weather">Weather Forecasts</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content style="min-height: calc(100vh - 64px);" class="p-4">
+      <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
