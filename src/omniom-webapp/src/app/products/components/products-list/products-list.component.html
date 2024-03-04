@@ -1,0 +1,22 @@
+<mat-list>
+	<mat-card class="rounded-lg shadow-md">
+		<ng-container *ngFor="let product of products; let last = last;">
+			<div class="item-container py-2">
+				<mat-list-item class="bg-white rounded-lg">
+					<span matListItemTitle>{{product.name}}</span>
+					<span matListItemLine>{{product.defaultPortionSize}}</span>
+					<div matListItemMeta>
+						<span>{{product.defaultPortionKcal}} kcal</span>
+						<button *ngIf="addButtonEnabled" (click)="addProduct(product)" class="pt-4" mat-icon-button
+							color="primary" aria-label="Example icon button with a home icon">
+							<mat-icon class="mt-1">add</mat-icon>
+						</button>
+					</div>
+				</mat-list-item>
+				<div class="w-11/12 mx-auto" *ngIf="!last">
+					<mat-divider></mat-divider>
+				</div>
+			</div>
+		</ng-container>
+	</mat-card>
+</mat-list>

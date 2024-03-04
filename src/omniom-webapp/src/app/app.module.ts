@@ -10,6 +10,9 @@ import { MatDashboardComponent } from './starter/components/mat-dashboard/mat-da
 import { StartComponent } from './starter/components/start/start.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProductsModule } from './products/products.module';
+import { RouterModule } from '@angular/router';
+import { MatMonthView } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule,
+    ProductsModule
+  ],
+  exports: [
+    MaterialModule
   ],
   providers: [
     provideAnimationsAsync()
