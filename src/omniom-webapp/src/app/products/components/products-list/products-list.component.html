@@ -1,6 +1,6 @@
 <mat-list>
-	<mat-card class="rounded-lg shadow-md">
-		<ng-container *ngFor="let product of products; let last = last;">
+	<mat-card>
+		<ng-container *ngFor="let product of products$ | async; let last = last;">
 			<div class="item-container py-2">
 				<mat-list-item class="bg-white rounded-lg">
 					<span matListItemTitle>{{product.name}}</span>

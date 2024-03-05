@@ -12,7 +12,6 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from './products/products.module';
 import { RouterModule } from '@angular/router';
-import { MatMonthView } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [

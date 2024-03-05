@@ -1,15 +1,39 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Product } from '../../model';
+import { Observable, map, of } from 'rxjs';
 
 @Component({
   selector: 'app-products-list-page',
-  templateUrl: './products-list-page.component.html'
+  template: `
+<div class="container w-1/4">
+	<app-search-bar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
+	<app-products-list [products$]="filteredProducts$"></app-products-list>
+</div>`,
 })
-export class ProductsListPageComponent {
-  public productsList: Product[] = PRODUCTS;
-  
+export class ProductsListPageComponent implements OnInit {
+  public productsList$: Observable<Product[]> = of([]);
+  public filteredProducts$: Observable<Product[]> = of([]);
+
+  ngOnInit(): void {
+    this.productsList$ = of(PRODUCTS);
+    this.filteredProducts$ = of(PRODUCTS);
+  }
+
   onAddButtonClicked(product: Product) {
     console.log(product);
+  }
+
+  onSearchPhraseUpdated(searchPhrase: string) {
+    this.filteredProducts$ = this.productsList$.pipe(
+      map(products => {
+        if (searchPhrase.trim().length < 3) {
+          return products;
+        }
+
+        return products.filter(product => product.name.toLowerCase().includes(searchPhrase.trim().toLowerCase()));
+      })
+    );
+
   }
 }
 
