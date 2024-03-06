@@ -1,3 +1,5 @@
+using Omniom.DatabaseMigrator;
+
 namespace Omniom.WebAPI;
 
 public class Program
@@ -14,10 +16,13 @@ public class Program
         builder.Services.AddSwaggerGen();
 
         var app = builder.Build();
+        var productsDbConnectionString = app.Configuration.GetConnectionString("ProductsDatabase");
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
+            MigrationRunner.CleanupDatabase(productsDbConnectionString);
+            MigrationRunner.RunMigrations(productsDbConnectionString);
             app.UseSwagger();
             app.UseSwaggerUI();
         }
