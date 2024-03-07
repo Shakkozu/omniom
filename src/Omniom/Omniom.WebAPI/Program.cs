@@ -1,4 +1,5 @@
 using Omniom.DatabaseMigrator;
+using Omniom.Domain.ProductsCatalogue;
 
 namespace Omniom.WebAPI;
 
@@ -7,6 +8,7 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        var config = builder.Configuration;
 
         // Add services to the container.
         builder.Services.AddAuthorization();
@@ -14,9 +16,10 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddProductsCatalogue(config);
 
         var app = builder.Build();
-        var productsDbConnectionString = app.Configuration.GetConnectionString("ProductsDatabase");
+        var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

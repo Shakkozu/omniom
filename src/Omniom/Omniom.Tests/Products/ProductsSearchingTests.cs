@@ -1,0 +1,71 @@
+﻿using Omniom.Domain.ProductsCatalogue.AddProducts;
+using Omniom.Domain.ProductsCatalogue.SearchProducts;
+using Omniom.Tests.Shared;
+
+namespace Omniom.Tests.Products;
+public class ProductsSearchingTests
+{
+    private CreateProductCommandHandler _createProductCommandHandler;
+    private SearchProductsQueryHandler _searchProductsQueryHandler;
+
+    [SetUp]
+    public void SetUp()
+    {
+        var app = OmniomApp.CreateInstance(true);
+        _createProductCommandHandler = app.GetService<CreateProductCommandHandler>();
+        _searchProductsQueryHandler = app.GetService<SearchProductsQueryHandler>();
+    }
+
+    [Test]
+    public void ShouldCreateAndReadProduct()
+    {
+        var command = ProductsTestsFixture.ACreateProductCommand();
+        var productDto = AProductInfoBasedOn(command);
+        _createProductCommandHandler.Handle(command);
+        var query = new SearchProductsQuery(command.Name);
+
+        var created = _searchProductsQueryHandler.Handle(query).Single();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(created.Name, Is.EqualTo(productDto.Name));
+            Assert.That(created.KcalPer100G, Is.EqualTo(productDto.KcalPer100G));
+            Assert.That(created.FatPer100G, Is.EqualTo(productDto.FatPer100G));
+            Assert.That(created.CarbsPer100G, Is.EqualTo(productDto.CarbsPer100G));
+            Assert.That(created.ProteinsPer100G, Is.EqualTo(productDto.ProteinsPer100G));
+            Assert.That(created.SuggestedPortionSize, Is.EqualTo(productDto.SuggestedPortionSize));
+        });
+    }
+
+    private ProductShortDescription AProductInfoBasedOn(CreateProductCommand command)
+    {
+        return new ProductShortDescription(
+            command.Guid,
+            command.Name,
+            command.KcalPer100G,
+            command.FatPer100G,
+            command.CarbsPer100G,
+            command.ProteinsPer100G,
+            command.ServingSizeInGrams.Value
+            );
+    }
+
+    [Test]
+    public void ShouldSearchProductsByName()
+    {
+        Assert.Fail();
+    }
+
+    [Test]
+    public void ShouldPaginateProductsCorrectly()
+    {
+        Assert.Fail();
+    }
+
+
+    [Test]
+    public void ShouldSeedProductsWithSampleData()
+    {
+        Assert.Fail();
+    }
+}

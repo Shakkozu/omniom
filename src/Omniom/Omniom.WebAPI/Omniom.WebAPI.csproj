@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Omniom.DatabaseMigrator\Omniom.DatabaseMigrator.csproj" />
+    <ProjectReference Include="..\Omniom.Domain\Omniom.Domain.csproj" />
   </ItemGroup>
 
 </Project>
