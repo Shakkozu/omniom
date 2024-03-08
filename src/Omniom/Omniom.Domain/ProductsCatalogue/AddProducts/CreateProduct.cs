@@ -38,7 +38,7 @@ public class CreateProductCommandHandler
             Code = command.Code,
             ProductNamePl = command.Name,
             GenericNamePl = command.AdditionalDescription,
-            Quantity = command.QuantityInGrams.HasValue ? $"{command.QuantityInGrams} g" : null,
+            QuantityG = command.QuantityInGrams,
             ServingSizeG = command.ServingSizeInGrams ?? 100,
             Brands = command.Brands,
             Categories = command.Categories,

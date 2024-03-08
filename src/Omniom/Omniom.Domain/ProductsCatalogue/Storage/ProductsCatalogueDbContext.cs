@@ -54,7 +54,7 @@ internal static class ProductsCatalogueSchema
 
             entity.Property(e => e.ProductNamePl).HasColumnName("product_name_pl").IsRequired();
             entity.Property(e => e.GenericNamePl).HasColumnName("generic_name_pl");
-            entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.QuantityG).HasColumnName("quantity_g");
             entity.Property(e => e.ServingSizeG).HasColumnName("serving_size_g");
             entity.Property(e => e.Brands).HasColumnName("brands");
             entity.Property(e => e.Categories).HasColumnName("categories");

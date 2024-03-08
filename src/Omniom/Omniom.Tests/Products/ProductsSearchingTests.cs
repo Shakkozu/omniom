@@ -3,6 +3,7 @@ using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
+
 public class ProductsSearchingTests
 {
     private OmniomApp _app = default!;

@@ -40,4 +40,10 @@
     <ProjectReference Include="..\Omniom.WebAPI\Omniom.WebAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Products\products_data.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
