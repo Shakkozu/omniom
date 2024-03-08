@@ -1,4 +1,5 @@
-﻿using Omniom.Domain.ProductsCatalogue.Storage;
+﻿using Microsoft.EntityFrameworkCore;
+using Omniom.Domain.ProductsCatalogue.Storage;
 
 namespace Omniom.Domain.ProductsCatalogue.SearchProducts;
 
@@ -22,13 +23,14 @@ public class SearchProductsQueryHandler
         _dbContext = catalogueDbContext;
     }
 
-    public IEnumerable<ProductShortDescription> Handle(SearchProductsQuery query)
+    public async Task<IEnumerable<ProductShortDescription>> HandleAsync(SearchProductsQuery query, CancellationToken ct)
     {
-        return _dbContext.Products
+        return await _dbContext.Products
             .Where(p => 
                 p.ProductNamePl.ToLower().Contains(query.Name.ToLower())
                 || p.GenericNamePl.ToLower().Contains(query.Name.ToLower())
                 )
-            .Select(p => new ProductShortDescription(p.Guid, p.ProductNamePl, p.EnergyKcal, p.FatValueG, p.CarbohydratesValueG, p.ProteinsValueG, p.ServingSizeG));
+            .Select(p => new ProductShortDescription(p.Guid, p.ProductNamePl, p.EnergyKcal, p.FatValueG, p.CarbohydratesValueG, p.ProteinsValueG, p.ServingSizeG))
+            .ToListAsync(ct);
     }
 }

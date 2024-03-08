@@ -20,14 +20,14 @@ internal static class ProductsTestsFixture
             faker.Company.CompanyName(),
             string.Join(";", faker.Commerce.Categories(12)),
             string.Join(";", faker.Commerce.Categories(12)),
-            faker.Random.Decimal(1, 1000),
-            faker.Random.Decimal(1, 100),
-            faker.Random.Decimal(1, 100),
-            faker.Random.Decimal(1, 100),
-            faker.Random.Decimal(0, 100),
-            faker.Random.Decimal(0, 100),
-            faker.Random.Decimal(0, 100),
-            faker.Random.Decimal(0, 100)
+            Math.Round(faker.Random.Decimal(1, 1000), 3),
+            Math.Round(faker.Random.Decimal(1, 100), 3),
+            Math.Round(faker.Random.Decimal(1, 100), 3),
+            Math.Round(faker.Random.Decimal(1, 100), 3),
+            Math.Round(faker.Random.Decimal(0, 100), 3),
+            Math.Round(faker.Random.Decimal(0, 100), 3),
+            Math.Round(faker.Random.Decimal(0, 100), 3),
+            Math.Round(faker.Random.Decimal(0, 100), 3)
         );
     }
 }

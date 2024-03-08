@@ -5,26 +5,25 @@ using Omniom.Tests.Shared;
 namespace Omniom.Tests.Products;
 public class ProductsSearchingTests
 {
-    private CreateProductCommandHandler _createProductCommandHandler;
-    private SearchProductsQueryHandler _searchProductsQueryHandler;
+    private OmniomApp _app = default!;
+    private CreateProductCommandHandler CreateProductCommandHandler => _app.CreateProductCommandHandler;
+    private SearchProductsQueryHandler SearchProductsQueryHandler => _app.SearchProductsQueryHandler;
 
     [SetUp]
     public void SetUp()
     {
-        var app = OmniomApp.CreateInstance(true);
-        _createProductCommandHandler = app.GetService<CreateProductCommandHandler>();
-        _searchProductsQueryHandler = app.GetService<SearchProductsQueryHandler>();
+        _app = OmniomApp.CreateInstance();
     }
 
     [Test]
-    public void ShouldCreateAndReadProduct()
+    public async Task ShouldCreateAndReadProduct()
     {
         var command = ProductsTestsFixture.ACreateProductCommand();
         var productDto = AProductInfoBasedOn(command);
-        _createProductCommandHandler.Handle(command);
+        await CreateProductCommandHandler.HandleAsync(command, CancellationToken.None);
         var query = new SearchProductsQuery(command.Name);
 
-        var created = _searchProductsQueryHandler.Handle(query).Single();
+        var created = (await SearchProductsQueryHandler.HandleAsync(query, CancellationToken.None)).Single();
 
         Assert.Multiple(() =>
         {

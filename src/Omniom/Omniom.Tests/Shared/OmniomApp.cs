@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Omniom.WebAPI;
+using Omniom.Domain.ProductsCatalogue.AddProducts;
+using Omniom.Domain.ProductsCatalogue.SearchProducts;
 
 namespace Omniom.Tests.Shared;
 
@@ -58,13 +60,11 @@ internal class OmniomApp : WebApplicationFactory<Program>
         builder.ConfigureServices(_customization);
     }
 
-    public T GetService<T>()
-    {
-        return RequestScope().ServiceProvider.GetRequiredService<T>();
-    }
-
     public HttpClient CreateHttpClient()
     {
         return CreateClient();
     }
+
+    internal CreateProductCommandHandler CreateProductCommandHandler => RequestScope().ServiceProvider.GetRequiredService<CreateProductCommandHandler>();
+    internal SearchProductsQueryHandler SearchProductsQueryHandler => RequestScope().ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
 }

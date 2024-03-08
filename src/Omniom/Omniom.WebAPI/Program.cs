@@ -22,9 +22,8 @@ public class Program
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Tests"))
         {
-            MigrationRunner.CleanupDatabase(productsDbConnectionString);
             MigrationRunner.RunMigrations(productsDbConnectionString);
             app.UseSwagger();
             app.UseSwaggerUI();

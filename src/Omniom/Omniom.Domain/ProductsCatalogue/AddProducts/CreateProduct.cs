@@ -30,7 +30,7 @@ public class CreateProductCommandHandler
         _dbContext = dbContext;
     }
 
-    public void Handle(CreateProductCommand command)
+    public async Task HandleAsync(CreateProductCommand command, CancellationToken ct)
     {
         var productData = new ProductData
         {
@@ -54,7 +54,7 @@ public class CreateProductCommandHandler
         };
 
         _dbContext.Products.Add(productData);
-        _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(ct);
     }
 }
 

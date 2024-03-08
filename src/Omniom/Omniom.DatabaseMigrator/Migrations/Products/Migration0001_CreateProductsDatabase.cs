@@ -8,11 +8,12 @@ public class Migration0001_CreateProductsDatabase : Migration
     {
         Create.Table("products_data")
             .WithColumn("id").AsInt64().PrimaryKey().Identity()
+            .WithColumn("guid").AsGuid()
             .WithColumn("code").AsString().Unique().Nullable()
             .WithColumn("product_name_pl").AsString().Indexed("IX_products_data_name")
             .WithColumn("generic_name_pl").AsString().Indexed("IX_products_data_generic_name").Nullable()
             .WithColumn("quantity").AsString().Nullable()
-            .WithColumn("serving_size").AsString().Nullable()
+            .WithColumn("serving_size_g").AsInt32().Nullable()
             .WithColumn("brands").AsString().Nullable()
             .WithColumn("categories").AsString().Nullable()
             .WithColumn("categories_tags").AsString().Nullable()
