@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
+using Omniom.Domain.ProductsCatalogue.Storage;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
@@ -11,7 +12,7 @@ public class ProductsCatalogueSeedingTests
     private ImportProductsToCatalogue Importer => _app.ProductCatalogueImportHandler;
     private SearchProductsQueryHandler SearchProductsHandler => _app.SearchProductsQueryHandler;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         _app = OmniomApp.CreateInstance();
@@ -42,17 +43,15 @@ public class ProductsCatalogueSeedingTests
     }
 
     [Test]
-    public async Task ShouldMapDtosToDatabaseObjectsCorrectlyWhenSeedingProductsCatalogueDb()
+    public void ShouldMapDtosToDatabaseObjectsCorrectly()
     {
-        var command = new ImportProductsToCatalogueCommand(AImportData());
-        Importer.AddEntries(command);
+        var importData = AImportData();
+        var mapped = importData.Select(dto => dto.MapToProduct()).ToList();
 
-        var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty), CancellationToken.None);
-
-        AssertThatImportedDataMatchesInput(result, command.InputData);
+        AssertThatImportedDataMatchesInput(mapped, importData);
     }
 
-    private void AssertThatImportedDataMatchesInput(IEnumerable<ProductDetailsDescription> result, IEnumerable<ProductImportDto> inputData)
+    private void AssertThatImportedDataMatchesInput(IEnumerable<ProductData> result, IEnumerable<ProductImportDto> inputData)
     {
         var resultList = result.ToList();
         var inputDataList = inputData.ToList();
@@ -71,19 +70,19 @@ public class ProductsCatalogueSeedingTests
             {
                 // Compare the properties of the result item with the corresponding properties of the input item
                 Assert.That(inputItem.Code, Is.EqualTo(matchingResultItem.Code), $"The Code property of item {i} does not match.");
-                Assert.That(inputItem.ProductNamePl, Is.EqualTo(matchingResultItem.Name), $"The ProductNamePl property of item {i} does not match.");
+                Assert.That(inputItem.ProductNamePl, Is.EqualTo(matchingResultItem.ProductNamePl), $"The ProductNamePl property of item {i} does not match.");
                 Assert.That(inputItem.Brands, Is.EqualTo(matchingResultItem.Brands), $"The Brands property of item {i} does not match.");
                 Assert.That(expectedQuantityValue, Is.EqualTo(matchingResultItem.QuantityG), $"The Quantity property of item {i} does not match.");
-                Assert.That(expectedServingSizeValue, Is.EqualTo(matchingResultItem.SuggestedPortionSizeG), $"The ServingSize property of item {i} does not match.");
+                Assert.That(expectedServingSizeValue, Is.EqualTo(matchingResultItem.ServingSizeG), $"The ServingSize property of item {i} does not match.");
                 Assert.That(inputItem.CategoriesTags, Is.EqualTo(matchingResultItem.CategoriesTags), $"The CategoriesTags property of item {i} does not match.");
-                Assert.That(inputItem.EnergyKcalValue, Is.EqualTo(matchingResultItem.KcalPer100G), $"The EnergyKcalValue property of item {i} does not match.");
-                Assert.That(inputItem.FatValue, Is.EqualTo(matchingResultItem.FatPer100G), $"The FatValue property of item {i} does not match.");
-                Assert.That(inputItem.SaturatedFatValue, Is.EqualTo(matchingResultItem.SaturatedFatPer100G), $"The SaturatedFatValue property of item {i} does not match.");
-                Assert.That(inputItem.CarbohydratesValue, Is.EqualTo(matchingResultItem.CarbsPer100G), $"The CarbohydratesValue property of item {i} does not match.");
-                Assert.That(inputItem.SugarsValue, Is.EqualTo(matchingResultItem.SugarsPer100G), $"The SugarsValue property of item {i} does not match.");
-                Assert.That(inputItem.FiberValue, Is.EqualTo(matchingResultItem.FiberPer100G), $"The FiberValue property of item {i} does not match.");
-                Assert.That(inputItem.ProteinsValue, Is.EqualTo(matchingResultItem.ProteinsPer100G), $"The ProteinsValue property of item {i} does not match.");
-                Assert.That(inputItem.SaltValue, Is.EqualTo(matchingResultItem.SaltPer100G), $"The SaltValue property of item {i} does not match.");
+                Assert.That(inputItem.EnergyKcalValue, Is.EqualTo(matchingResultItem.EnergyKcal), $"The EnergyKcalValue property of item {i} does not match.");
+                Assert.That(inputItem.FatValue, Is.EqualTo(matchingResultItem.FatValueG), $"The FatValue property of item {i} does not match.");
+                Assert.That(inputItem.SaturatedFatValue, Is.EqualTo(matchingResultItem.SaturatedFatValueG), $"The SaturatedFatValue property of item {i} does not match.");
+                Assert.That(inputItem.CarbohydratesValue, Is.EqualTo(matchingResultItem.CarbohydratesValueG), $"The CarbohydratesValue property of item {i} does not match.");
+                Assert.That(inputItem.SugarsValue, Is.EqualTo(matchingResultItem.SugarsValueG), $"The SugarsValue property of item {i} does not match.");
+                Assert.That(inputItem.FiberValue, Is.EqualTo(matchingResultItem.FiberValueG), $"The FiberValue property of item {i} does not match.");
+                Assert.That(inputItem.ProteinsValue, Is.EqualTo(matchingResultItem.ProteinsValueG), $"The ProteinsValue property of item {i} does not match.");
+                Assert.That(inputItem.SaltValue, Is.EqualTo(matchingResultItem.SaltValueG), $"The SaltValue property of item {i} does not match.");
             });
         }
     }
@@ -94,7 +93,7 @@ public class ProductsCatalogueSeedingTests
                 {
                     new ProductImportDto
                     {
-                        Code = "4014400901191",
+                        Code = Guid.NewGuid().ToString("n"),
                         ProductNamePl = "Merci Finest Selection",
                         ProductNameEn = "Merci Finest Selection",
                         GenericNameEn = "",
@@ -126,7 +125,7 @@ public class ProductsCatalogueSeedingTests
                     },
                     new ProductImportDto
                     {
-                        Code = "5900531003646",
+                        Code = Guid.NewGuid().ToString("n"),
                         ProductNamePl = "Piątuś bananowy jogurt kremowy",
                         ProductNameEn = "",
                         GenericNameEn = "",
@@ -158,7 +157,7 @@ public class ProductsCatalogueSeedingTests
                     },
                     new ProductImportDto
                     {
-                        Code = "5908267100356",
+                        Code = Guid.NewGuid().ToString("n"),
                         ProductNamePl = "Kasza manna",
                         ProductNameEn = "",
                         GenericNameEn = "",
@@ -190,7 +189,7 @@ public class ProductsCatalogueSeedingTests
                     },
                     new ProductImportDto
                     {
-                        Code = "5900500020346",
+                        Code = Guid.NewGuid().ToString("n"),
                         ProductNamePl = "Multiwitamina, napój wieloowocowo-marchwiowy",
                         ProductNameEn = "",
                         GenericNameEn = "",

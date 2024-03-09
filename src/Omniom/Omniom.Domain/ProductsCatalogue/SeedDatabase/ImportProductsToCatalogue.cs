@@ -20,7 +20,7 @@ public class ImportProductsToCatalogue
 
         foreach (var dto in command.InputData)
         {
-            ProductData product = MapToProduct(dto);
+            ProductData product = dto.MapToProduct();
             if (product.EnergyKcal == 0)
                 continue;
 
@@ -38,32 +38,6 @@ public class ImportProductsToCatalogue
         {
             SaveProducts(products);
         }
-    }
-
-    private ProductData MapToProduct(ProductImportDto dto)
-    {
-        var quantity = QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(dto.Quantity);
-        var servingSize = QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(dto.ServingSize);
-        return new ProductData
-        {
-            ProductNamePl = dto.ProductNamePl,
-            GenericNamePl = dto.GenericNamePl,
-            Brands = dto.Brands,
-            CarbohydratesValueG = dto.CarbohydratesValue,
-            Categories = dto.Categories,
-            CategoriesTags = dto.CategoriesTags,
-            Code = dto.Code,
-            EnergyKcal = dto.EnergyKcalValue,
-            FatValueG = dto.FatValue,
-            FiberValueG = dto.FiberValue,
-            Guid = Guid.NewGuid(),
-            ProteinsValueG = dto.ProteinsValue,
-            QuantityG = quantity.HasError ? null : quantity.Value,
-            ServingSizeG = servingSize.HasError ? 100 : servingSize.Value,
-            SaltValueG = dto.SaltValue,
-            SaturatedFatValueG = dto.SaturatedFatValue,
-            SugarsValueG = dto.SugarsValue
-        };
     }
 
     private void SaveProducts(List<ProductData> products)

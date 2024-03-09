@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using Omniom.Domain.ProductsCatalogue.Storage;
 using System.Globalization;
 
 
@@ -91,5 +92,31 @@ namespace Omniom.Domain.ProductsCatalogue.SeedDatabase
         public string ProteinsUnit { get; set; }
         public decimal? SaltValue { get; set; }
         public string SaltUnit { get; set; }
+
+        public ProductData MapToProduct()
+        {
+            var quantity = QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(Quantity);
+            var servingSize = QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(ServingSize);
+            return new ProductData
+            {
+                ProductNamePl = ProductNamePl,
+                GenericNamePl = GenericNamePl,
+                Brands = Brands,
+                CarbohydratesValueG = CarbohydratesValue,
+                Categories = Categories,
+                CategoriesTags = CategoriesTags,
+                Code = Code,
+                EnergyKcal = EnergyKcalValue,
+                FatValueG = FatValue,
+                FiberValueG = FiberValue,
+                Guid = Guid.NewGuid(),
+                ProteinsValueG = ProteinsValue,
+                QuantityG = quantity.HasError ? null : quantity.Value,
+                ServingSizeG = servingSize.HasError ? 100 : servingSize.Value,
+                SaltValueG = SaltValue,
+                SaturatedFatValueG = SaturatedFatValue,
+                SugarsValueG = SugarsValue
+            };
+        }
     }
 }

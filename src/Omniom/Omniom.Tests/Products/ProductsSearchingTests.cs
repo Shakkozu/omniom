@@ -10,7 +10,7 @@ public class ProductsSearchingTests
     private CreateProductCommandHandler CreateProductCommandHandler => _app.CreateProductCommandHandler;
     private SearchProductsQueryHandler SearchProductsQueryHandler => _app.SearchProductsQueryHandler;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         _app = OmniomApp.CreateInstance();
