@@ -26,7 +26,7 @@ public class ProductsCatalogueSeedingTests
 
         var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty, 10000), CancellationToken.None);
 
-        var resultList = result.ToList();
+        var resultList = result.Products.ToList();
         Assert.That(importData.Count(), Is.EqualTo(resultList.Count));
         Assert.Multiple(() =>
         {

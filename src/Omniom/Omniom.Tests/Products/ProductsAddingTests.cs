@@ -24,7 +24,7 @@ public class ProductsAddingTests
         await CreateProductCommandHandler.HandleAsync(command, CancellationToken.None);
         var query = new SearchProductsQuery(command.Name);
 
-        var created = (await SearchProductsQueryHandler.HandleAsync(query, CancellationToken.None)).Single();
+        var created = (await SearchProductsQueryHandler.HandleAsync(query, CancellationToken.None)).Products.Single();
 
         Assert.Multiple(() =>
         {

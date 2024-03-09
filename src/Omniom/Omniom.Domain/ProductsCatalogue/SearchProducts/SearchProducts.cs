@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Shared.Repositories;
 
 namespace Omniom.Domain.ProductsCatalogue.SearchProducts;
 
@@ -21,6 +22,8 @@ public record ProductDetailsDescription(Guid Guid,
     string? Brands,
     string? CategoriesTags
     );
+
+public record SearchProductsResponse(IEnumerable<ProductDetailsDescription> Products, int Page, int PageSize, int TotalCount);
 public class SearchProductsQueryHandler
 {
     private readonly ProductsCatalogueDbContext _dbContext;
@@ -30,13 +33,14 @@ public class SearchProductsQueryHandler
         _dbContext = catalogueDbContext;
     }
 
-    public async Task<IEnumerable<ProductDetailsDescription>> HandleAsync(SearchProductsQuery query, CancellationToken ct)
+    public async Task<SearchProductsResponse> HandleAsync(SearchProductsQuery query, CancellationToken ct)
     {
-        return await _dbContext.Products
-            .Where(p => 
+        var searchResults = _dbContext.Products
+            .Where(p =>
                 p.ProductNamePl.ToLower().Contains(query.Name.ToLower())
-                || p.GenericNamePl.ToLower().Contains(query.Name.ToLower())
-                )
+                || p.GenericNamePl.ToLower().Contains(query.Name.ToLower()));
+        var products = await searchResults
+            .GetPage(query.Page, query.PageSize)
             .Select(p => new ProductDetailsDescription(
                 p.Guid,
                 p.Code,
@@ -53,7 +57,12 @@ public class SearchProductsQueryHandler
                 p.SaturatedFatValueG,
                 p.Brands,
                 p.CategoriesTags
-                ))
+            ))
             .ToListAsync(ct);
+
+        var totalCount = await searchResults.CountAsync(ct);
+
+        var searchProductsResponse = new SearchProductsResponse(products, query.Page, query.PageSize, totalCount);
+        return searchProductsResponse;
     }
 }
