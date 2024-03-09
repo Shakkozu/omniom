@@ -1,6 +1,7 @@
 ﻿
 using Bogus;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
+using Omniom.Domain.ProductsCatalogue.SearchProducts;
 
 namespace Omniom.Tests.Products;
 
@@ -29,5 +30,26 @@ internal static class ProductsTestsFixture
             Math.Round(faker.Random.Decimal(0, 100), 3),
             Math.Round(faker.Random.Decimal(0, 100), 3)
         );
+    }
+
+    internal static ProductDetailsDescription AProductInfoBasedOn(CreateProductCommand command)
+    {
+        return new ProductDetailsDescription(
+            command.Guid,
+            command.Code,
+            command.Name,
+            command.KcalPer100G,
+            command.FatPer100G,
+            command.CarbsPer100G,
+            command.ProteinsPer100G,
+            command.ServingSizeInGrams.Value,
+            command.QuantityInGrams,
+            command.SugarPer100G,
+            command.FiberPer100G,
+            command.SaltPer100G,
+            command.SaturaredFatPer100G,
+            command.Brands,
+            command.CategoriesTags
+            );
     }
 }
