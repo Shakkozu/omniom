@@ -6,6 +6,7 @@ using Omniom.WebAPI;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
+using Omniom.Tests.Products;
 
 namespace Omniom.Tests.Shared;
 
@@ -54,6 +55,7 @@ internal class OmniomApp : WebApplicationFactory<Program>
         builder.ConfigureServices(collection =>
         {
             collection.AddTransient<Fixtures>();
+            collection.AddTransient<ProductsTestsFixture>();
         });
 
         builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Tests");
@@ -69,4 +71,5 @@ internal class OmniomApp : WebApplicationFactory<Program>
     internal CreateProductCommandHandler CreateProductCommandHandler => RequestScope().ServiceProvider.GetRequiredService<CreateProductCommandHandler>();
     internal SearchProductsQueryHandler SearchProductsQueryHandler => RequestScope().ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
     internal ImportProductsToCatalogue ProductCatalogueImportHandler => RequestScope().ServiceProvider.GetRequiredService<ImportProductsToCatalogue>();
+    internal ProductsTestsFixture ProductsTestsFixture  => RequestScope().ServiceProvider.GetRequiredService<ProductsTestsFixture>();
 }

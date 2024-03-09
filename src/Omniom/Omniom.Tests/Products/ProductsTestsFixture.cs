@@ -2,11 +2,21 @@
 using Bogus;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
+using Omniom.Domain.ProductsCatalogue.SeedDatabase;
+using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
 
-internal static class ProductsTestsFixture
+internal class ProductsTestsFixture
 {
+    private OmniomApp _app = OmniomApp.CreateInstance();
+    private ImportProductsToCatalogue Importer => _app.ProductCatalogueImportHandler;
+    internal void SeedProductsCatalogue()
+    {
+        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
+        Importer.AddEntries(new ImportProductsToCatalogueCommand(importData));
+    }
+
     internal static CreateProductCommand ACreateProductCommand()
     {
         var faker = new Faker();

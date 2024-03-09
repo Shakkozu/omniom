@@ -12,8 +12,11 @@ namespace Omniom.Domain.ProductsCatalogue.SeedDatabase
         {
             var configuration = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
-                Delimiter = ";"
+                Delimiter = ";",
+                WhiteSpaceChars = new[] { ' ', '\t' },
+                TrimOptions = TrimOptions.Trim,
             };
+
 
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvReader(reader, configuration))

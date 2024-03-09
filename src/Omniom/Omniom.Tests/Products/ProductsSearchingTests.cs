@@ -8,30 +8,35 @@ public class ProductsSearchingTests
 {
 
     private OmniomApp _app = default!;
-    private CreateProductCommandHandler CreateProductCommandHandler => _app.CreateProductCommandHandler;
     private SearchProductsQueryHandler SearchProductsQueryHandler => _app.SearchProductsQueryHandler;
+    private ProductsTestsFixture ProductsCatalogueFixture => _app.ProductsTestsFixture;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         _app = OmniomApp.CreateInstance();
+        ProductsCatalogueFixture.SeedProductsCatalogue();
     }
 
     [Test]
-    public void ShouldSearchProductsByName()
+    public async Task ShouldSearchProductsByName_ReturnProductsWhichMatchesNameOrGenericName()
+    {
+        var query = new SearchProductsQuery("Tortil");
+
+        var result = await SearchProductsQueryHandler.HandleAsync(query, CancellationToken.None);
+
+        Assert.That(result.Count(), Is.EqualTo(6));
+    }
+
+    [Test]
+    public async Task ShouldPaginateProductsCorrectly()
     {
         Assert.Fail();
     }
 
-    [Test]
-    public void ShouldPaginateProductsCorrectly()
-    {
-        Assert.Fail();
-    }
-
 
     [Test]
-    public void ShouldSeedProductsWithSampleData()
+    public async Task ShouldSeedProductsWithSampleData()
     {
         Assert.Fail();
     }
