@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Omniom.WebAPI;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
+using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 
 namespace Omniom.Tests.Shared;
 

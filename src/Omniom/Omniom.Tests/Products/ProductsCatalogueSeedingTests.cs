@@ -14,7 +14,7 @@ public class ProductsCatalogueSeedingTests
     [SetUp]
     public void SetUp()
     {
-        _app = OmniomApp.CreateInstanceWithInMemoryDatabase();
+        _app = OmniomApp.CreateInstance();
     }
 
     [Test]
