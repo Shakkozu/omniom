@@ -33,20 +33,34 @@ public class ProductsSearchingTests
             Assert.That(created.FatPer100G, Is.EqualTo(productDto.FatPer100G));
             Assert.That(created.CarbsPer100G, Is.EqualTo(productDto.CarbsPer100G));
             Assert.That(created.ProteinsPer100G, Is.EqualTo(productDto.ProteinsPer100G));
-            Assert.That(created.SuggestedPortionSize, Is.EqualTo(productDto.SuggestedPortionSize));
+            Assert.That(created.SuggestedPortionSizeG, Is.EqualTo(productDto.SuggestedPortionSizeG));
+            Assert.That(created.SugarsPer100G, Is.EqualTo(productDto.SugarsPer100G));
+            Assert.That(created.SaturatedFatPer100G, Is.EqualTo(productDto.SaturatedFatPer100G));
+            Assert.That(created.Code, Is.EqualTo(productDto.Code));
+            Assert.That(created.SaltPer100G, Is.EqualTo(productDto.SaltPer100G));
+            Assert.That(created.Brands, Is.EqualTo(productDto.Brands));
+            Assert.That(created.CategoriesTags, Is.EqualTo(productDto.CategoriesTags));
         });
     }
 
-    private ProductShortDescription AProductInfoBasedOn(CreateProductCommand command)
+    private ProductDetailsDescription AProductInfoBasedOn(CreateProductCommand command)
     {
-        return new ProductShortDescription(
+        return new ProductDetailsDescription(
             command.Guid,
+            command.Code,
             command.Name,
             command.KcalPer100G,
             command.FatPer100G,
             command.CarbsPer100G,
             command.ProteinsPer100G,
-            command.ServingSizeInGrams.Value
+            command.ServingSizeInGrams.Value,
+            command.QuantityInGrams,
+            command.SugarPer100G,
+            command.FiberPer100G,
+            command.SaltPer100G,
+            command.SaturaredFatPer100G,
+            command.Brands,
+            command.CategoriesTags
             );
     }
 

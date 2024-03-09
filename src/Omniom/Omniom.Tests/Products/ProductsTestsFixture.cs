@@ -16,7 +16,7 @@ internal static class ProductsTestsFixture
             faker.Lorem.Sentence(),
             faker.Random.Int(1, 1000),
             faker.Random.Int(1, 1000),
-            faker.Random.String(6),
+            faker.Commerce.Ean13(),
             faker.Company.CompanyName(),
             string.Join(";", faker.Commerce.Categories(12)),
             string.Join(";", faker.Commerce.Categories(12)),

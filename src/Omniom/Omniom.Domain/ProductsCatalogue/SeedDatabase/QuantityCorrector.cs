@@ -18,10 +18,10 @@ public static class QuantityCorrector
         public static QuantityCorrectionResults IncorrectResult(string error) => new QuantityCorrectionResults(default, error);
         public QuantityCorrectionResults(int result, string error)
         {
-            Result = result;
+            Value = result;
             Error = error;
         }
-        public int Result { get; init; }
+        public int Value { get; init; }
         public string Error { get; init; }
 
         public bool HasError => !string.IsNullOrEmpty(Error);

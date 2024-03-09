@@ -54,7 +54,7 @@ internal class OmniomApp : WebApplicationFactory<Program>
         {
             collection.AddTransient<Fixtures>();
         });
-        
+
         builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Tests");
         builder.UseSetting("Environment", "Tests");
         builder.ConfigureServices(_customization);
@@ -67,4 +67,5 @@ internal class OmniomApp : WebApplicationFactory<Program>
 
     internal CreateProductCommandHandler CreateProductCommandHandler => RequestScope().ServiceProvider.GetRequiredService<CreateProductCommandHandler>();
     internal SearchProductsQueryHandler SearchProductsQueryHandler => RequestScope().ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
+    internal ImportProductsToCatalogue ProductCatalogueImportHandler => RequestScope().ServiceProvider.GetRequiredService<ImportProductsToCatalogue>();
 }

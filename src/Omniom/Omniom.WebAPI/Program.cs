@@ -24,6 +24,7 @@ public class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Tests"))
         {
+            MigrationRunner.CleanupDatabase(productsDbConnectionString);
             MigrationRunner.RunMigrations(productsDbConnectionString);
             app.UseSwagger();
             app.UseSwaggerUI();
