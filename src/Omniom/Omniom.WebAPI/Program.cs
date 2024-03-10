@@ -16,6 +16,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddCors();
         builder.Services.AddProductsCatalogue(config);
 
         var app = builder.Build();
@@ -30,9 +31,21 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        if (!app.Environment.IsEnvironment("Tests"))
+            app.InitializeProductsCatalogueDatabase();
+
+        app.UseRouting();
+
+        app.UseCors(options =>
+        {
+            options.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        });
 
         app.UseAuthorization();
+
+        app.MapProductsCatalogueEndpoints();
 
         app.Run();
     }

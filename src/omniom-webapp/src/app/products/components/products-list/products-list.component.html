@@ -3,10 +3,10 @@
 		<ng-container *ngFor="let product of products$ | async; let last = last;">
 			<div class="item-container py-2">
 				<mat-list-item class="bg-white rounded-lg">
-					<span matListItemTitle>{{product.name}}</span>
-					<span matListItemLine>{{product.defaultPortionSize}}</span>
+					<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
+					<span matListItemLine>{{product.suggestedPortionSizeG}}g</span>
 					<div matListItemMeta>
-						<span>{{product.defaultPortionKcal}} kcal</span>
+						<span class="text-label-large">{{product.kcalPer100G}} kcal</span>
 						<button *ngIf="addButtonEnabled" (click)="addProduct(product)" class="pt-4" mat-icon-button
 							color="primary" aria-label="Example icon button with a home icon">
 							<mat-icon class="mt-1">add</mat-icon>

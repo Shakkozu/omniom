@@ -1,18 +1,18 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Product } from '../../model';
 import { Observable } from 'rxjs';
+import { ProductDetailsDescription } from '../../model';
 
 @Component({
   selector: 'app-products-list',
   templateUrl: './products-list.component.html'
 })
 export class ProductsListComponent {
-  @Input() products$!: Observable<Product[]>;
+  @Input() products$!: Observable<ProductDetailsDescription[]>;
   @Input() addButtonEnabled: boolean = false;
 
-  @Output() addProductButtonClicked: EventEmitter<Product> = new EventEmitter<Product>();
+  @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
   
-  addProduct(product: Product) {
+  addProduct(product: ProductDetailsDescription) {
     this.addProductButtonClicked.emit(product);
   }
 }

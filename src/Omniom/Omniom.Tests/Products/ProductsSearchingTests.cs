@@ -1,4 +1,5 @@
-﻿using Omniom.Domain.ProductsCatalogue.AddProducts;
+﻿using Newtonsoft.Json;
+using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Tests.Shared;
 
@@ -22,10 +23,14 @@ public class ProductsSearchingTests
     public async Task ShouldSearchProductsByName_ReturnProductsWhichMatchesNameOrGenericName()
     {
         var query = new SearchProductsQuery("Tortil");
+        var endpoint = "/api/products";
 
-        var result = await SearchProductsQueryHandler.HandleAsync(query, CancellationToken.None);
+        var result = await _app.CreateHttpClient().GetAsync($"{endpoint}?search={query.Name}");
 
-        Assert.That(result.TotalCount, Is.EqualTo(6));
+        result.EnsureSuccessStatusCode();
+        var responseContent = await result.Content.ReadAsStringAsync();
+        var response = JsonConvert.DeserializeObject<SearchProductsResponse>(responseContent);
+        Assert.That(response.Products.Count, Is.EqualTo(6));
     }
 
     [TestCase(5, 2, 1)]

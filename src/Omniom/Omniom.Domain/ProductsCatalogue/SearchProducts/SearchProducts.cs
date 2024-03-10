@@ -41,6 +41,8 @@ public class SearchProductsQueryHandler
                 || p.GenericNamePl.ToLower().Contains(query.Name.ToLower()));
         var products = await searchResults
             .GetPage(query.Page, query.PageSize)
+            .OrderBy(x => x.ProductNamePl)
+            .ThenBy(x => x.GenericNamePl)
             .Select(p => new ProductDetailsDescription(
                 p.Guid,
                 p.Code,
