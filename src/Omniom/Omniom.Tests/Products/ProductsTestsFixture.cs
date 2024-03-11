@@ -14,7 +14,7 @@ internal class ProductsTestsFixture
     internal void SeedProductsCatalogue()
     {
         var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
-        Importer.AddEntries(new ImportProductsToCatalogueCommand(importData));
+        Importer.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
     }
 
     internal static CreateProductCommand ACreateProductCommand()

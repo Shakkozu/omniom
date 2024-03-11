@@ -23,22 +23,20 @@ public class Program
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Tests"))
-        {
+        if (app.Environment.IsEnvironment("Automated_Tests"))
             MigrationRunner.CleanupDatabase(productsDbConnectionString);
-            MigrationRunner.RunMigrations(productsDbConnectionString);
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        MigrationRunner.RunMigrations(productsDbConnectionString);
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
-        if (!app.Environment.IsEnvironment("Tests"))
+        if (!app.Environment.IsEnvironment("Automated_Tests"))
             app.InitializeProductsCatalogueDatabase();
 
         app.UseRouting();
 
         app.UseCors(options =>
         {
-            options.WithOrigins("http://localhost:4200")
+            options.WithOrigins("http://localhost:4200", "angular-app")
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });

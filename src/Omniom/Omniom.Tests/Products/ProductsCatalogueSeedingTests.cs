@@ -22,7 +22,7 @@ public class ProductsCatalogueSeedingTests
     public async Task ShouldSeedDatabaseWithProductsDataImportFile()
     {
         var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
-        Importer.AddEntries(new ImportProductsToCatalogueCommand(importData));
+        Importer.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
 
         var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty, 10000), CancellationToken.None);
 

@@ -38,7 +38,7 @@ public static class ProductsCatalogueConfig
 
             var csvFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ProductsCatalogue", "SeedDatabase", "products_data.csv");
             var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos(csvFilePath);
-            importService.AddEntries(new ImportProductsToCatalogueCommand(importData));
+            importService.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
         }
     }
 }

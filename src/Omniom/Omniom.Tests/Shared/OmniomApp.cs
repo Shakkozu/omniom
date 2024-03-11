@@ -58,8 +58,8 @@ internal class OmniomApp : WebApplicationFactory<Program>
             collection.AddTransient<ProductsTestsFixture>();
         });
 
-        builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Tests");
-        builder.UseSetting("Environment", "Tests");
+        builder.UseSetting("ASPNETCORE_ENVIRONMENT", "Automated_Tests");
+        builder.UseSetting("Environment", "Automated_Tests");
         builder.ConfigureServices(_customization);
     }
 

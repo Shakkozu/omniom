@@ -12,8 +12,11 @@ public class ImportProductsToCatalogue
         _productsCatalogueDbContext = productsCatalogueDbContext;
     }
 
-    public void AddEntries(ImportProductsToCatalogueCommand command)
+    public void SeedDatabase(ImportProductsToCatalogueCommand command)
     {
+        if(_productsCatalogueDbContext.Products.Any())
+            return;
+
         int batchSize = 100;
         int count = 0;
         List<ProductData> products = new List<ProductData>();

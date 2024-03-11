@@ -1,4 +1,4 @@
 export const environment = {
 	production: false,
-	apiUrl: 'omniom-api:8080'
+	apiUrl: 'omniom-api'
 };

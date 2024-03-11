@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  angular-app:
+    build:
+      context: ./src/omniom-webapp
+      dockerfile: Dockerfile
+    ports:
+      - "10005:80"
+    depends_on:
+      - omniom-api
+
+  omniom-api:
+    build:
+      context: ./src/Omniom
+      dockerfile: Dockerfile
+    ports:
+      - "10006:8080"
+    depends_on:
+      - products-catalogue-db
+
+  products-catalogue-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: omniom-products-catalogue
+    ports:
+      - "10007:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+
