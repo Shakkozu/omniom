@@ -36,9 +36,9 @@ public class Program
 
         app.UseCors(options =>
         {
-            options.WithOrigins("http://localhost:4200", "angular-app")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
+            options.AllowAnyOrigin();
+            options.AllowAnyMethod();
+            options.AllowAnyHeader();
         });
 
         app.UseAuthorization();

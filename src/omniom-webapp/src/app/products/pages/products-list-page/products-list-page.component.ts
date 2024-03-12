@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, debounceTime, map, of, switchMap, tap } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { ProductsRestService, SearchProductsResponse } from '../../products-rest.service';
 import { ProductDetailsDescription } from '../../model';
 
