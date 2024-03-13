@@ -10,7 +10,8 @@ internal class Program
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
         var productsDatabaseConnectionString = config.GetConnectionString("ProductsDatabase");
+        var omniomDatabaseConnectionString = config.GetConnectionString("OmniomDatabase");
 
-        MigrationRunner.RunMigrations(productsDatabaseConnectionString);
+        MigrationRunner.RunMigrations(productsDatabaseConnectionString, omniomDatabaseConnectionString);
     }
 }

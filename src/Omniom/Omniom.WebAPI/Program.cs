@@ -1,4 +1,5 @@
 using Omniom.DatabaseMigrator;
+using Omniom.Domain.Auth.Storage;
 using Omniom.Domain.ProductsCatalogue;
 
 namespace Omniom.WebAPI;
@@ -18,14 +19,17 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddCors();
         builder.Services.AddProductsCatalogue(config);
+        builder.Services.AddAuthorizationModule(config);
 
         var app = builder.Build();
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
+        var omniomDbConnectionString = config.GetConnectionString("OmniomDatabase");
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsEnvironment("Automated_Tests"))
-            MigrationRunner.CleanupDatabase(productsDbConnectionString);
-        MigrationRunner.RunMigrations(productsDbConnectionString);
+            MigrationRunner.CleanupDatabase(productsDbConnectionString, omniomDbConnectionString);
+
+        MigrationRunner.RunMigrations(productsDbConnectionString, omniomDbConnectionString);
         app.UseSwagger();
         app.UseSwaggerUI();
 
@@ -44,6 +48,7 @@ public class Program
         app.UseAuthorization();
 
         app.MapProductsCatalogueEndpoints();
+        app.MapAuthenticationModuleEndpoints();
 
         app.Run();
     }

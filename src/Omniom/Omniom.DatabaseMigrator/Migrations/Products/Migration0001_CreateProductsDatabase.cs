@@ -1,6 +1,8 @@
 ﻿using FluentMigrator;
 
 namespace Omniom.DatabaseMigrator.Migrations.Products;
+
+[Tags("ProductsCatalogue")]
 [Migration(00001)]
 public class Migration0001_CreateProductsDatabase : Migration
 {
