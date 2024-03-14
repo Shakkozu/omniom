@@ -31,10 +31,10 @@ public static class AuthorizationConfig
         endpoints.MapLoginEndpoint();
         endpoints.MapRegisterUserEndpoint();
 
-        endpoints.MapGet("weather", () =>
+        endpoints.MapGet("/api/weather", () =>
         {
             return "sunny";
-        }).RequireAuthorization().WithGroupName("Auth");
+        }).RequireAuthorization();
 
         return endpoints;
     }

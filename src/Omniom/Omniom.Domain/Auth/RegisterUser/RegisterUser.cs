@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,6 +18,7 @@ public record UserForRegistrationDto
     public string? LastName { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]
+    [EmailAddress(ErrorMessage = "Incorrect email provided")]
     public string? Email { get; set; }
 
     [Required(ErrorMessage = "Password is required")]
@@ -42,7 +44,7 @@ internal class RegisterUserCommandHandler
         var user = new IdentityUser
         {
             UserName = userForRegistrationDto.Email,
-            Email = userForRegistrationDto.Email
+            Email = userForRegistrationDto.Email,
         };
 
         var result = await _userManager.CreateAsync(user, userForRegistrationDto.Password);
@@ -62,11 +64,22 @@ internal static class Route
 {
     internal static IEndpointRouteBuilder MapRegisterUserEndpoint(this IEndpointRouteBuilder routeBuilder)
     {
-        routeBuilder.MapPost("account/register", async context =>
+        routeBuilder.MapPost("/api/accounts/register", async context =>
         {
             var command = await context.Request.ReadFromJsonAsync<UserForRegistrationDto>();
+            if(command.Password != command.ConfirmPassword)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(new RegistrationResponseDto(false, new[] { "The password and confirmation password do not match." }));
+                return;
+            }
+
             var handler = context.RequestServices.GetRequiredService<RegisterUserCommandHandler>();
             var response = await handler.HandleAsync(command!, context.RequestAborted);
+            if (!response.Success)
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            }
             await context.Response.WriteAsJsonAsync(response);
         }); 
         return routeBuilder;
