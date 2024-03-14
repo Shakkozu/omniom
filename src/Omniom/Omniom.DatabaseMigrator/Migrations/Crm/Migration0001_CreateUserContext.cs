@@ -9,7 +9,7 @@ public class Migration0001_CreateUserContext : Migration
     public override void Up()
     {
         Create.Table("users")
-            .WithColumn("id").AsInt32().PrimaryKey().Identity()
+            .WithColumn("id").AsString().NotNullable()
             .WithColumn("username").AsString().NotNullable()
             .WithColumn("normalized_username").AsString().NotNullable()
             .WithColumn("email").AsString().NotNullable()
@@ -18,11 +18,11 @@ public class Migration0001_CreateUserContext : Migration
             .WithColumn("password_hash").AsString().NotNullable()
             .WithColumn("security_stamp").AsString().NotNullable()
             .WithColumn("concurrency_stamp").AsString().NotNullable()
-            .WithColumn("phone_number").AsString().NotNullable()
+            .WithColumn("phone_number").AsString().Nullable()
             .WithColumn("phone_number_confirmed").AsBoolean().NotNullable()
             .WithColumn("two_factor_enabled").AsBoolean().NotNullable()
-            .WithColumn("lockout_end").AsDateTime().NotNullable()
-            .WithColumn("lockout_enabled").AsBoolean().NotNullable()
+            .WithColumn("lockout_end").AsDateTime().Nullable()
+            .WithColumn("lockout_enabled").AsBoolean().Nullable()
             .WithColumn("access_failed_count").AsInt32().NotNullable();
 
         Create.Table("roles")

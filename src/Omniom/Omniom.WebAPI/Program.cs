@@ -1,5 +1,5 @@
 using Omniom.DatabaseMigrator;
-using Omniom.Domain.Auth.Storage;
+using Omniom.Domain.Auth;
 using Omniom.Domain.ProductsCatalogue;
 
 namespace Omniom.WebAPI;

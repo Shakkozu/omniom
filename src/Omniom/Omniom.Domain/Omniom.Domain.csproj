@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Npgsql" Version="8.0.2" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.4.0" />
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
@@ -29,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Auth\Login\" />
-    <Folder Include="Auth\RegisterUser\" />
     <Folder Include="ProductsCatalogue\SeedDatabase\NewFolder\" />
   </ItemGroup>
 
