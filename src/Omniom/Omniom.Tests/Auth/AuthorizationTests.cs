@@ -102,4 +102,15 @@ public class AuthorizationTests
         var response = await client.SendAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+
+    [Test]
+    public async Task UnauthorizedUserCannotReachProtectedEndpoint()
+    {
+        var client = _omniomApp.CreateClient();
+        
+        var request = new HttpRequestMessage(HttpMethod.Get, "/api/weather");
+        var response = await client.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }
