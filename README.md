@@ -43,7 +43,7 @@ W związku z tym w początkowej fazie projektu pominięte zostaną:
 
 System będzie się opierał na aplikacji SPA (angular) oraz .NET CORE
 Projekt będzie realizowany w oparciu o podejście `vertical-slice` oraz `CQRS` aby poprawić umiejętności w tym zakresie.
-Takie podejście umożliwi izolacjĘ każdej ścieżki biznesowej i wprowadzania punktowych optymalizacji w ramach potrzeb
+Takie podejście umożliwi izolację każdej ścieżki biznesowej i wprowadzania punktowych optymalizacji w ramach potrzeb
 
 #### Diagram architektury C4
 
@@ -52,4 +52,67 @@ C2 - Context level
 
 ### Lista funkcjonalności do zrealizowania w MVP
 
-@todo
+- Uwierzytelnianie
+    - Rejestracja użytkowników
+    - Logowanie użytkowników
+    - Zmiana danych osobowych
+    - Odzyskiwanie hasła
+- Katalog Produktów
+    - Zasilenie bazy produktowej importem
+    - Wyświetlanie listy produktów
+    - Dodawanie prywatnych produktów do bazy danych
+- Katalog dań
+    - Wyświetlanie listy dań
+    - dodawanie prywatnych przepisów dań (instrukcja przygotowania, lista składników, liczba porcji)
+- Profil Użytkownika
+    - Aktualizacja danych dotyczących sylwetki (waga + pomiary ciała)
+    - Ustalanie dziennego zapotrzebowania kalorycznego, wraz z rozwarstwieniem na makroskładniki
+    - Wyświetlanie podsumowania przyjętych kalorii oraz makroskładników w okresach dziennych
+    - Generowanie raportów z postępami
+- Jadłospis
+    - Konfiguracjia liczby posiłków w ciągu dnia
+    - Dodawanie listy zjedzonych produktów do posiłku
+    - Dodawanie dań do posiłku
+    - Dostosowywanie gramatur zjedzonych produktów/dań
+    - Usuwanie dania/produktu z listy zjedzonych pproduktów
+    - Kopiowanie danych z historycznych posiłków
+    - Przeglądanie historycznych posiłków
+- Konfiguracja Profilu Dietetyka
+    - Konfiguracja jadłospisów na podstawie przygotowanych wcześniej dań
+    - Generowanie raportów listy produktów potrzebnych do jadłospisu
+    - Przypisywanie jadłospisów do klientów
+    - Przegląd historiii jadłospisów przypisanych do klienta
+    - Przegląd zarejestrowanych dań
+    - Wyświetlanie monitorowania stanu zdrowia klientów z aktywną współpracą
+- Nawiązywanie współprac
+    - Podejmowanie współprac pomiędzy dietetykiem a klientem
+    - Przedłużanie współpracy
+    - Anulowanie współpracy
+- Prowadzenie współprac
+    - Proponowanie jadłospisu klientom
+    - Monitorowanie stanu zdrowia klientów
+- Chat
+    - Komunikacja pomiędzy użytkownikami (w głównej mierzy pomiędzy klientami oraz dietetykami)
+    - Lista konswersacji
+
+- Ogłoszenia
+    - Dodawanie szkiców ogłoszeń przez dietetyka
+    - Akceptacja ogłoszeń przez administratora
+    - Zgłaszanie uwag do proponowanego ogłoszenia przez administratora
+    - Publikacja Ogłoszeń
+
+- Katalog ogłoszeń
+    - Wyświetlanie listy ogłoszeń
+    - Promowanie ogłoszeń
+
+- Moduł zakupów
+    - Zakup promowania ogłoszenia
+    - Zakup współpracy z dietetykiem
+    - Wyświetlanie listy zakupów dla użytkownika
+    - Wyświetlanie listy zakupów dla administratora
+
+- Płatności
+    - Możliwość uiszczania opłat z pomocą bramki płatniczej za zakupy
+    - Wyświetlanie listy płatności przez administratora
+
+
