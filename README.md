@@ -47,8 +47,12 @@ Takie podejście umożliwi izolację każdej ścieżki biznesowej i wprowadzania
 
 #### Diagram architektury C4
 
-C2 - Context level
+##### C2 - Container level
 ![Context level](assets/c2.png)
+
+##### C3 - Component level
+![Context level](docs/c3.jpg)
+
 
 ### Lista funkcjonalności do zrealizowania w MVP
 
@@ -114,5 +118,7 @@ C2 - Context level
 - Płatności
     - Możliwość uiszczania opłat z pomocą bramki płatniczej za zakupy
     - Wyświetlanie listy płatności przez administratora
+
+
 
 
