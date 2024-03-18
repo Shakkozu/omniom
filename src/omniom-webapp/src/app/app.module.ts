@@ -12,6 +12,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from './products/products.module';
 import { RouterModule } from '@angular/router';
+import { AuthModule } from './auth/auth.module';
+import { NgxsModule } from '@ngxs/store';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { RouterModule } from '@angular/router';
     StartComponent
   ],
   imports: [
+    NgxsModule.forRoot([]),
     MaterialModule,
+    AuthModule,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
@@ -28,7 +32,7 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     RouterModule,
-    ProductsModule
+    ProductsModule,
   ],
   exports: [
     MaterialModule

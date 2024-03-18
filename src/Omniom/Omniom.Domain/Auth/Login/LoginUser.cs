@@ -17,7 +17,7 @@ public record LoginUserDto
     public string? Password { get; set; }
 }
 
-public record LoginResponseDto(bool Success, string? Token, IEnumerable<string>? Errors);
+public record LoginResponseDto(bool Success, string? Token, string UserId, IEnumerable<string>? Errors);
 
 internal class LoginUserCommandHandler
 {
@@ -38,7 +38,7 @@ internal class LoginUserCommandHandler
 
         if (user == null)
         {
-            return new LoginResponseDto(false, null, new[] { "User not found." });
+            return new LoginResponseDto(false, null, null, new[] { "User not found." });
         }
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, userForLoginDto.Password, false);
@@ -46,10 +46,10 @@ internal class LoginUserCommandHandler
         if (result.Succeeded)
         {
             var token = GenerateJwtToken(user);
-            return new LoginResponseDto(true, token, null);
+            return new LoginResponseDto(true, token, user.Id, null);
         }
 
-        return new LoginResponseDto(false, null, new[] { "Invalid password." });
+        return new LoginResponseDto(false, null, null, new[] { "Invalid password." });
     }
 
     private string GenerateJwtToken(IdentityUser user)

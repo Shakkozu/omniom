@@ -28,8 +28,6 @@ public class AuthorizationTests
         var client = _omniomApp.CreateClient();
         var user = new UserForRegistrationDto
         {
-            FirstName = "John",
-            LastName = "Doe",
             Email = "johndoe@example.com",
             Password = "zaq1@WSX",
             ConfirmPassword = "zaq1@WSX"
@@ -51,8 +49,6 @@ public class AuthorizationTests
         var client = _omniomApp.CreateClient();
         var user = new UserForRegistrationDto
         {
-            FirstName = "John",
-            LastName = "Doe",
             Email = "notValidEmail",
             Password = "zaq1@WSX",
             ConfirmPassword = "XSW@1qaz"
@@ -75,8 +71,6 @@ public class AuthorizationTests
         var client = _omniomApp.CreateClient();
         var user = new UserForRegistrationDto
         {
-            FirstName = "John",
-            LastName = "Doe",
             Email = "mail@example.com",
             Password = "zaq1@WSX",
             ConfirmPassword = "zaq1@WSX"

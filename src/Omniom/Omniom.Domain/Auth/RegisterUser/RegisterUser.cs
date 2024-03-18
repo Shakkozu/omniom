@@ -14,8 +14,6 @@ using System.Threading.Tasks;
 namespace Omniom.Domain.Auth.RegisterUser;
 public record UserForRegistrationDto
 {
-    public string? FirstName { get; set; }
-    public string? LastName { get; set; }
 
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Incorrect email provided")]
@@ -54,7 +52,7 @@ internal class RegisterUserCommandHandler
             return new RegistrationResponseDto(true, null);
         }
 
-        return new RegistrationResponseDto(false, result.Errors.Select(e => e.Description));
+        return new RegistrationResponseDto(false, result.Errors.Select(e => e.Description).ToList());
     }
 }
 
