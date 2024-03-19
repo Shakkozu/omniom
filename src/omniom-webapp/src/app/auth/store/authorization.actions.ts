@@ -1,7 +1,3 @@
-export class OnLoginSuccess {
-	static readonly type = '[UserSession] Create session';
-	constructor (public username: string, public sessionId: string, public userId: string) { }
-}
 
 export class Logout {
 	static readonly type = '[UserSession] Logout';
@@ -17,6 +13,12 @@ export class Login {
 	static readonly type = '[UserSession] Login';
 	constructor (public username: string, public password: string) { }
 }
+
+export class OnLoginSuccess {
+	static readonly type = '[UserSession] Create session';
+	constructor (public username: string, public sessionId: string, public userId: string) { }
+}
+
 export class Register {
 	static readonly type = '[UserSession] Register';
 	constructor (public userDto: {
@@ -25,3 +27,4 @@ export class Register {
 		confirmPassword: string;
 	}) { }
 }
+

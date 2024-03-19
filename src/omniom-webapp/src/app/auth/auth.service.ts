@@ -10,8 +10,8 @@ export class AuthService {
 	
 	constructor(private http: HttpClient) { }
 	
-	login(username: string, password: string): Observable<LoginResponse> {
-		const loginData = { username, password };
+	login(email: string, password: string): Observable<LoginResponse> {
+		const loginData = { email, password };
 		return this.http.post<LoginResponse>(`${ environment.apiUrl}/api/accounts/login`, loginData);
 	}
 	

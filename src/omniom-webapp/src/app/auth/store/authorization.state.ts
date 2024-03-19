@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Router } from "@angular/router";
 import { Action, State, StateContext, Selector } from "@ngxs/store";
 import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess } from "./authorization.actions";
 import { AuthService } from "../auth.service";
 
 
 export interface UserSessionStateModel {
+	errors: string[];
 	username?: string;
 	userId?: string;
 	sessionId?: string;
@@ -13,6 +14,7 @@ export interface UserSessionStateModel {
 }
 
 const defaultState: UserSessionStateModel = {
+	errors: [],
 	username: undefined,
 	userId: undefined,
 	sessionId: undefined,
@@ -22,9 +24,6 @@ const defaultState: UserSessionStateModel = {
 @Injectable({
 	providedIn: 'root'
 })
-export class testService {
-
-}
 
 @Injectable()
 @State<UserSessionStateModel>({
@@ -39,6 +38,43 @@ export class AuthorizationState {
 		private router: Router) {
 	}
 
+	@Selector()
+	static errors(state: UserSessionStateModel) {
+		return state.errors;
+	}
+
+	@Action(Register)
+	public register(ctx: StateContext<UserSessionStateModel>, { userDto }: Register) {
+		this.authorizationService.register(userDto.email, userDto.password, userDto.confirmPassword)
+			.subscribe({
+				next: response => {
+					if (response.success) {
+						ctx.patchState({ errors: [] });
+						ctx.dispatch(new Login(userDto.email, userDto.password));
+					}
+				},
+				error: errorResponse => {
+					ctx.patchState({ errors: errorResponse.error.errors });
+				}
+			});
+	}
+
+	@Action(Login)
+	public login(ctx: StateContext<UserSessionStateModel>, { username, password }: Login) {
+		this.authorizationService.login(username, password)
+			.subscribe({
+				next: response => {
+					if (response.success) {
+						ctx.patchState({ errors: [] });
+						ctx.dispatch(new OnLoginSuccess(username, response.token, response.userId));
+					}
+				},
+				error: response => {
+					ctx.patchState({ errors: response.error.errors });
+				}
+			});
+	}
+
 	@Action(OnLoginSuccess)
 	public createUserSession({ patchState }: StateContext<UserSessionStateModel>,
 		{ username, sessionId, userId }: OnLoginSuccess) {
@@ -48,21 +84,7 @@ export class AuthorizationState {
 			sessionId: sessionId,
 			timestamp: Date.now(),
 		});
-		this.router.navigate(['/user-products']);
-	}
-
-	@Action(Login)
-	public login(ctx: StateContext<UserSessionStateModel>,
-		{ username, password }: Login) {
-		this.authorizationService.login(username, password)
-			.subscribe(response => ctx.dispatch(new OnLoginSuccess(username, response.token, response.userId)));
-	}
-
-	@Action(Register)
-	public register(ctx: StateContext<UserSessionStateModel>, { userDto }: Register) {
-		this.authorizationService.register(userDto.email, userDto.password, userDto.confirmPassword).subscribe(() =>
-			ctx.dispatch(new Login(userDto.email, userDto.password))
-		);
+		this.router.navigate(['/']);
 	}
 
 	@Action(Logout)

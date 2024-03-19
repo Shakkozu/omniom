@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../material.module';
 import { NgxsModule } from '@ngxs/store';
 import { AuthorizationState } from './store/authorization.state';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 
 
 
@@ -21,6 +22,9 @@ import { AuthorizationState } from './store/authorization.state';
     NgxsModule.forFeature([
       AuthorizationState,
     ]),
+    NgxsStoragePluginModule.forRoot({
+      key: [AuthorizationState]
+    }),
   ]
 })
 export class AuthModule { }
