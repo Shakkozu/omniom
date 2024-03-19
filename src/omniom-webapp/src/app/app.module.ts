@@ -14,11 +14,13 @@ import { ProductsModule } from './products/products.module';
 import { RouterModule } from '@angular/router';
 import { AuthModule } from './auth/auth.module';
 import { NgxsModule } from '@ngxs/store';
+import { AuthenticationNavbarComponentComponent } from './shared/authentication-navbar-component.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MatDashboardComponent,
+    AuthenticationNavbarComponentComponent,
     StartComponent
   ],
   imports: [

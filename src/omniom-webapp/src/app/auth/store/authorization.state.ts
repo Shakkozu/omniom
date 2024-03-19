@@ -7,7 +7,7 @@ import { AuthService } from "../auth.service";
 
 export interface UserSessionStateModel {
 	errors: string[];
-	username?: string;
+	username: string;
 	userId?: string;
 	sessionId?: string;
 	timestamp?: number;
@@ -15,7 +15,7 @@ export interface UserSessionStateModel {
 
 const defaultState: UserSessionStateModel = {
 	errors: [],
-	username: undefined,
+	username: '',
 	userId: undefined,
 	sessionId: undefined,
 	timestamp: undefined
@@ -94,6 +94,7 @@ export class AuthorizationState {
 			return;
 
 		ctx.patchState(defaultState);
+		this.router.navigate(['/']);
 	}
 
 	@Action(OnLogoutSuccess)
@@ -104,7 +105,7 @@ export class AuthorizationState {
 
 	@Selector()
 	public static isAuthenticated(state: UserSessionStateModel) {
-		return !!state.username && !this.isTimestampOlderThan60Minutes(state.timestamp);
+		return !!state.sessionId && !this.isTimestampOlderThan60Minutes(state.timestamp);
 	}
 
 	@Selector()
