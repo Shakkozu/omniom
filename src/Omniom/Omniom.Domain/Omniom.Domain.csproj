@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Folder Include="ProductsCatalogue\SeedDatabase\NewFolder\" />
+    <Folder Include="Shared\BuildingBlocks\" />
   </ItemGroup>
 
 </Project>

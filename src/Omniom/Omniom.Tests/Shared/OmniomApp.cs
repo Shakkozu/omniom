@@ -7,6 +7,8 @@ using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Tests.Products;
+using Omniom.Domain.NutritionDiary.AddProductToDiary;
+using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 
 namespace Omniom.Tests.Shared;
 
@@ -72,4 +74,8 @@ internal class OmniomApp : WebApplicationFactory<Program>
     internal SearchProductsQueryHandler SearchProductsQueryHandler => RequestScope().ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
     internal ImportProductsToCatalogue ProductCatalogueImportHandler => RequestScope().ServiceProvider.GetRequiredService<ImportProductsToCatalogue>();
     internal ProductsTestsFixture ProductsTestsFixture  => RequestScope().ServiceProvider.GetRequiredService<ProductsTestsFixture>();
+
+    internal AddProductToDiaryCommandHandler AddProductToDiaryCommandHandler => RequestScope().ServiceProvider.GetRequiredService<AddProductToDiaryCommandHandler>();
+    internal ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ModifyProductPortionCommandHandler>();
+    internal GetDiaryQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetDiaryQueryHandler>();
 }

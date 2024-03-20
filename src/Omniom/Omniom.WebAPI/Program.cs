@@ -1,5 +1,6 @@
 using Omniom.DatabaseMigrator;
 using Omniom.Domain.Auth;
+using Omniom.Domain.NutritionDiary;
 using Omniom.Domain.ProductsCatalogue;
 
 namespace Omniom.WebAPI;
@@ -20,6 +21,7 @@ public class Program
         builder.Services.AddCors();
         builder.Services.AddProductsCatalogue(config);
         builder.Services.AddAuthorizationModule(config);
+        builder.Services.AddNutritionDiary(config);
 
         var app = builder.Build();
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
