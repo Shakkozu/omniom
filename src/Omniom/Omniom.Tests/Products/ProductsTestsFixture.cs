@@ -9,12 +9,23 @@ namespace Omniom.Tests.Products;
 
 internal class ProductsTestsFixture
 {
-    private OmniomApp _app = OmniomApp.CreateInstance();
-    private ImportProductsToCatalogue Importer => _app.ProductCatalogueImportHandler;
+    private readonly ImportProductsToCatalogue _importProductsToCatalogue;
+    private readonly SearchProductsQueryHandler _searchProductsQueryHandler;
+
+    public ProductsTestsFixture(ImportProductsToCatalogue importProductsToCatalogue, SearchProductsQueryHandler searchProductsQueryHandler)
+    {
+        _importProductsToCatalogue = importProductsToCatalogue;
+        _searchProductsQueryHandler = searchProductsQueryHandler;
+    }
     internal void SeedProductsCatalogue()
     {
         var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
-        Importer.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
+        _importProductsToCatalogue.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
+    }
+
+    internal async Task<IEnumerable<ProductDetailsDescription>> AProductsFromCatalogue()
+    {
+        return (await _searchProductsQueryHandler.HandleAsync(new SearchProductsQuery("", 10), CancellationToken.None)).Products;
     }
 
     internal static CreateProductCommand ACreateProductCommand()
