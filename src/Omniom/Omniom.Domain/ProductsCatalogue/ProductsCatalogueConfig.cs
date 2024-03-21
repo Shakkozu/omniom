@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
+using Omniom.Domain.ProductsCatalogue.FindById;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Domain.ProductsCatalogue.Storage;
@@ -17,6 +18,7 @@ public static class ProductsCatalogueConfig
         serviceCollection
             .AddTransient<CreateProductCommandHandler>()
             .AddTransient<SearchProductsQueryHandler>()
+            .AddTransient<FindProductByIdQueryHandler>()
             .AddTransient<ImportProductsToCatalogue>()
             .AddDbContext<ProductsCatalogueDbContext>(options =>
             {

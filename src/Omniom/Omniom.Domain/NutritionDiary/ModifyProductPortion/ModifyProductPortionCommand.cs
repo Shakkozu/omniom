@@ -1,9 +1,5 @@
-﻿using Omniom.Domain.NutritionDiary.AddProductToDiary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Omniom.Domain.NutritionDiary.Storage;
+using Omniom.Domain.ProductsCatalogue.FindById;
 
 namespace Omniom.Domain.NutritionDiary.ModifyProductPortion;
 public class ModifyProductPortionCommand
@@ -11,46 +7,24 @@ public class ModifyProductPortionCommand
     public Guid UserId { get; set; }
     public Guid Guid { get; set; }
     public int PortionInGrams { get; set; }
-    public DateTime Date { get; set; }
 }
 public class ModifyProductPortionCommandHandler
 {
-    public async Task HandleAsync(ModifyProductPortionCommand modifyFirstProductInDiaryCommand, CancellationToken none)
+    private readonly NutritionDiaryDbContext _dbContext;
+    private readonly FindProductByIdQueryHandler _findProductByIdQueryHandler;
+
+    public ModifyProductPortionCommandHandler(NutritionDiaryDbContext dbContext, FindProductByIdQueryHandler findProductByIdQueryHandler)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
+        _findProductByIdQueryHandler = findProductByIdQueryHandler;
     }
-}
-
-
-public class GetDiaryQuery
-{
-    public Guid UserId { get; set; }
-    public DateTime Date { get; set; }
-}
-public class GetDiaryQueryHandler
-{
-    public async Task<IEnumerable<DiaryEntryDto>> HandleAsync(GetDiaryQuery getDiaryQuery, CancellationToken none)
+    public async Task HandleAsync(ModifyProductPortionCommand command, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var entry = _dbContext.DiaryEntries.Single(entry => entry.Guid == command.Guid);
+        var productData = await _findProductByIdQueryHandler.HandleAsync(new FindByIdQuery(entry.ProductId), ct);
+        entry.ModifyPortion(command.PortionInGrams, productData);
+
+        _dbContext.DiaryEntries.Update(entry);
+        await _dbContext.SaveChangesAsync(ct);
     }
-}
-
-
-public class DiaryEntryDto
-{
-    public IEnumerable<DiaryEntryData> Entries { get; set; }
-    public DateTime Date { get; set; }
-}
-
-public record DiaryEntryData
-{
-    public Guid Guid { get; set; }
-    public Guid ProductId { get; set; }
-    public string ProductName { get; set; }
-    public int PortionInGrams { get; set; }
-    public MealType Meal { get; set; }
-    public decimal Calories { get; set; }
-    public decimal Proteins { get; set; }
-    public decimal Carbohydrates { get; set; }
-    public decimal Fats { get; set; }
 }

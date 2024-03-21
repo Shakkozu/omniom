@@ -2,7 +2,7 @@
 
 namespace Omniom.DatabaseMigrator.Migrations.Crm;
 
-[Tags("Auth")]
+[Tags("Omniom")]
 [Migration(1)]
 public class Migration0001_CreateUserContext : Migration
 {

@@ -79,7 +79,7 @@ public static class MigrationRunner
             .AddLogging(lb => lb.AddFluentMigratorConsole())
             .Configure<RunnerOptions>(options =>
             {
-                options.Tags = new[] { "Auth" };
+                options.Tags = new[] { "Omniom" };
             })
             .BuildServiceProvider(false);
     }

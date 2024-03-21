@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Omniom.Domain.NutritionDiary.Storage;
+using Omniom.Domain.ProductsCatalogue.FindById;
 
 namespace Omniom.Domain.NutritionDiary.AddProductToDiary;
 public class AddProductToDiaryCommand
@@ -18,17 +15,37 @@ public class AddProductToDiaryCommand
 
 public class AddProductToDiaryCommandHandler
 {
+    private readonly NutritionDiaryDbContext _dbContext;
+    private readonly FindProductByIdQueryHandler _findProductByIdQueryHandler;
+
+    public AddProductToDiaryCommandHandler(NutritionDiaryDbContext dbContext, FindProductByIdQueryHandler findProductByIdQueryHandler)  
+    {
+        _dbContext = dbContext;
+        _findProductByIdQueryHandler = findProductByIdQueryHandler;
+    }
+
     public async Task HandleAsync(AddProductToDiaryCommand command, CancellationToken ct)
     {
-        // some logic
-    }
-}
+        var productDetails = await _findProductByIdQueryHandler.HandleAsync(new FindByIdQuery(command.ProductId), ct);
+        var portionSizeRatio = (decimal)command.PortionInGrams / 100;
+        var diaryEntry = new DiaryEntry
+        {
+            UserId = command.UserId,
+            ProductId = command.ProductId,
+            Guid = command.Guid,
+            Meal = command.Meal,
+            DateTime = command.Date,
+            PortionInGrams = command.PortionInGrams,
+            ProductName = productDetails.Name,
+            Calories = productDetails.KcalPer100G * portionSizeRatio,
+            Fats = productDetails.FatPer100G * portionSizeRatio,
+            Proteins = productDetails.ProteinsPer100G * portionSizeRatio,
+            Carbohydrates = productDetails.CarbsPer100G * portionSizeRatio,
+            SaturatedFats = productDetails.SaturatedFatPer100G.HasValue ? productDetails.SaturatedFatPer100G * portionSizeRatio : default,
+            Sugars = productDetails.SugarsPer100G.HasValue ?  productDetails.SugarsPer100G * portionSizeRatio : default,
+        };
 
-public enum MealType
-{
-    Breakfast,
-    SecondBreakfast,
-    Dinner,
-    Snack,
-    Supper,
+        await _dbContext.DiaryEntries.AddAsync(diaryEntry, ct);
+        await _dbContext.SaveChangesAsync(ct);
+    }
 }

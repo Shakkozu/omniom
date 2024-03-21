@@ -9,6 +9,7 @@ using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Tests.Products;
 using Omniom.Domain.NutritionDiary.AddProductToDiary;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
+using Omniom.Domain.NutritionDiary.GetDiary;
 
 namespace Omniom.Tests.Shared;
 
