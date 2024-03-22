@@ -3,7 +3,7 @@ import { Component } from "@angular/core";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { FormErrorHandler } from "../../shared/form-error-handler";
 import { Store } from "@ngxs/store";
-import { Register } from "../store/authorization.actions";
+import { AuthorizationComponentOpened, Register } from "../store/authorization.actions";
 import { Observable, of } from "rxjs";
 import { AuthorizationState } from "../store/authorization.state";
 
@@ -57,9 +57,10 @@ export class RegisterComponent {
 
   passwordMatchValidator: (formGroup: FormGroup) => { passwordNotMatch: boolean; } | null;
 
-  constructor (private formBuilder: FormBuilder, private http: HttpClient,
+  constructor (private formBuilder: FormBuilder,
     private store: Store,
     private formErrorHandler: FormErrorHandler) {
+    this.store.dispatch(new AuthorizationComponentOpened());
     this.passwordMatchValidator = (formGroup: FormGroup) => {
       const { value: password } = formGroup.get('password')!;
       const { value: confirmPassword } = formGroup.get('confirmPassword')!;

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { Action, State, StateContext, Selector } from "@ngxs/store";
-import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess } from "./authorization.actions";
+import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess, AuthorizationComponentOpened } from "./authorization.actions";
 import { AuthService } from "../auth.service";
 
 
@@ -57,6 +57,11 @@ export class AuthorizationState {
 					ctx.patchState({ errors: errorResponse.error.errors });
 				}
 			});
+	}
+
+	@Action(AuthorizationComponentOpened)
+	public authorizationComponentOpened(ctx: StateContext<UserSessionStateModel>) {
+		ctx.patchState({ errors: [] });
 	}
 
 	@Action(Login)

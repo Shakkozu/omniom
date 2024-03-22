@@ -14,6 +14,12 @@ export class Login {
 	constructor (public username: string, public password: string) { }
 }
 
+
+export class AuthorizationComponentOpened {
+	static readonly type = '[UserSession] Authorization Component Opened';
+	constructor () { }
+}
+
 export class OnLoginSuccess {
 	static readonly type = '[UserSession] Create session';
 	constructor (public username: string, public sessionId: string, public userId: string) { }
