@@ -12,7 +12,8 @@ const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'start', component: MatDashboardComponent },
   { path: 'weather', component: StartComponent },
-  { path: 'products', canActivate: [AuthGuard], loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)}
+  { path: 'products', canActivate: [AuthGuard], loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)},
+  { path: 'diary', canActivate: [AuthGuard], loadChildren: () => import('./nutrition-diary/nutrition-diary.module').then(m => m.NutritionDiaryModule)},
 ]
   ;
 

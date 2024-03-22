@@ -4,8 +4,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 const routes: Routes = [
-	{ path: '', pathMatch: 'full', redirectTo: 'list' },
-	{ path: 'diary', component: NutritionDiaryPageComponent },
+	{ path: '', component: NutritionDiaryPageComponent},
 ]
 
 @NgModule({
