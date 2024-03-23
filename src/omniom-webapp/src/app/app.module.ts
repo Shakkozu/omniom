@@ -6,8 +6,6 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
-import { MatDashboardComponent } from './starter/components/mat-dashboard/mat-dashboard.component';
-import { StartComponent } from './starter/components/start/start.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from './products/products.module';
@@ -19,9 +17,7 @@ import { AuthenticationNavbarComponentComponent } from './shared/authentication-
 @NgModule({
   declarations: [
     AppComponent,
-    MatDashboardComponent,
     AuthenticationNavbarComponentComponent,
-    StartComponent
   ],
   imports: [
     NgxsModule.forRoot([]),
