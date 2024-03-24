@@ -4,7 +4,7 @@ import { registerLocaleData } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MaterialModule } from './material.module';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { NgxsModule } from '@ngxs/store';
 import { AuthenticationNavbarComponentComponent } from './shared/authentication-navbar-component.component';
 import localePl from '@angular/common/locales/pl';
 import { LOCALE_ID } from '@angular/core';
+import { JwtInterceptor } from './auth/auth.interceptor';
 
 registerLocaleData(localePl);
 
@@ -40,6 +41,7 @@ registerLocaleData(localePl);
     MaterialModule
   ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: LOCALE_ID, useValue: 'pl'},
     provideAnimationsAsync(),
   ],
