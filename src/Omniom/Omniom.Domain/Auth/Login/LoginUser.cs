@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -75,27 +71,3 @@ internal class LoginUserCommandHandler
         return tokenHandler.WriteToken(token);
     }
 }     
-
-
-internal static class Route
-{
-    internal static IEndpointRouteBuilder MapLoginEndpoint(this IEndpointRouteBuilder routeBuilder)
-    {
-        routeBuilder.MapPost("/api/accounts/login", async context =>
-        {
-            var command = await context.Request.ReadFromJsonAsync<LoginUserDto>();
-            var handler = context.RequestServices.GetRequiredService<LoginUserCommandHandler>();
-            var result = await handler.HandleAsync(command, context.RequestAborted);
-            if (result.Success)
-            {
-                await context.Response.WriteAsJsonAsync(result);
-            }
-            else
-            {
-                context.Response.StatusCode = 400;
-                await context.Response.WriteAsJsonAsync(result);
-            }
-        }); 
-        return routeBuilder;
-    }
-}
