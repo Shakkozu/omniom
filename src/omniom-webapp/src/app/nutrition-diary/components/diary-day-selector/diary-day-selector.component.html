@@ -1,1 +1,32 @@
-<p>diary-day-selector works!</p>
+<div class="white shadow-lg rounded-xl h-4/5 p-4">
+	<h4 class="text-lg">Wybierz dzień</h4>
+	<mat-form-field class="w-full">
+		<mat-label>Zakres dat</mat-label>
+		<mat-date-range-input [rangePicker]="dateRangePicker">
+			<input matStartDate placeholder="Od" (dateChange)="dateChanged($event.value, 'start')" [value]="startDate">
+			<input matEndDate placeholder="Do" (dateChange)="dateChanged($event.value, 'end')" [value]="endDate">
+		</mat-date-range-input>
+		<mat-datepicker-toggle matIconSuffix [for]="dateRangePicker"></mat-datepicker-toggle>
+		<mat-date-range-picker #dateRangePicker></mat-date-range-picker>
+	</mat-form-field>
+
+	<mat-progress-spinner class="items-center text-center m-auto" *ngIf="isLoading"
+		mode="indeterminate"></mat-progress-spinner>
+	<div *ngIf="!isLoading" class="overflow-y-auto h-5/6">
+		<mat-card *ngFor="let summary of getDaySummaries()" class="mt-2 rounded-lg pointer-events-auto
+		 hover:bg-gray-200" [ngClass]="{'active': summary.guid === selectedDayId}" (click)="summarySelected(summary)">
+			<mat-card-header>
+				<mat-card-title>
+					{{summary.date | date:'longDate'}}
+				</mat-card-title>
+			</mat-card-header>
+			<mat-card-content class="dashboard-card-content">
+				<mat-list-item>
+					<span matListItemTitle>{{summary.totalCalories }}kcal</span>
+					<span matListItemLine>B: {{summary.totalProtein}}g T: {{summary.totalFat}}g W:{{summary.totalCarbs}}g</span>
+				</mat-list-item>
+			</mat-card-content>
+			<mat-divider></mat-divider>
+		</mat-card>
+	</div>
+</div>

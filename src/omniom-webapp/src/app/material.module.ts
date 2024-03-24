@@ -18,12 +18,20 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const MaterialComponents = [
 	MatToolbarModule,
+	MatProgressBarModule,
+	MatProgressSpinnerModule,
 	MatButtonModule,
+	MatNativeDateModule,
 	MatSidenavModule,
 	MatIconModule,
+	MatButtonToggleModule,
 	MatListModule,
 	MatTableModule,
 	MatPaginatorModule,
