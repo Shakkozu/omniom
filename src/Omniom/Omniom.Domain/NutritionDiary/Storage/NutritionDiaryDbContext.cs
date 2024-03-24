@@ -32,8 +32,8 @@ public class NutritionDiaryDbContext : DbContext
                 if (property.ClrType == typeof(DateTime) || property.ClrType == typeof(DateTime?))
                 {
                     property.SetValueConverter(new ValueConverter<DateTime, DateTime>(
-                        v => v,
-                        v => DateTime.SpecifyKind(v, DateTimeKind.Utc)));
+                        v => v.ToUniversalTime(),
+                        v => v.ToUniversalTime()));
                 }
             }
         }

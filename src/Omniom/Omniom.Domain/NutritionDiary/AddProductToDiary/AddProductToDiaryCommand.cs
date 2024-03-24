@@ -4,13 +4,22 @@ using Omniom.Domain.ProductsCatalogue.FindById;
 namespace Omniom.Domain.NutritionDiary.AddProductToDiary;
 public class AddProductToDiaryCommand
 {
-    public Guid UserId { get; set; }
-    public Guid ProductId { get; set; }
-    public Guid Guid { get; set; }
-    public int PortionInGrams { get; set; }
-    public MealType Meal { get; set; }
-    public DateTime Date { get; set; }
+    public AddProductToDiaryCommand(Guid userId, Guid productId, Guid guid, int portionInGrams, MealType meal, DateTime date)
+    {
+        UserId = userId;
+        ProductId = productId;
+        Guid = guid;
+        PortionInGrams = portionInGrams;
+        Meal = meal;
+        Date = date.ToUniversalTime();
+    }
 
+    public Guid UserId { get; }
+    public Guid ProductId { get; }
+    public Guid Guid { get; }
+    public int PortionInGrams { get; }
+    public MealType Meal { get; }
+    public DateTime Date { get; }
 }
 
 public class AddProductToDiaryCommandHandler
@@ -34,7 +43,7 @@ public class AddProductToDiaryCommandHandler
             ProductId = command.ProductId,
             Guid = command.Guid,
             Meal = command.Meal,
-            DateTime = command.Date,
+            DateTime = command.Date.ToUniversalTime(),
             PortionInGrams = command.PortionInGrams,
             ProductName = productDetails.Name,
             Calories = productDetails.KcalPer100G * portionSizeRatio,

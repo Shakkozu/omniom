@@ -31,6 +31,5 @@ public class DiaryEntry
         SaturatedFats = productData.SaturatedFatPer100G.HasValue ? productData.SaturatedFatPer100G * portionSizeRatio : default;
         Sugars = productData.SugarsPer100G.HasValue ? productData.SugarsPer100G * portionSizeRatio : default;
         ProductName = productData.Name;
-        DateTime = DateTime.Date;
     }
 }

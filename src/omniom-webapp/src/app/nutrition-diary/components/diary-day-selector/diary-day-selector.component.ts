@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { v4 as uuidv4 } from 'uuid';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DaySummary } from '../../model';
+import { Store } from '@ngxs/store';
+import { FetchNutritionSummaries } from '../../store/nutrition-diary.actions';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-diary-day-selector',
   templateUrl: './diary-day-selector.component.html',
   styleUrl: './diary-day-selector.component.scss'
 })
-export class DiaryDaySelectorComponent {
+export class DiaryDaySelectorComponent implements OnInit {
   public daySummaries: DaySummary[] = [];
   public selectedDayId: string = '';
   public selectedElement: string = '';
@@ -17,34 +19,25 @@ export class DiaryDaySelectorComponent {
   @Output() daySelected: EventEmitter<string> = new EventEmitter<string>();
   public startDate: Date | null;
   public endDate: Date | null;
+  public summary$: Observable<DaySummary[]> = this.store.select(state => state.nutritionDiary.daySummaries);
+  public isLoading$: Observable<boolean> = this.store.select(state => state.nutritionDiary.loading);
 
-  constructor () {
-    this.startDate = new Date();
-    this.endDate = new Date(new Date().setDate(new Date().getDate() - this.showDays));
-    setTimeout(() => {
-      this.isLoading = false;
-    }, this.loadingTimeInMsMock);
-
-    for (let i = 0; i < 50; i++) {
-      this.daySummaries.push({
-        guid: uuidv4(),
-        date: new Date(new Date().setDate(new Date().getDate() + i)),
-        totalCalories: Math.floor(Math.random() * 1000),
-        totalProtein: Math.floor(Math.random() * 100),
-        totalCarbs: Math.floor(Math.random() * 100),
-        totalFat: Math.floor(Math.random() * 100),
+  constructor (private store: Store) {
+    this.startDate = new Date(new Date().setDate(new Date().getDate() - this.showDays));
+    this.endDate = new Date();
+    this.store.dispatch(new FetchNutritionSummaries(this.startDate, this.endDate))
+      .subscribe(() => {
       });
-      this.summarySelected(this.getDaySummaries()[0]);
-    }
+  }
+
+  public ngOnInit(): void {
+    this.summary$ = this.store.select(state => state.nutritionDiary.daySummaries);
+    this.isLoading$ = this.store.select(state => state.nutritionDiary.loading);
   }
 
   selectElement(element: string): void {
     this.selectedElement = element;
     this.daySelected.emit(element);
-  }
-
-  public getDaySummaries(): DaySummary[] {
-    return this.daySummaries.sort((a, b) => b.date.getTime() - a.date.getTime());
   }
 
   dateChanged(date: Date | null, type: 'start' | 'end') {
@@ -56,10 +49,7 @@ export class DiaryDaySelectorComponent {
     }
 
     if (this.startDate && this.endDate) {
-      this.isLoading = true;
-      setTimeout(() => {
-        this.isLoading = false;
-      }, this.loadingTimeInMsMock)
+      this.store.dispatch(new FetchNutritionSummaries(this.startDate, this.endDate))
     }
   }
 

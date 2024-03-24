@@ -4,8 +4,13 @@ using Omniom.Domain.NutritionDiary.Storage;
 namespace Omniom.Domain.NutritionDiary.GetDiary;
 public class GetDiaryQuery
 {
-    public Guid UserId { get; set; }
-    public DateTime DateTime { get; set; }
+    public GetDiaryQuery(Guid userId, DateTime dateTime)
+    {
+        UserId = userId;
+        DateTime = dateTime.ToUniversalTime();
+    }
+    public Guid UserId { get; }
+    public DateTime DateTime { get; }
 }
 public class GetDiaryQueryHandler
 {
@@ -15,6 +20,7 @@ public class GetDiaryQueryHandler
     {
         _nutritionDiaryDbContext = nutritionDiaryDbContext;
     }
+
     public async Task<IEnumerable<DiaryEntryDto>> HandleAsync(GetDiaryQuery getDiaryQuery, CancellationToken ct)
     {
         var entries = await _nutritionDiaryDbContext.DiaryEntries

@@ -10,6 +10,7 @@ using Omniom.Tests.Products;
 using Omniom.Domain.NutritionDiary.AddProductToDiary;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.GetDiary;
+using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 
 namespace Omniom.Tests.Shared;
 
@@ -79,4 +80,5 @@ internal class OmniomApp : WebApplicationFactory<Program>
     internal AddProductToDiaryCommandHandler AddProductToDiaryCommandHandler => RequestScope().ServiceProvider.GetRequiredService<AddProductToDiaryCommandHandler>();
     internal ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ModifyProductPortionCommandHandler>();
     internal GetDiaryQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetDiaryQueryHandler>();
+    internal GetShortSummaryForDaysQueryHandler GetShortSummaryForDaysQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetShortSummaryForDaysQueryHandler>();
 }

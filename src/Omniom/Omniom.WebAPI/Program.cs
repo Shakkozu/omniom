@@ -51,6 +51,7 @@ public class Program
 
         app.MapProductsCatalogueEndpoints();
         app.MapAuthenticationModuleEndpoints();
+        app.MapNutritionDiaryEndpoints();
 
         app.Run();
     }

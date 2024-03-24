@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Routing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.NutritionDiary.AddProductToDiary;
 using Omniom.Domain.NutritionDiary.GetDiary;
+using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.Storage;
 using System;
@@ -19,10 +21,18 @@ public static class NutritionDiaryConfig
         services.AddTransient<AddProductToDiaryCommandHandler>();
         services.AddTransient<ModifyProductPortionCommandHandler>();
         services.AddTransient<GetDiaryQueryHandler>();
+        services.AddTransient<GetShortSummaryForDaysQueryHandler>();
 
         services.AddDbContext<NutritionDiaryDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("OmniomDatabase"));
         });
+    }
+
+    public static IEndpointRouteBuilder MapNutritionDiaryEndpoints(this IEndpointRouteBuilder endpointRouteBuilder)
+    {
+        endpointRouteBuilder.MapGetShortSummaryEndpoint();
+
+        return endpointRouteBuilder;
     }
 }
