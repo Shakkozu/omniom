@@ -18,7 +18,7 @@ import { AuthorizationState } from '../store/authorization.state';
 		</div>
 		<div class="row">
 			<mat-form-field appearance="fill">
-				<mat-label>Enter your password</mat-label>
+				<mat-label>Wprowadź hasło</mat-label>
 				<input formControlName="password" matInput [type]="hide ? 'password' : 'text'" autocomplete="current-password">
 				<button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
 					[attr.aria-pressed]="hide" type="button">
@@ -29,7 +29,7 @@ import { AuthorizationState } from '../store/authorization.state';
 		<div class="formErrors text-md my-2">
 			<mat-error *ngFor="let error of errors$ | async">{{error}}</mat-error>
 		</div>
-		<button mat-button mat-flat-button type="submit" color="primary">Submit</button>
+		<button mat-button mat-flat-button type="submit" color="primary">Zatwierdź</button>
 	</form>
 </div>
 `,

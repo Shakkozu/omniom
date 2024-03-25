@@ -9,11 +9,11 @@ import { Logout } from '../auth/store/authorization.actions';
   selector: 'app-authentication-navbar-component',
   template: `
   <div *ngIf='!(authenticated$ | async)'>
-    <button routerLink="/auth/register" mat-button>Register</button>
-    <button routerLink="/auth/login" mat-button>Login</button>
+    <button routerLink="/auth/register" mat-button>Rejestracja</button>
+    <button routerLink="/auth/login" mat-button>Zaloguj</button>
   </div>
   <div *ngIf='(authenticated$ | async)'>
-    <span class="text-sm me-4">Welcome, {{username$ | async}}</span>
+    <span class="text-sm me-4">Witaj, {{username$ | async}}</span>
     <button (click)="logout()" mat-button>Logout</button>
   </div>
   `,

@@ -22,7 +22,7 @@ import { AuthorizationState } from "../store/authorization.state";
       </div>
       <div class="row my-4">
         <mat-form-field appearance="fill">
-          <mat-label>Enter your password</mat-label>
+          <mat-label>Wprowadź hasło</mat-label>
           <input formControlName="password" autocomplete="new-password" matInput [type]="hide ? 'password' : 'text'">
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
 						  [attr.aria-pressed]="hide" type="button">
@@ -33,7 +33,7 @@ import { AuthorizationState } from "../store/authorization.state";
       </div>
       <div class="row my-4">
         <mat-form-field appearance="fill">
-          <mat-label>Confirm your password</mat-label>
+          <mat-label>Potwierdź hasło</mat-label>
           <input formControlName="confirmPassword" autocomplete="new-password" matInput [type]="hide ? 'password' : 'text'">
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
 						  [attr.aria-pressed]="hide" type="button">
@@ -45,7 +45,7 @@ import { AuthorizationState } from "../store/authorization.state";
     <div class="formErrors text-md my-2">
       <mat-error *ngFor="let error of errors$ | async">{{error}}</mat-error>
     </div>
-    <button mat-button mat-flat-button color="primary" class="my-4" type="submit">Submit</button>
+    <button mat-button mat-flat-button color="primary" class="my-4" type="submit">Zatwierdź</button>
   </form>
 </div>
   `
