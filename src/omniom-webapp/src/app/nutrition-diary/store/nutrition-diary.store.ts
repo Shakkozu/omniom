@@ -2,21 +2,22 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { NutritionDiaryService } from '../nutrition-diary-rest.service';
-import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure } from './nutrition-diary.actions';
+import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected } from './nutrition-diary.actions';
 import { DaySummary } from '../model';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NutritionDiaryStateModel {
 	daySummaries: DaySummary[];
 	loading: boolean;
-	// other properties...
+	selectedSummaryId: string;
 }
 
 @State<NutritionDiaryStateModel>({
 	name: 'nutritionDiary',
 	defaults: {
 		daySummaries: [],
-		loading : false,
+		loading: false,
+		selectedSummaryId: ''
 	}
 })
 @Injectable()
@@ -58,6 +59,18 @@ export class NutritionDiaryStore {
 	fetchDaySummariesFailure(ctx: StateContext<NutritionDiaryStateModel>, action: FetchNutritionSummariesFailure) {
 		console.error(action.error);
 		ctx.patchState({ loading: false });
+	}
+
+	@Action(SummaryDaySelected)
+	summaryDaySelected(ctx: StateContext<NutritionDiaryStateModel>, action: SummaryDaySelected) {
+		ctx.patchState({
+			selectedSummaryId: action.summary.guid
+		});
+	}
+
+	@Selector()
+	static selectedSummaryId(state: NutritionDiaryStateModel) {
+		return state.selectedSummaryId;
 	}
 
 }

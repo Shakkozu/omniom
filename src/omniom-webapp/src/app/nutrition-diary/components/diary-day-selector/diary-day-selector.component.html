@@ -16,8 +16,7 @@
 		<ng-container *ngFor="let summary of summariesFromRange$ | async">
 			<app-diary-day-summary
 			 [summary]="summary"
-			 [isActive]="summary.guid === selectedDayId"
-			 (summarySelected)="onSummarySelected($event)"></app-diary-day-summary>
+			 [isActive]="summary.guid === (selectedDayId$ | async)"></app-diary-day-summary>
 		</ng-container>
 	</div>
 </div>

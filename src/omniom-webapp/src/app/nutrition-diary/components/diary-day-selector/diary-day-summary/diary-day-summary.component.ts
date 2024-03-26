@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Input, Output, input } from '@angular/core';
 import { DaySummary } from '../../../model';
+import { Store } from '@ngxs/store';
+import { SummaryDaySelected } from '../../../store/nutrition-diary.actions';
 
 @Component({
-  selector: 'app-diary-day-summary',
-  template: `<mat-card class="mt-2 rounded-lg pointer-events-auto
+	selector: 'app-diary-day-summary',
+	template: `<mat-card class="mt-2 rounded-lg pointer-events-auto
 		 hover:bg-gray-200" [ngClass]="{'active': isActive}" (click)="onSummaryClicked(summary)">
 			<mat-card-header>
 				<mat-card-title>
@@ -19,14 +21,16 @@ import { DaySummary } from '../../../model';
 			<mat-divider></mat-divider>
 		</mat-card>
   `,
-  styleUrl: './diary-day-summary.component.scss'
+	styleUrl: './diary-day-summary.component.scss'
 })
 export class DiaryDaySummaryComponent {
-  @Input() summary!: DaySummary;
-  @Input() isActive!: boolean;
-  @Output() summarySelected: EventEmitter<DaySummary> = new EventEmitter<DaySummary>();
+	@Input() summary!: DaySummary;
+	@Input() isActive!: boolean;
 
-  onSummaryClicked(summary: DaySummary): void {
-    this.summarySelected.emit(summary);
-  }
+	constructor (private store: Store) {
+	}
+
+	onSummaryClicked(summary: DaySummary): void {
+		this.store.dispatch(new SummaryDaySelected(summary));
+	}
 }
