@@ -10,34 +10,28 @@ import { Observable } from 'rxjs';
   styleUrl: './diary-day-selector.component.scss'
 })
 export class DiaryDaySelectorComponent implements OnInit {
-  public daySummaries: DaySummary[] = [];
+  public summariesFromRange$: Observable<DaySummary[]> = this.store.select(state => state.nutritionDiary.daySummaries);
+  public isLoading$: Observable<boolean> = this.store.select(state => state.nutritionDiary.loading);
   public selectedDayId: string = '';
-  public selectedElement: string = '';
-  public isLoading = true;
-  private showDays = 40;
-  private loadingTimeInMsMock = 200;
-  @Output() daySelected: EventEmitter<string> = new EventEmitter<string>();
+  private defaultDaysHistoryLoaded = 40;
   public startDate: Date | null;
   public endDate: Date | null;
-  public summary$: Observable<DaySummary[]> = this.store.select(state => state.nutritionDiary.daySummaries);
-  public isLoading$: Observable<boolean> = this.store.select(state => state.nutritionDiary.loading);
-
+  
   constructor (private store: Store) {
-    this.startDate = new Date(new Date().setDate(new Date().getDate() - this.showDays));
+    this.startDate = new Date(new Date().setDate(new Date().getDate() - this.defaultDaysHistoryLoaded));
     this.endDate = new Date();
     this.store.dispatch(new FetchNutritionSummaries(this.startDate, this.endDate))
-      .subscribe(() => {
-      });
+    .subscribe(() => {
+    });
+  }
+  
+  onSummarySelected($event: DaySummary) {
+    this.selectedDayId = $event.guid;
   }
 
   public ngOnInit(): void {
-    this.summary$ = this.store.select(state => state.nutritionDiary.daySummaries);
+    this.summariesFromRange$ = this.store.select(state => state.nutritionDiary.daySummaries);
     this.isLoading$ = this.store.select(state => state.nutritionDiary.loading);
-  }
-
-  selectElement(element: string): void {
-    this.selectedElement = element;
-    this.daySelected.emit(element);
   }
 
   dateChanged(date: Date | null, type: 'start' | 'end') {
@@ -51,22 +45,6 @@ export class DiaryDaySelectorComponent implements OnInit {
     if (this.startDate && this.endDate) {
       this.store.dispatch(new FetchNutritionSummaries(this.startDate, this.endDate))
     }
-  }
-
-  selectDate(date: any): void {
-    this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, this.loadingTimeInMsMock)
-  }
-
-  public meals: any[] = [];
-  selectedRange: any;
-
-
-  public summarySelected(summary: DaySummary): void {
-    this.selectedDayId = summary.guid;
-    this.daySelected.emit(summary.guid);
   }
 }
 

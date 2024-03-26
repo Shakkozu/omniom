@@ -6,11 +6,13 @@ import { NutritionDiaryPageComponent } from "./pages/nutrition-diary-page/nutrit
 import { DiaryDaySelectorComponent } from "./components/diary-day-selector/diary-day-selector.component";
 import { NutritionDiaryStore } from "./store/nutrition-diary.store";
 import { NgxsModule } from "@ngxs/store";
+import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-day-summary/diary-day-summary.component";
 
 @NgModule({
 	declarations: [
 		NutritionDiaryPageComponent,
 		DiaryDaySelectorComponent,
+		DiaryDaySummaryComponent
 	],
 	imports: [
 		NgxsModule.forFeature([
