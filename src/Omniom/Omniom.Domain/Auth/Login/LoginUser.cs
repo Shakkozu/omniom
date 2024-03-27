@@ -15,7 +15,7 @@ public record LoginUserDto
 
 public record LoginResponseDto(bool Success, string? Token, string UserId, IEnumerable<string>? Errors);
 
-internal class LoginUserCommandHandler
+public class LoginUserCommandHandler
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;

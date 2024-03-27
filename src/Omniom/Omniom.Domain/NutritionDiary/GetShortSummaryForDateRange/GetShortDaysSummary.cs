@@ -24,8 +24,8 @@ public class GetShortSummaryForDaysQueryHandler
 
     public async Task<IEnumerable<ShortSummary>> HandleAsync(GetShortDaysSummary query, CancellationToken ct)
     {
-        var startDate = query.StartDate;
-        var endDate = query.EndDate;
+        var startDate = query.StartDate.AddDays(1).AddSeconds(-1).ToUniversalTime().Date;
+        var endDate = query.EndDate.Date.AddDays(1).AddSeconds(-1);
         var entries = await _dbContext.DiaryEntries
             .Where(entry => entry.UserId == query.UserId
                 && entry.DateTime >= startDate

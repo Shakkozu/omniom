@@ -11,7 +11,7 @@ public class AddProductToDiaryCommand
         Guid = guid;
         PortionInGrams = portionInGrams;
         Meal = meal;
-        Date = date.ToUniversalTime();
+        Date = date.ToUniversalTime().Date;
     }
 
     public Guid UserId { get; }
@@ -43,7 +43,7 @@ public class AddProductToDiaryCommandHandler
             ProductId = command.ProductId,
             Guid = command.Guid,
             Meal = command.Meal,
-            DateTime = command.Date.ToUniversalTime(),
+            DateTime = command.Date.ToUniversalTime().Date,
             PortionInGrams = command.PortionInGrams,
             ProductName = productDetails.Name,
             Calories = productDetails.KcalPer100G * portionSizeRatio,

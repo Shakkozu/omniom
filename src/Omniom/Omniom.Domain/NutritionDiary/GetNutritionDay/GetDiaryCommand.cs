@@ -1,30 +1,34 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Omniom.Domain.NutritionDiary.Storage;
+using Omniom.Domain.Shared.Extensions;
 
 namespace Omniom.Domain.NutritionDiary.GetDiary;
-public class GetDiaryQuery
+public class GetNutritionDayQuery
 {
-    public GetDiaryQuery(Guid userId, DateTime dateTime)
+    public GetNutritionDayQuery(Guid userId, DateTime dateTime)
     {
         UserId = userId;
-        DateTime = dateTime.ToUniversalTime();
+        DateTime = dateTime;
     }
     public Guid UserId { get; }
     public DateTime DateTime { get; }
 }
-public class GetDiaryQueryHandler
+public class GetNutritionDayQueryHandler
 {
     private readonly NutritionDiaryDbContext _nutritionDiaryDbContext;
 
-    public GetDiaryQueryHandler(NutritionDiaryDbContext nutritionDiaryDbContext)
+    public GetNutritionDayQueryHandler(NutritionDiaryDbContext nutritionDiaryDbContext)
     {
         _nutritionDiaryDbContext = nutritionDiaryDbContext;
     }
 
-    public async Task<IEnumerable<DiaryEntryDto>> HandleAsync(GetDiaryQuery getDiaryQuery, CancellationToken ct)
+    public async Task<IEnumerable<NutritionDayEntryDto>> HandleAsync(GetNutritionDayQuery getDiaryQuery, CancellationToken ct)
     {
+        var endOfDay = getDiaryQuery.DateTime.GetEndOfDay();
+        var startOfDay = getDiaryQuery.DateTime.Date;
         var entries = await _nutritionDiaryDbContext.DiaryEntries
-            .Where(entries => entries.UserId == getDiaryQuery.UserId && entries.DateTime.Date == getDiaryQuery.DateTime.Date)
+            .Where(entries => 
+                entries.UserId == getDiaryQuery.UserId && entries.DateTime >= startOfDay && entries.DateTime <= endOfDay)
             .Select(entries => new DiaryEntryData
             {
                 Guid = entries.Guid,
@@ -37,13 +41,14 @@ public class GetDiaryQueryHandler
                 Proteins = entries.Proteins,
                 Carbohydrates = entries.Carbohydrates,
                 Fats = entries.Fats
-            }).ToListAsync(ct);
+            })
+            .ToListAsync(ct);
 
-        return new List<DiaryEntryDto>
+        return new List<NutritionDayEntryDto>
         {
-            new DiaryEntryDto
+            new NutritionDayEntryDto
             {
-                Date = getDiaryQuery.DateTime,
+                Date = getDiaryQuery.DateTime.ToLocalTime().Date,
                 Entries = entries
             }
         };
@@ -51,7 +56,7 @@ public class GetDiaryQueryHandler
 }
 
 
-public class DiaryEntryDto
+public class NutritionDayEntryDto
 {
     public IEnumerable<DiaryEntryData> Entries { get; set; }
     public DateTime Date { get; set; }

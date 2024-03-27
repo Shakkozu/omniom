@@ -23,7 +23,7 @@ public record UserForRegistrationDto
 
 public record RegistrationResponseDto(bool Success, IEnumerable<string>? Errors);
 
-internal class RegisterUserCommandHandler
+public class RegisterUserCommandHandler
 {
     private readonly UserManager<IdentityUser> _userManager;
 

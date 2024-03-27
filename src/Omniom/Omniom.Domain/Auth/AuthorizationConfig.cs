@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Omniom.Domain.Auth.GetUserIdByEmail;
 using Omniom.Domain.Auth.Login;
 using Omniom.Domain.Auth.RegisterUser;
 using Omniom.Domain.Auth.Storage;
@@ -27,6 +28,7 @@ public static class AuthorizationConfig
         serviceCollection.AddAuthorization();
         serviceCollection.AddTransient<RegisterUserCommandHandler>();
         serviceCollection.AddTransient<LoginUserCommandHandler>();
+        serviceCollection.AddTransient<GetUserIdByEmailHandlerQueryHandler>();
         serviceCollection.AddDbContext<AuthorizationDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("OmniomDatabase"));
@@ -52,7 +54,24 @@ public static class AuthorizationConfig
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
         });
+
         return serviceCollection;
+    }
+
+    public static void AddSuperuser(this WebApplication application, IConfiguration configuration)
+    {
+        using (var scope = application.Services.CreateScope())
+        {
+            var registerUser = scope.ServiceProvider.GetRequiredService<RegisterUserCommandHandler>();
+            var request = new UserForRegistrationDto
+            {
+                Email = configuration.GetValue<string>("Administrator:Email"),
+                Password = configuration.GetValue<string>("Administrator:Password"),
+                ConfirmPassword = configuration.GetValue<string>("Administrator:Password"),
+            };
+
+            registerUser.HandleAsync(request, CancellationToken.None).GetAwaiter().GetResult();
+        }
     }
 
     public static IEndpointRouteBuilder MapAuthenticationModuleEndpoints(this IEndpointRouteBuilder endpoints)
