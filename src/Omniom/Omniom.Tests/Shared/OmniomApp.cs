@@ -11,8 +11,6 @@ using Omniom.Domain.NutritionDiary.AddProductToDiary;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
-using Omniom.Domain.Auth.Login;
-using Newtonsoft.Json.Linq;
 using Omniom.Tests.Auth;
 
 namespace Omniom.Tests.Shared;

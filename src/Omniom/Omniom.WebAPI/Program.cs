@@ -1,4 +1,5 @@
 using Omniom.DatabaseMigrator;
+using Omniom.Domain;
 using Omniom.Domain.Auth;
 using Omniom.Domain.NutritionDiary;
 using Omniom.Domain.ProductsCatalogue;
@@ -32,11 +33,20 @@ public class Program
             MigrationRunner.CleanupDatabase(productsDbConnectionString, omniomDbConnectionString);
 
         MigrationRunner.RunMigrations(productsDbConnectionString, omniomDbConnectionString);
+
         app.UseSwagger();
         app.UseSwaggerUI();
 
         if (!app.Environment.IsEnvironment("Automated_Tests"))
             app.InitializeProductsCatalogueDatabase();
+        if (config.GetValue<bool>("Configuration:AddSuperuser"))
+        {
+            app.AddSuperuser(config);
+        }
+        if (config.GetValue<bool>("Configuration:SeedApplicationStateWithData"))
+        {
+            app.AddNutritionDiaryEntries(config);
+        }
 
         app.UseRouting();
 

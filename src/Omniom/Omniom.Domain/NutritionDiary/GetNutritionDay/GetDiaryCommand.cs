@@ -36,7 +36,7 @@ public class GetNutritionDayQueryHandler
                 UserId = entries.UserId,
                 ProductName = entries.ProductName,
                 PortionInGrams = entries.PortionInGrams,
-                Meal = entries.Meal,
+                Meal = entries.Meal.ToString(),
                 Calories = entries.Calories,
                 Proteins = entries.Proteins,
                 Carbohydrates = entries.Carbohydrates,
@@ -69,7 +69,7 @@ public record DiaryEntryData
     public Guid UserId { get; set; }
     public string ProductName { get; set; }
     public int PortionInGrams { get; set; }
-    public MealType Meal { get; set; }
+    public string Meal { get; set; }
     public decimal Calories { get; set; }
     public decimal Proteins { get; set; }
     public decimal Carbohydrates { get; set; }

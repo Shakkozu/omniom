@@ -68,7 +68,7 @@ public class NutritionDiaryIntegrationTests
                     UserId = await AuthFixture.GetSuperuserIdAsync(),
                     ProductName = _productsSet.First().Name,
                     PortionInGrams = 100,
-                    Meal = MealType.Breakfast,
+                    Meal = MealType.Breakfast.ToString(),
                     Calories = _productsSet.First().KcalPer100G,
                     Proteins = _productsSet.First().ProteinsPer100G,
                     Carbohydrates = _productsSet.First().CarbsPer100G,
