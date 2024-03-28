@@ -1,4 +1,4 @@
-<div class="white shadow-lg rounded-xl h-4/5 p-4">
+<div class="white shadow-lg rounded-xl h-5/6 p-2">
 	<mat-form-field class="w-full">
 		<mat-label>Zakres dat</mat-label>
 		<mat-date-range-input [rangePicker]="dateRangePicker">
@@ -9,14 +9,12 @@
 		<mat-date-range-picker #dateRangePicker></mat-date-range-picker>
 	</mat-form-field>
 
-	<mat-progress-spinner class="items-center text-center m-auto"
-	 	*ngIf="isLoading$ | async"
+	<mat-progress-spinner class="items-center text-center m-auto" *ngIf="isLoading$ | async"
 		mode="indeterminate"></mat-progress-spinner>
 	<div *ngIf="!(isLoading$ | async)" class="overflow-y-auto h-5/6">
 		<ng-container *ngFor="let summary of summariesFromRange$ | async">
-			<app-diary-day-summary
-			 [summary]="summary"
-			 [isActive]="summary.guid === (selectedDayId$ | async)"></app-diary-day-summary>
+			<app-diary-day-summary [summary]="summary"
+				[isActive]="summary.guid === (selectedDayId$ | async)?.guid"></app-diary-day-summary>
 		</ng-container>
 	</div>
 </div>

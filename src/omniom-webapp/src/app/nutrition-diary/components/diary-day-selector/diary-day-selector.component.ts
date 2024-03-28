@@ -13,7 +13,7 @@ import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 export class DiaryDaySelectorComponent implements OnInit {
   public summariesFromRange$: Observable<DaySummary[]> = this.store.select(NutritionDiaryStore.daySummaries);
   public isLoading$: Observable<boolean> = this.store.select(state => state.nutritionDiary.loading);
-  public selectedDayId$: Observable<string>;
+  public selectedDayId$: Observable<DaySummary | null>;
 
   public startDate: Date | null;
   public endDate: Date | null;
@@ -23,7 +23,7 @@ export class DiaryDaySelectorComponent implements OnInit {
     this.startDate = new Date(new Date().setDate(new Date().getDate() - this.defaultDaysHistoryLoaded));
     this.endDate = new Date();
     this.store.dispatch(new FetchNutritionSummaries(this.startDate, this.endDate));
-    this.selectedDayId$ = this.store.select(NutritionDiaryStore.selectedSummaryId);
+    this.selectedDayId$ = this.store.select(NutritionDiaryStore.selectedSummary);
   }
 
   public ngOnInit(): void {

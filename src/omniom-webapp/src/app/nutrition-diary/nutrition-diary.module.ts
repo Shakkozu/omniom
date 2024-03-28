@@ -7,12 +7,14 @@ import { DiaryDaySelectorComponent } from "./components/diary-day-selector/diary
 import { NutritionDiaryStore } from "./store/nutrition-diary.store";
 import { NgxsModule } from "@ngxs/store";
 import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-day-summary/diary-day-summary.component";
+import { MealDetailsComponent } from "./components/meal-details/meal-details.component";
 
 @NgModule({
 	declarations: [
 		NutritionDiaryPageComponent,
 		DiaryDaySelectorComponent,
-		DiaryDaySummaryComponent
+		DiaryDaySummaryComponent,
+		MealDetailsComponent,
 	],
 	imports: [
 		NgxsModule.forFeature([
@@ -20,7 +22,7 @@ import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-
 		]),
 		MaterialModule,
 		CommonModule,
-		NutritionDiaryRoutingModule
+		NutritionDiaryRoutingModule,
 	],
 })
 export class NutritionDiaryModule { }

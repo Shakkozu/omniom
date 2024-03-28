@@ -1,0 +1,93 @@
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" multiTemplateDataRows>
+
+	<ng-container matColumnDef="mealName">
+		<th mat-header-cell *matHeaderCellDef style="width: 40%;" class="font-bold"> </th>
+		<td mat-cell *matCellDef="let element" style="width: 40%;" class="font-bold"> {{element.meal}} </td>
+	</ng-container>
+
+	<ng-container matColumnDef="totalCalories">
+		<th mat-header-cell *matHeaderCellDef style="width: 10%;" class="font-bold"> Kalorie </th>
+		<td mat-cell *matCellDef="let element" style="width: 10%;" class="font-bold" class="font-bold"> {{element.summary.kcal.toFixed(2)}}kcal</td>
+	</ng-container>
+
+	<ng-container matColumnDef="totalProteins">
+		<th mat-header-cell *matHeaderCellDef style="width: 10%;" class="font-bold"> Białka </th>
+		<td mat-cell *matCellDef="let element" style="width: 10%;" class="font-bold"> {{element.summary.proteins.toFixed(2)}}g</td>
+	</ng-container>
+
+	<ng-container matColumnDef="totalFats">
+		<th mat-header-cell *matHeaderCellDef style="width: 10%;" class="font-bold"> Tłuszcze </th>
+		<td mat-cell *matCellDef="let element" style="width: 10%;" class="font-bold"> {{element.summary.fats.toFixed(2)}}g</td>
+	</ng-container>
+
+	<ng-container matColumnDef="totalCarbohydrates">
+		<th mat-header-cell *matHeaderCellDef style="width: 10%;" class="font-bold"> Węglowodany </th>
+		<td mat-cell *matCellDef="let element" style="width: 10%;" class="font-bold"> {{element.summary.carbohydrates.toFixed(2)}}g</td>
+	</ng-container>
+
+	<ng-container matColumnDef="actions">
+		<th mat-header-cell *matHeaderCellDef > </th>
+		<td mat-cell *matCellDef="let element" class="flex">
+			<button mat-icon-button><mat-icon>add</mat-icon></button>
+			<button mat-icon-button><mat-icon>more_vert</mat-icon></button>
+			<button mat-icon-button aria-label="expand row"> @if (isElementExpanded(element)) {
+				<mat-icon>keyboard_arrow_up</mat-icon>
+				} @else {
+				<mat-icon>keyboard_arrow_down</mat-icon>
+				}
+			</button>
+		 </td>
+	</ng-container>
+
+	<ng-container matColumnDef="expandedDetail">
+		<td mat-cell *matCellDef="let element" [attr.colspan]="detailsRowColumns.length">
+			<div class="element-detail" [@detailExpand]="isElementExpanded(element) ? 'expanded' : 'collapsed'">
+				<table mat-table [dataSource]="element.entries" class="nested-table" class="">
+						<ng-container matColumnDef="productName">
+							<th style="width: 40%;" mat-header-cell *matHeaderCellDef> Product Name</th>
+							<td style="width: 40%;" mat-cell *matCellDef="let nestedElement">
+								<p>{{nestedElement.productName}}</p>
+								<p>{{nestedElement.portionInGrams}}g</p>
+								 </td>
+						</ng-container>
+						<ng-container matColumnDef="calories">
+							<th style="width: 10%;" mat-header-cell *matHeaderCellDef> Product Name</th>
+							<td style="width: 10%;" mat-cell *matCellDef="let nestedElement"> {{nestedElement.calories.toFixed(2)}} kcal</td>
+						</ng-container>
+						<ng-container matColumnDef="proteins">
+							<th style="width: 10%;" mat-header-cell *matHeaderCellDef> Product Name</th>
+							<td style="width: 10%;" mat-cell *matCellDef="let nestedElement"> {{nestedElement.proteins.toFixed(2)}} g</td>
+						</ng-container>
+						<ng-container matColumnDef="carbohydrates">
+							<th style="width: 10%;" mat-header-cell *matHeaderCellDef> Product Name</th>
+							<td style="width: 10%;" mat-cell *matCellDef="let nestedElement"> {{nestedElement.carbohydrates.toFixed(2)}}g </td>
+						</ng-container>
+						<ng-container matColumnDef="fats">
+							<th style="width: 10%;" mat-header-cell *matHeaderCellDef> Product Name</th>
+							<td style="width: 10%;" mat-cell *matCellDef="let nestedElement"> {{nestedElement.fats.toFixed(2)}}g </td>
+						</ng-container>
+						<ng-container matColumnDef="actions">
+							<th  mat-header-cell *matHeaderCellDef></th>
+							<td mat-cell *matCellDef="let nestedElement" class="flex justify-end">
+								<div class="row inline-flex py-6">
+									<button mat-icon-button><mat-icon>edit</mat-icon></button>
+									<button mat-icon-button><mat-icon>remove</mat-icon></button>
+
+								</div>
+							</td>
+						</ng-container>
+
+					<tr mat-header-row *matHeaderRowDef="detailsRowColumns" class="hidden-header-row"></tr>
+					<tr mat-row *matRowDef="let row; columns: detailsRowColumns;"></tr>
+					<div class="bg-slate-600 h-8 w-8">test</div>
+				</table>
+			</div>
+		</td>
+	</ng-container>
+
+	<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+	<tr mat-row *matRowDef="let element; columns: displayedColumns;" class="element-row border-2"
+		[class.expanded-row]="isElementExpanded(element)" (click)="onElementClicked(element)">
+	</tr>
+	<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+</table>
