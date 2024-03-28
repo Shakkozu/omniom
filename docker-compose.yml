@@ -9,15 +9,6 @@ services:
     depends_on:
       - omniom-api
 
-  omniom-api:
-    build:
-      context: ./src/Omniom
-      dockerfile: Dockerfile
-    ports:
-      - "10006:8080"
-    depends_on:
-      - products-catalogue-db
-
   products-catalogue-db:
     image: postgres
     environment:
@@ -27,5 +18,37 @@ services:
     ports:
       - "10007:5432"
     volumes:
+      - ./data-products:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d omniom-products-catalogue"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  
+  omniom-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: omniom
+    ports:
+      - "10008:5432"
+    volumes:
       - ./data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d omniom"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
+  omniom-api:
+    build:
+      context: ./src/Omniom
+      dockerfile: Dockerfile
+    ports:
+      - "10006:8080"
+    depends_on:
+      products-catalogue-db:
+        condition: service_healthy
+      omniom-db:
+        condition: service_healthy
