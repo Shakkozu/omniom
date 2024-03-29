@@ -22,6 +22,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const MaterialComponents = [
 	MatToolbarModule,
@@ -37,6 +38,7 @@ const MaterialComponents = [
 	MatPaginatorModule,
 	MatOptionModule,
 	MatRadioModule,
+	MatDialogModule,
 	MatSortModule,
 	MatGridListModule,
 	MatCardModule,

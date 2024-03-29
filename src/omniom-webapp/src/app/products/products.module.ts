@@ -5,6 +5,7 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ProductsListComponent } from './components/products-list/products-list.component';
 import { ProductsListPageComponent } from './pages/products-list-page/products-list-page.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { ProductsCatalogueComponent } from './components/products-catalogue/products-catalogue.component';
 
 
 @NgModule({
@@ -12,11 +13,18 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
     ProductsListComponent,
     ProductsListPageComponent,
     SearchBarComponent,
+    ProductsCatalogueComponent,
   ],
   imports: [
     MaterialModule,
     CommonModule,
     ProductsRoutingModule,
+  ],
+  exports: [
+    ProductsListComponent,
+    ProductsListPageComponent,
+    SearchBarComponent,
+    ProductsCatalogueComponent,
   ]
 })
 export class ProductsModule { }

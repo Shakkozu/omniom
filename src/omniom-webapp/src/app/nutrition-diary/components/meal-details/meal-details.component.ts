@@ -4,6 +4,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Store } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
+import { AddNutritionEntry } from '../../store/nutrition-diary.actions';
 
 @Component({
   selector: 'app-meal-details',
@@ -32,11 +33,16 @@ export class MealDetailsComponent {
     });
   }
 
+  public addNutritionEntryButtonClicked(mealType: MealType): void {
+    this.store.dispatch(new AddNutritionEntry(mealType));
+  }
+
   private convertNutritionDetailsToViewModels(entries: NutritionDetailsGroupeByMeal[]): MealViewModel[] {
     const result: MealViewModel[] = Object.keys(MealType)
       .filter(key => isNaN(Number(key)))
       .map(key => ({
         meal: this.translateMealType(key),
+        mealType: key as unknown as MealType,
         entries: [],
         summary: {
           kcal: 0,
@@ -48,6 +54,7 @@ export class MealDetailsComponent {
 
     const groupedEntries = entries.map(entry => ({
       meal: this.translateMealType(entry.key.toString()),
+      mealType: entry.key,
       entries: entry.entries,
       summary: {
         kcal: entry.entries.reduce((acc, curr) => acc + curr.calories, 0),
@@ -107,6 +114,7 @@ export class MealDetailsComponent {
 
 export interface MealViewModel {
   meal: string;
+  mealType: MealType;
   entries: NutritionDiaryEntry[];
   summary: MealSummary;
 }

@@ -8,6 +8,8 @@ import { NutritionDiaryStore } from "./store/nutrition-diary.store";
 import { NgxsModule } from "@ngxs/store";
 import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-day-summary/diary-day-summary.component";
 import { MealDetailsComponent } from "./components/meal-details/meal-details.component";
+import { AddNutritionEntryComponent } from "./components/add-nutrition-entry/add-nutrition-entry.component";
+import { ProductsModule } from "../products/products.module";
 
 @NgModule({
 	declarations: [
@@ -15,6 +17,7 @@ import { MealDetailsComponent } from "./components/meal-details/meal-details.com
 		DiaryDaySelectorComponent,
 		DiaryDaySummaryComponent,
 		MealDetailsComponent,
+		AddNutritionEntryComponent
 	],
 	imports: [
 		NgxsModule.forFeature([
@@ -23,6 +26,7 @@ import { MealDetailsComponent } from "./components/meal-details/meal-details.com
 		MaterialModule,
 		CommonModule,
 		NutritionDiaryRoutingModule,
+		ProductsModule,
 	],
 })
 export class NutritionDiaryModule { }

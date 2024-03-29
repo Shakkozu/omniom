@@ -2,9 +2,11 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { NutritionDiaryService } from '../nutrition-diary-rest.service';
-import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected } from './nutrition-diary.actions';
+import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected, AddNutritionEntry } from './nutrition-diary.actions';
 import { DaySummary, MealType, NutritionDayDetails, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../model';
 import { v4 as uuidv4 } from 'uuid';
+import { MatDialog } from '@angular/material/dialog';
+import { AddNutritionEntryComponent } from '../components/add-nutrition-entry/add-nutrition-entry.component';
 
 export interface NutritionDiaryStateModel {
 	daySummaries: DaySummary[];
@@ -26,8 +28,9 @@ export interface NutritionDiaryStateModel {
 })
 @Injectable()
 export class NutritionDiaryStore {
-	constructor (private nutritionDiaryService: NutritionDiaryService) { }
-	
+	constructor(private nutritionDiaryService: NutritionDiaryService,
+		private matDialog: MatDialog) { }
+		
 	@Selector()
 	static daySummaries(state: NutritionDiaryStateModel) {
 		return state.daySummaries;
@@ -36,6 +39,20 @@ export class NutritionDiaryStore {
 	@Selector()
 	static loading(state: NutritionDiaryStateModel) {
 		return state.loading;
+	}
+
+	@Action(AddNutritionEntry)
+	addNutritionEntry(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntry) {
+		const dialogRef = this.matDialog.open(AddNutritionEntryComponent, {
+			width: '800px',
+			data: { mealType: action.entry }
+		});
+
+		dialogRef.afterClosed().subscribe(result => {
+			if (result) {
+				ctx.dispatch(new FetchNutritionSummaries(new Date(), new Date()));
+			}
+		});
 	}
 
 	@Action(FetchNutritionSummaries)
@@ -53,7 +70,6 @@ export class NutritionDiaryStore {
 	@Action(FetchNutritionSummariesSuccess)
 	fetchDaySummariesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: FetchNutritionSummariesSuccess) {
 		action.summaries.map(summary => summary.guid = uuidv4());
-		console.log(action.summaries);
 		ctx.patchState({
 			daySummaries: action.summaries,
 			loading: false

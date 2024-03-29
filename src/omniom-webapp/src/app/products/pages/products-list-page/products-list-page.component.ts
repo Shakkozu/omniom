@@ -7,8 +7,7 @@ import { ProductDetailsDescription } from '../../model';
   selector: 'app-products-list-page',
   template: `
 <div class="container w-1/4">
-	<app-search-bar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
-	<app-products-list [products$]="filteredProducts$"></app-products-list>
+	<app-products-catalogue></app-products-catalogue>
 </div>`,
 })
 export class ProductsListPageComponent implements OnInit {

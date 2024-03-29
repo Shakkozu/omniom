@@ -2,6 +2,7 @@ import { Action } from '@ngxs/store';
 import { DaySummary } from '../model';
 
 export enum NutritionDiaryActionTypes {
+	AddNutritionEntry = '[Nutrition Diary] Add Nutrition Entry',
 	SummaryDaySelected = '[Nutrition Diary] Summary day selected',
 	FetchNutritionSummaries = '[Nutrition Diary] Fetch Nutrition Summaries',
 	FetchNutritionSummariesSuccess = '[Nutrition Diary] Fetch Nutrition Summaries Success',
@@ -33,7 +34,15 @@ export class SummaryDaySelected {
 }
 
 export type NutritionDiaryActions =
+	| AddNutritionEntry
 	| SummaryDaySelected
 	| FetchNutritionSummaries
 	| FetchNutritionSummariesSuccess
 	| FetchNutritionSummariesFailure;
+
+
+export class AddNutritionEntry {
+	static readonly type = NutritionDiaryActionTypes.AddNutritionEntry;
+
+	constructor(public entry: any) {}
+}

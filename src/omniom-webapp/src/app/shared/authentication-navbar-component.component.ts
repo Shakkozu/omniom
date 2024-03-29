@@ -26,12 +26,6 @@ export class AuthenticationNavbarComponentComponent {
     this.username$ = this.store.select(AuthorizationState.username);
   }
 
-
-  public logState() {
-    this.store.select(x => x.userSession).subscribe(x => console.log(x));
-    this.store.selectSnapshot(x => x.userSession.isAuthenticated);
-  }
-
   public logout() {
     this.store.dispatch(new Logout());
   }
