@@ -53,6 +53,7 @@ export class NutritionDiaryStore {
 	@Action(FetchNutritionSummariesSuccess)
 	fetchDaySummariesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: FetchNutritionSummariesSuccess) {
 		action.summaries.map(summary => summary.guid = uuidv4());
+		console.log(action.summaries);
 		ctx.patchState({
 			daySummaries: action.summaries,
 			loading: false

@@ -15,7 +15,7 @@ import { SummaryDaySelected } from '../../../store/nutrition-diary.actions';
 			<mat-card-content class="dashboard-card-content">
 				<mat-list-item>
 					<span matListItemTitle>{{summary.totalCalories }}kcal</span>
-					<span matListItemLine>B: {{summary.totalProtein}}g T: {{summary.totalFat}}g W:{{summary.totalCarbs}}g</span>
+					<span matListItemLine>B: {{summary.totalProteins}}g T: {{summary.totalFats}}g W:{{summary.totalCarbohydrates}}g</span>
 				</mat-list-item>
 			</mat-card-content>
 			<mat-divider></mat-divider>

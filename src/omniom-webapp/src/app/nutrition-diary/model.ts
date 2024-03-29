@@ -1,9 +1,9 @@
 export interface DaySummaryDto {
 	nutritionDay: Date;
 	totalCalories: number;
-	totalProtein: number;
-	totalCarbs: number;
-	totalFat: number;
+	totalCarbohydrates: number;
+	totalProteins: number;
+	totalFats: number;
 }
 
 export interface DaySummary extends DaySummaryDto {

@@ -28,22 +28,44 @@ export class MealDetailsComponent {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
       this.dataSource = new MatTableDataSource<MealViewModel>(this.data);
+      this.expandedElements = this.data;
     });
   }
 
   private convertNutritionDetailsToViewModels(entries: NutritionDetailsGroupeByMeal[]): MealViewModel[] {
-    return entries.map(entry => {
-      return {
-        meal: this.translateMealType(entry.key.toString()),
-        entries: entry.entries,
+    const result: MealViewModel[] = Object.keys(MealType)
+      .filter(key => isNaN(Number(key)))
+      .map(key => ({
+        meal: this.translateMealType(key),
+        entries: [],
         summary: {
-          kcal: entry.entries.reduce((acc, curr) => acc + curr.calories, 0),
-          proteins: entry.entries.reduce((acc, curr) => acc + curr.proteins, 0),
-          carbohydrates: entry.entries.reduce((acc, curr) => acc + curr.carbohydrates, 0),
-          fats: entry.entries.reduce((acc, curr) => acc + curr.fats, 0),
+          kcal: 0,
+          proteins: 0,
+          carbohydrates: 0,
+          fats: 0,
         },
-      };
+      }));
+
+    const groupedEntries = entries.map(entry => ({
+      meal: this.translateMealType(entry.key.toString()),
+      entries: entry.entries,
+      summary: {
+        kcal: entry.entries.reduce((acc, curr) => acc + curr.calories, 0),
+        proteins: entry.entries.reduce((acc, curr) => acc + curr.proteins, 0),
+        carbohydrates: entry.entries.reduce((acc, curr) => acc + curr.carbohydrates, 0),
+        fats: entry.entries.reduce((acc, curr) => acc + curr.fats, 0),
+      },
+    }));
+
+    result.forEach(r => {
+      const entries = groupedEntries.find(e => e.meal === r.meal);
+      if (entries) {
+        r.entries = entries.entries;
+        r.summary = entries.summary;
+      }
     });
+
+    return result;
   }
 
   private translateMealType(mealType: string): string {

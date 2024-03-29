@@ -50,13 +50,15 @@ public static class NutritionDiaryConfig
             var searchProductsQueryHandler = scope.ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
             var addProductToDiaryCommandHandler = scope.ServiceProvider.GetRequiredService<AddProductToDiaryCommandHandler>();
             var superuserId = getUserIdQueryHandler.HandleAsync(new GetUserIdByEmailQuery(configuration.GetValue<string>("Administrator:Email"))).GetAwaiter().GetResult();
-            AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler).GetAwaiter().GetResult();
+            AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today).GetAwaiter().GetResult();
+            AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today.AddDays(-1)).GetAwaiter().GetResult();
         }
     }
 
     private static async Task AddNutritionEntries(string userId, 
         SearchProductsQueryHandler searchProducts,
-        AddProductToDiaryCommandHandler addProductToDiaryCommandHandler)
+        AddProductToDiaryCommandHandler addProductToDiaryCommandHandler,
+        DateTime day)
     {
         var products = (await searchProducts.HandleAsync(new SearchProductsQuery(""), CancellationToken.None)).Products;
         if (!products.Any())
@@ -68,7 +70,7 @@ public static class NutritionDiaryConfig
             Guid.NewGuid(),
             100,
             NutritionDiary.Storage.MealType.Breakfast,
-            DateTime.Now
+            day
             ), CancellationToken.None);
         await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
             Guid.Parse(userId),
@@ -76,7 +78,7 @@ public static class NutritionDiaryConfig
             Guid.NewGuid(),
             200,
             NutritionDiary.Storage.MealType.SecondBreakfast,
-            DateTime.Now
+            day
             ), CancellationToken.None);
         await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
             Guid.Parse(userId),
@@ -84,7 +86,7 @@ public static class NutritionDiaryConfig
             Guid.NewGuid(),
             300,
             NutritionDiary.Storage.MealType.Dinner,
-            DateTime.Now
+            day
             ), CancellationToken.None);
         await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
             Guid.Parse(userId),
@@ -92,7 +94,7 @@ public static class NutritionDiaryConfig
             Guid.NewGuid(),
             150,
             NutritionDiary.Storage.MealType.Dinner,
-            DateTime.Now
+            day
             ), CancellationToken.None);
 
 
