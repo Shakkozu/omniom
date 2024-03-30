@@ -22,7 +22,7 @@
 </mat-list>
 <mat-selection-list #selectedProductsList (selectionChange)="onSelectionChange($event)" *ngIf="selectionList">
 	<mat-card>
-		<ng-container *ngFor="let product of products$ | async; let last = last;">
+		<ng-container *ngFor="let product of productsWithSelectedProductsOnTop$ | async; let last = last;">
 			<div class="item-container py-2">
 				<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg">
 					<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>

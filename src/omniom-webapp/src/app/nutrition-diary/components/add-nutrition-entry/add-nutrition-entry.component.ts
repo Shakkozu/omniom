@@ -4,7 +4,7 @@ import { ProductDetailsDescription } from '../../../products/model';
 @Component({
   selector: 'app-add-nutrition-entry',
   template: `
-    <h2 mat-dialog-title>Dodaj produkt do posiłku</h2>
+    <h2 mat-dialog-title>Wybierz produkty które chcesz dodać</h2>
 <mat-dialog-content>
   <div class="w-full">
     <app-products-catalogue

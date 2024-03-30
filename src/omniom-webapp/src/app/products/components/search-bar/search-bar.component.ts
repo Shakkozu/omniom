@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-search-bar',

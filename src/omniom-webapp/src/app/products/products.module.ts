@@ -6,6 +6,8 @@ import { ProductsListComponent } from './components/products-list/products-list.
 import { ProductsListPageComponent } from './pages/products-list-page/products-list-page.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { ProductsCatalogueComponent } from './components/products-catalogue/products-catalogue.component';
+import { ProductsCatalogueStore } from './store/products-catalogue.store';
+import { NgxsModule } from '@ngxs/store';
 
 
 @NgModule({
@@ -16,6 +18,9 @@ import { ProductsCatalogueComponent } from './components/products-catalogue/prod
     ProductsCatalogueComponent,
   ],
   imports: [
+    NgxsModule.forFeature([
+      ProductsCatalogueStore
+    ]),
     MaterialModule,
     CommonModule,
     ProductsRoutingModule,
