@@ -20,18 +20,35 @@
 		</ng-container>
 	</mat-card>
 </mat-list>
-<mat-selection-list #selectedProductsList (selectionChange)="onSelectionChange($event)" *ngIf="selectionList">
-	<mat-card>
-		<ng-container *ngFor="let product of productsWithSelectedProductsOnTop$ | async; let last = last;">
-			<div class="item-container py-2">
-				<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg">
-					<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
-					<span matListItemLine class="text-label-large">{{product.kcalPer100G}} kcal / 100g</span>
-				</mat-list-option>
-				<div class="w-11/12 mx-auto" *ngIf="!last">
-					<mat-divider></mat-divider>
+<div class="selection-container" *ngIf="selectionList">
+	<mat-selection-list #selectedProductsList (selectionChange)="productDeselected($event)" >
+		<mat-card>
+			<ng-container *ngFor="let product of selectedProducts$ | async; let last = last;">
+				<div class="item-container py-2">
+					<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg" selected>
+						<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
+						<span matListItemLine class="text-label-large">{{product.kcalPer100G}} kcal / 100g</span>
+					</mat-list-option>
+					<div class="w-11/12 mx-auto" *ngIf="!last">
+						<mat-divider></mat-divider>
+					</div>
 				</div>
-			</div>
-		</ng-container>
-	</mat-card>
-</mat-selection-list>
+			</ng-container>
+		</mat-card>
+	</mat-selection-list>
+	<mat-selection-list #notSelectedProductsList (selectionChange)="productSelected($event)">
+		<mat-card>
+			<ng-container *ngFor="let product of notSelectedProducts$ | async; let last = last;">
+				<div class="item-container py-2">
+					<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg">
+						<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
+						<span matListItemLine class="text-label-large">{{product.kcalPer100G}} kcal / 100g</span>
+					</mat-list-option>
+					<div class="w-11/12 mx-auto" *ngIf="!last">
+						<mat-divider></mat-divider>
+					</div>
+				</div>
+			</ng-container>
+		</mat-card>
+	</mat-selection-list>
+</div>

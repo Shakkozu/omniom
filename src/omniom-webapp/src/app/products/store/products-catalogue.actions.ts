@@ -1,16 +1,22 @@
 import { ProductDetailsDescription } from "../model";
 
 export enum ProductsCatalogueActionTypes {
-	CatalogueSelectionChanged = '[Products Catalogue] Catalogue selection changed',
 	FetchProducts = '[Products Catalogue] Fetch products',
 	FetchProductsSuccess = '[Products Catalogue] Fetch products success',
 	FetchProductsFailure = '[Products Catalogue] Fetch products failure',
+	ProductSelected = '[Products Catalogue] Product selected',
+	ProductDeselected = '[Products Catalogue] Product deselected',
 }
 
-export class CatalogueSelectionChanged {
-	static readonly type = ProductsCatalogueActionTypes.CatalogueSelectionChanged;
+export class ProductSelected {
+	static readonly type = ProductsCatalogueActionTypes.ProductSelected;
 
-	constructor (public selectedProductsIds: string[]) { }
+	constructor(public productId: string) {}
+}
+export class ProductDeselected {
+	static readonly type = ProductsCatalogueActionTypes.ProductDeselected;
+
+	constructor(public productId: string) {}
 }
 
 export class FetchProducts {

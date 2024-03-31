@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { ProductDetailsDescription } from '../../model';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { Store } from '@ngxs/store';
-import { FetchProducts } from '../../store/products-catalogue.actions';
+import { ProductDeselected, ProductSelected } from '../../store/products-catalogue.actions';
 import { ProductsCatalogueStore } from '../../store/products-catalogue.store';
 
 @Component({
@@ -14,21 +14,34 @@ export class ProductsListComponent {
   @Input() addButtonEnabled: boolean = false;
   @Input() selectionList: boolean = false;
   @ViewChild(MatSelectionList) selectedProductsList!: MatSelectionList;
-  public products$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.products);
-  public productsWithSelectedProductsOnTop$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.productsWithSelectedProductsOnTop);
+  @ViewChild(MatSelectionList) notSelectedProductsList!: MatSelectionList;
+  public selectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.selectedProducts);
+  public notSelectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.productsWithoutSelectedProducts);
   
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
-  @Output() catalogueSelectionChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
 
-  constructor (private store: Store) {
-  }
+  constructor (private store: Store) {}
   
   addProduct(product: ProductDetailsDescription) {
     this.addProductButtonClicked.emit(product);
   }
 
-  onSelectionChange($event: MatSelectionListChange) {
-    this.catalogueSelectionChanged.emit(this.selectedProductsList.selectedOptions.selected.map(option => option.value));
+  productDeselected($event: MatSelectionListChange) {
+    const productId = $event.options[0].value;
+    const selected = $event.options[0].selected;
+    if(selected)
+      return;
+
+    this.store.dispatch(new ProductDeselected(productId));
+  }
+
+  productSelected($event: MatSelectionListChange) {
+    const productId = $event.options[0].value;
+    const selected = $event.options[0].selected;
+    if(!selected)
+      return;
+
+    this.store.dispatch(new ProductSelected(productId));
   }
 }
 

@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { ProductDetailsDescription } from "../model";
 import { Injectable } from "@angular/core";
 import { ProductsRestService, SearchProductsResponse } from "../products-rest.service";
-import { CatalogueSelectionChanged, FetchProducts, FetchProductsFailure, FetchProductsSuccess, SearchPhraseUpdated } from "./products-catalogue.actions";
+import { FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected } from "./products-catalogue.actions";
 
 export interface ProductsCatalogueStateModel {
 	selectedProducts: ProductDetailsDescription[];
@@ -31,32 +31,31 @@ export class ProductsCatalogueStore {
 	}
 
 	@Selector()
+	static productsWithoutSelectedProducts(state: ProductsCatalogueStateModel): ProductDetailsDescription[] {
+		const selectedProductsIds = state.selectedProducts.map(p => p.guid);
+		return state.products.filter(p => !selectedProductsIds.includes(p.guid));
+	}
+
+	@Selector()
 	static products(state: ProductsCatalogueStateModel) {
 		return state.products;
 	}
 
-	@Selector()
-	static productsWithSelectedProductsOnTop(state: ProductsCatalogueStateModel) {
-		const selectedProducts = state.selectedProducts;
-		const products = state.products;
-		const selectedProductsGuids = selectedProducts.map(product => product.guid);
-		const productsWithoutSelectedProducts = products.filter(product => !selectedProductsGuids.includes(product.guid));
-		const productsWithSelectedProductsOnTop = selectedProducts.concat(productsWithoutSelectedProducts);
 
-		return productsWithSelectedProductsOnTop;
-
-	}
-
-	@Action(CatalogueSelectionChanged)
-	catalogueSelectionChanged(ctx: StateContext<ProductsCatalogueStateModel>, action: CatalogueSelectionChanged) {
-		const products = ctx.getState().products;
-		const selectedProducts = products
-			.filter(product => action.selectedProductsIds.includes(product.guid))
-			.sort((a, b) => a.name.localeCompare(b.name));
-		
-
+	@Action(ProductSelected)
+	productSelected(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductSelected) {
+		const selectedProduct = ctx.getState().products.find(p => p.guid == action.productId);
+		if(!selectedProduct)
+			return;
 		ctx.patchState({
-			selectedProducts: selectedProducts,
+			selectedProducts: [...ctx.getState().selectedProducts, selectedProduct]
+		});
+	}
+	@Action(ProductDeselected)
+	productDeselected(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductSelected) {
+		const selectedProducts = ctx.getState().selectedProducts.filter(p => p.guid !== action.productId);
+		ctx.patchState({
+			selectedProducts: selectedProducts
 		});
 	}
 
