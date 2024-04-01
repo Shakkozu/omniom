@@ -15,6 +15,7 @@ export class ProductsListComponent {
   @Input() selectionList: boolean = false;
   @ViewChild(MatSelectionList) selectedProductsList!: MatSelectionList;
   @ViewChild(MatSelectionList) notSelectedProductsList!: MatSelectionList;
+  public products$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.products);
   public selectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.selectedProducts);
   public notSelectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.productsWithoutSelectedProducts);
   
