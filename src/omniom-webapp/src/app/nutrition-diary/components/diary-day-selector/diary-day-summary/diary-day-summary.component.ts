@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DaySummary } from '../../../model';
 import { Store } from '@ngxs/store';
 import { SummaryDaySelected } from '../../../store/nutrition-diary.actions';

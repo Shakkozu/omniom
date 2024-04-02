@@ -45,4 +45,3 @@ export class ProductsListComponent {
     this.store.dispatch(new ProductSelected(productId));
   }
 }
-
