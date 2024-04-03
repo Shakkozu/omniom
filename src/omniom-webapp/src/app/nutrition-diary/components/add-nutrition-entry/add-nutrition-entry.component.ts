@@ -5,23 +5,26 @@ import { ProductDetailsDescription } from '../../../products/model';
   selector: 'app-add-nutrition-entry',
   template: `
     <h2 mat-dialog-title>Wybierz produkty które chcesz dodać</h2>
-<mat-dialog-content>
-  <div class="w-full">
-    <app-products-catalogue
-     (catalogueSelectionChanged)="onProductsSelectionChanged($event)"
-      [selectionList]="true"
-     ></app-products-catalogue>
-  </div>
-</mat-dialog-content>
-<mat-dialog-actions>
-  <button mat-button mat-dialog-close>No</button>
-  <button mat-button mat-dialog-close cdkFocusInitial>Ok</button>
-</mat-dialog-actions>
-`,
+    <mat-dialog-content>
+      <div class="w-full">
+        <app-products-catalogue
+          [selectionList]="true">
+        </app-products-catalogue>
+      </div>
+    </mat-dialog-content>
+    <div class="me-4">
+
+      <mat-dialog-actions align="end">
+          <button mat-button  [mat-dialog-close]="true" >Anuluj</button>
+          <button mat-button color="primary" (click)="onProductsConfirmed()" cdkFocusInitial>Dalej</button>
+      </mat-dialog-actions>
+    </div>
+  `,
   styleUrl: './add-nutrition-entry.component.scss'
 })
 export class AddNutritionEntryComponent {
-  
-  onProductsSelectionChanged($event: string[]) {
-    }
+
+  onProductsConfirmed() {
+    // handle event
+  }
 }

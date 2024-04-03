@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable, of, debounceTime, switchMap, map, Subject } from 'rxjs';
+import { Observable, of, debounceTime, Subject } from 'rxjs';
 import { ProductDetailsDescription } from '../../model';
-import { ProductsRestService, SearchProductsResponse } from '../../products-rest.service';
 import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
-import { ProductsCatalogueStore } from '../../store/products-catalogue.store';
 
 @Component({
   selector: 'app-products-catalogue',
@@ -24,7 +22,6 @@ export class ProductsCatalogueComponent implements OnInit {
   @Input() addButtonEnabled: boolean = false;
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
-  @Output() catalogueSelectionChanged: EventEmitter<string[]> = new EventEmitter<string[]>();
 
   constructor (private store: Store) {
     this.store.dispatch(new FetchProducts(''));
