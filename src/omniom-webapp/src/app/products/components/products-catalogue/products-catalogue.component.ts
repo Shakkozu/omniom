@@ -3,6 +3,7 @@ import { Observable, of, debounceTime, Subject } from 'rxjs';
 import { ProductDetailsDescription } from '../../model';
 import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
+import { ProductListChangedEvent } from '../products-list/products-list.component';
 
 @Component({
   selector: 'app-products-catalogue',
@@ -11,6 +12,7 @@ import { FetchProducts } from '../../store/products-catalogue.actions';
 	<app-products-list
    [addButtonEnabled]="addButtonEnabled"
    (addProductButtonClicked)="addProductButtonClicked.emit($event)"
+   (productListChanged)="productListChanged.emit($event)"
    [selectionList]="selectionList"
    ></app-products-list>`,
 })
@@ -22,6 +24,7 @@ export class ProductsCatalogueComponent implements OnInit {
   @Input() addButtonEnabled: boolean = false;
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
+  @Output() productListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
 
   constructor (private store: Store) {
     this.store.dispatch(new FetchProducts(''));
