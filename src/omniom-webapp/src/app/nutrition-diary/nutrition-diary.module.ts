@@ -10,6 +10,7 @@ import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-
 import { MealDetailsComponent } from "./components/meal-details/meal-details.component";
 import { AddNutritionEntryComponent } from "./components/add-nutrition-entry/add-nutrition-entry.component";
 import { ProductsModule } from "../products/products.module";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 @NgModule({
 	declarations: [
@@ -25,6 +26,8 @@ import { ProductsModule } from "../products/products.module";
 		]),
 		MaterialModule,
 		CommonModule,
+		FormsModule,
+		ReactiveFormsModule,
 		NutritionDiaryRoutingModule,
 		ProductsModule,
 	],

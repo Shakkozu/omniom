@@ -1,4 +1,3 @@
-import { Action } from '@ngxs/store';
 import { DaySummary } from '../model';
 
 export enum NutritionDiaryActionTypes {
@@ -6,7 +5,7 @@ export enum NutritionDiaryActionTypes {
 	SummaryDaySelected = '[Nutrition Diary] Summary day selected',
 	FetchNutritionSummaries = '[Nutrition Diary] Fetch Nutrition Summaries',
 	FetchNutritionSummariesSuccess = '[Nutrition Diary] Fetch Nutrition Summaries Success',
-	FetchNutritionSummariesFailure = '[Nutrition Diary] Fetch Nutrition Summaries Failure',
+	FetchNutritionSummariesFailure = '[Nutrition Diary] Fetch Nutrition Summaries Failure'
 }
 
 export class FetchNutritionSummaries {

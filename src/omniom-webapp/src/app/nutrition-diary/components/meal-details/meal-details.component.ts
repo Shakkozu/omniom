@@ -5,6 +5,8 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Store } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { AddNutritionEntry } from '../../store/nutrition-diary.actions';
+import { MatDialog } from '@angular/material/dialog';
+import { AddNutritionEntryComponent } from '../add-nutrition-entry/add-nutrition-entry.component';
 
 @Component({
   selector: 'app-meal-details',
@@ -25,7 +27,8 @@ export class MealDetailsComponent {
   public data: MealViewModel[] = [];
   public expandedElements: MealViewModel[] = [];
   
-  constructor (private store: Store) {
+  constructor (private store: Store,
+  private matDialog: MatDialog) {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
       this.dataSource = new MatTableDataSource<MealViewModel>(this.data);
@@ -34,7 +37,11 @@ export class MealDetailsComponent {
   }
 
   public addNutritionEntryButtonClicked(mealType: MealType): void {
-    this.store.dispatch(new AddNutritionEntry(mealType));
+    this.matDialog.open(AddNutritionEntryComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: { mealType: mealType }
+    });
   }
 
   private convertNutritionDetailsToViewModels(entries: NutritionDetailsGroupeByMeal[]): MealViewModel[] {
