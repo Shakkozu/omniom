@@ -7,11 +7,12 @@ using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Tests.Products;
-using Omniom.Domain.NutritionDiary.AddProductToDiary;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Tests.Auth;
+using Omniom.Domain.NutritionDiary.AddNutritionEntries;
+using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Tests.Shared;
 
@@ -95,7 +96,7 @@ internal class OmniomApp : WebApplicationFactory<Program>
     internal ProductsTestsFixture ProductsTestsFixture  => RequestScope().ServiceProvider.GetRequiredService<ProductsTestsFixture>();
     internal AuthFixture AuthFixture => RequestScope().ServiceProvider.GetRequiredService<AuthFixture>();
 
-    internal AddProductToDiaryCommandHandler AddProductToDiaryCommandHandler => RequestScope().ServiceProvider.GetRequiredService<AddProductToDiaryCommandHandler>();
+    internal ICommandHandler<AddNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<AddNutritionEntriesCommand>>();
     internal ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ModifyProductPortionCommandHandler>();
     internal GetNutritionDayQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetNutritionDayQueryHandler>();
     internal GetShortSummaryForDaysQueryHandler GetShortSummaryForDaysQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetShortSummaryForDaysQueryHandler>();

@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Domain.ProductsCatalogue.FindById;
 public record FindByIdQuery(Guid Guid);
+public record FindMultipleByIdQuery(IEnumerable<Guid> Guids);
 
-public class FindProductByIdQueryHandler
+public class FindProductByIdQueryHandler : IQueryHandler<FindByIdQuery, ProductDetailsDescription>, IQueryHandler<FindMultipleByIdQuery, IEnumerable<ProductDetailsDescription>>
 {
     private readonly ProductsCatalogueDbContext _dbContext;
 
@@ -33,5 +35,28 @@ public class FindProductByIdQueryHandler
             product.SaturatedFatValueG,
             product.Brands,
             product.CategoriesTags);
+    }
+
+    public async Task<IEnumerable<ProductDetailsDescription>> HandleAsync(FindMultipleByIdQuery query, CancellationToken ct)
+    {
+        return (await _dbContext.Products
+            .Where(product => query.Guids.Contains(product.Guid))
+            .ToListAsync(ct))
+            .Select(product => new ProductDetailsDescription(
+                product.Guid,
+                product.Code,
+                product.ProductNamePl,
+                product.EnergyKcal,
+                product.FatValueG,
+                product.CarbohydratesValueG,
+                product.ProteinsValueG,
+                product.ServingSizeG,
+                product.QuantityG,
+                product.SugarsValueG,
+                product.FiberValueG,
+                product.SaltValueG,
+                product.SaturatedFatValueG,
+                product.Brands,
+                product.CategoriesTags));
     }
 }

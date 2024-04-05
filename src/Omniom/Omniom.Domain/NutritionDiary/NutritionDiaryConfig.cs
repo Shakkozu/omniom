@@ -4,29 +4,24 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Auth.GetUserIdByEmail;
-using Omniom.Domain.Auth.RegisterUser;
-using Omniom.Domain.NutritionDiary.AddProductToDiary;
+using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetNutritionDay;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Domain.NutritionDiary;
 public static class NutritionDiaryConfig
 {
     public static void AddNutritionDiary(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddTransient<AddProductToDiaryCommandHandler>();
         services.AddTransient<ModifyProductPortionCommandHandler>();
         services.AddTransient<GetNutritionDayQueryHandler>();
         services.AddTransient<GetShortSummaryForDaysQueryHandler>();
+        services.AddTransient<ICommandHandler<AddNutritionEntriesCommand>, AddNutritionEntriesCommandHandler>();
 
         services.AddDbContext<NutritionDiaryDbContext>(options =>
         {
@@ -38,6 +33,7 @@ public static class NutritionDiaryConfig
     {
         endpointRouteBuilder.MapGetShortSummaryEndpoint();
         endpointRouteBuilder.MapGetNutritionDayDetails();
+        endpointRouteBuilder.MapAddNutritionEntriesEndpoint();
 
         return endpointRouteBuilder;
     }
@@ -48,55 +44,43 @@ public static class NutritionDiaryConfig
         {
             var getUserIdQueryHandler = scope.ServiceProvider.GetRequiredService<GetUserIdByEmailHandlerQueryHandler>();
             var searchProductsQueryHandler = scope.ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
-            var addProductToDiaryCommandHandler = scope.ServiceProvider.GetRequiredService<AddProductToDiaryCommandHandler>();
+            var addProductToDiaryCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<AddNutritionEntriesCommand>>();
             var superuserId = getUserIdQueryHandler.HandleAsync(new GetUserIdByEmailQuery(configuration.GetValue<string>("Administrator:Email"))).GetAwaiter().GetResult();
             AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today).GetAwaiter().GetResult();
             AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today.AddDays(-1)).GetAwaiter().GetResult();
         }
     }
 
-    private static async Task AddNutritionEntries(string userId, 
+    private static async Task AddNutritionEntries(string userId,
         SearchProductsQueryHandler searchProducts,
-        AddProductToDiaryCommandHandler addProductToDiaryCommandHandler,
+        ICommandHandler<AddNutritionEntriesCommand> addNutritionEntriesCommandHandler,
         DateTime day)
     {
         var products = (await searchProducts.HandleAsync(new SearchProductsQuery(""), CancellationToken.None)).Products;
         if (!products.Any())
             return;
+        var command = new AddNutritionEntriesCommand(
+                       new[]
+                       {
+                new MealProductEntryDto(products.First().Guid, 100),
+                new MealProductEntryDto(products.Last().Guid, 200)
+            },
+            MealType.Breakfast,
+            day,
+            Guid.Parse(userId)
+        );
+        var command2 = new AddNutritionEntriesCommand(
+                       new[]
+                       {
+                new MealProductEntryDto(products.First().Guid, 250),
+                new MealProductEntryDto(products.Last().Guid, 300)
+            },
+            MealType.Supper,
+            day,
+            Guid.Parse(userId)
+        );
 
-        await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
-            Guid.Parse(userId),
-            products.First().Guid,
-            Guid.NewGuid(),
-            100,
-            NutritionDiary.Storage.MealType.Breakfast,
-            day
-            ), CancellationToken.None);
-        await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
-            Guid.Parse(userId),
-            products.First().Guid,
-            Guid.NewGuid(),
-            200,
-            NutritionDiary.Storage.MealType.SecondBreakfast,
-            day
-            ), CancellationToken.None);
-        await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
-            Guid.Parse(userId),
-            products.First().Guid,
-            Guid.NewGuid(),
-            300,
-            NutritionDiary.Storage.MealType.Dinner,
-            day
-            ), CancellationToken.None);
-        await addProductToDiaryCommandHandler.HandleAsync(new AddProductToDiaryCommand(
-            Guid.Parse(userId),
-            products.Last().Guid,
-            Guid.NewGuid(),
-            150,
-            NutritionDiary.Storage.MealType.Dinner,
-            day
-            ), CancellationToken.None);
-
-
+        await addNutritionEntriesCommandHandler.HandleAsync(command, CancellationToken.None);
+        await addNutritionEntriesCommandHandler.HandleAsync(command2, CancellationToken.None);
     }
 }
