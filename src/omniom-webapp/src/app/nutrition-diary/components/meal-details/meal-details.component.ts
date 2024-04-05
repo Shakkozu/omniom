@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MealType, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../../model';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { Store } from '@ngxs/store';
+import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
-import { AddNutritionEntry } from '../../store/nutrition-diary.actions';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddNutritionEntryComponent } from '../add-nutrition-entry/add-nutrition-entry.component';
+import { AddNutritionEntriesSuccess } from '../../store/nutrition-diary.actions';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-meal-details',
@@ -20,24 +21,35 @@ import { AddNutritionEntryComponent } from '../add-nutrition-entry/add-nutrition
     ]),
   ],
 })
-export class MealDetailsComponent {
+export class MealDetailsComponent implements OnDestroy {
   public dataSource = new MatTableDataSource<MealViewModel>();
   public displayedColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats', 'actions'];
   public detailsRowColumns: string[] = ['productName', 'calories', 'proteins', 'carbohydrates', 'fats', 'actions'];
   public data: MealViewModel[] = [];
   public expandedElements: MealViewModel[] = [];
+  private addNutritionDialog: MatDialogRef<AddNutritionEntryComponent> | undefined;
+  private destroy$ = new Subject<void>();
   
-  constructor (private store: Store,
-  private matDialog: MatDialog) {
+  constructor(private store: Store, private actions$: Actions, private matDialog: MatDialog) {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
       this.dataSource = new MatTableDataSource<MealViewModel>(this.data);
       this.expandedElements = this.data;
+
+      this.actions$.pipe(
+        ofActionDispatched(AddNutritionEntriesSuccess),
+        takeUntil(this.destroy$)
+      ).subscribe(() => this.addNutritionDialog?.close());
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   public addNutritionEntryButtonClicked(mealType: MealType): void {
-    this.matDialog.open(AddNutritionEntryComponent, {
+    this.addNutritionDialog = this.matDialog.open(AddNutritionEntryComponent, {
       width: '70vw',
       height: '80vh',
       data: { mealType: mealType }

@@ -1,11 +1,31 @@
-import { DaySummary } from '../model';
+import { DaySummary, MealProductEntry, MealType } from '../model';
 
 export enum NutritionDiaryActionTypes {
-	AddNutritionEntry = '[Nutrition Diary] Add Nutrition Entry',
+	AddNutritionEntries = '[Nutrition Diary] Add Nutrition Entries',
+	AddNutritionEntriesSuccess = '[Nutrition Diary] Add Nutrition Entries Success',
+	AddNutritionEntriesFailure = '[Nutrition Diary] Add Nutrition Entries Failure',
 	SummaryDaySelected = '[Nutrition Diary] Summary day selected',
 	FetchNutritionSummaries = '[Nutrition Diary] Fetch Nutrition Summaries',
 	FetchNutritionSummariesSuccess = '[Nutrition Diary] Fetch Nutrition Summaries Success',
 	FetchNutritionSummariesFailure = '[Nutrition Diary] Fetch Nutrition Summaries Failure'
+}
+
+export class AddNutritionEntries {
+	static readonly type = NutritionDiaryActionTypes.AddNutritionEntries;
+
+	constructor (public products: MealProductEntry[],
+		public mealType: MealType,
+		public selectedDay: Date) { }
+}
+
+export class AddNutritionEntriesSuccess {
+	static readonly type = NutritionDiaryActionTypes.AddNutritionEntriesSuccess;
+}
+
+export class AddNutritionEntriesFailure {
+	static readonly type = NutritionDiaryActionTypes.AddNutritionEntriesFailure;
+
+	constructor (public error: string) { }
 }
 
 export class FetchNutritionSummaries {
@@ -33,15 +53,8 @@ export class SummaryDaySelected {
 }
 
 export type NutritionDiaryActions =
-	| AddNutritionEntry
+	| AddNutritionEntries
 	| SummaryDaySelected
 	| FetchNutritionSummaries
 	| FetchNutritionSummariesSuccess
 	| FetchNutritionSummariesFailure;
-
-
-export class AddNutritionEntry {
-	static readonly type = NutritionDiaryActionTypes.AddNutritionEntry;
-
-	constructor(public entry: any) {}
-}

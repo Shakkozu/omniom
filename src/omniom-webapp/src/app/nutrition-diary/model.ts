@@ -41,3 +41,8 @@ export interface NutritionDetailsGroupeByMeal {
 	key: MealType;
 	entries: NutritionDiaryEntry[];
 }
+
+export interface MealProductEntry {
+	productId: string;
+	portionSize: number;
+}

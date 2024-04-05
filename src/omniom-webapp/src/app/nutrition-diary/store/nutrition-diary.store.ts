@@ -2,7 +2,7 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { NutritionDiaryService } from '../nutrition-diary-rest.service';
-import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected } from './nutrition-diary.actions';
+import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected, AddNutritionEntries, AddNutritionEntriesSuccess, AddNutritionEntriesFailure } from './nutrition-diary.actions';
 import { DaySummary, MealType, NutritionDayDetails, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -36,6 +36,29 @@ export class NutritionDiaryStore {
 	@Selector()
 	static loading(state: NutritionDiaryStateModel) {
 		return state.loading;
+	}
+
+	@Action(AddNutritionEntries)
+	addNutritionEntries(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntries) {
+		ctx.patchState({
+			loading: true
+		});
+		return this.nutritionDiaryService.addNutritionEntries(action.products, action.mealType, action.selectedDay)
+			.subscribe({
+				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess()),
+				error: error => ctx.dispatch(new AddNutritionEntriesFailure(error))
+			});
+	}
+
+	@Action(AddNutritionEntriesSuccess)
+	addNutritionEntriesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesSuccess) {
+		ctx.patchState({ loading: false });
+	}
+
+	@Action(AddNutritionEntriesFailure)
+	addNutritionEntriesFailure(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesFailure) {
+		console.error(action.error);
+		ctx.patchState({ loading: false });
 	}
 
 	@Action(FetchNutritionSummaries)

@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
 import { ProductsCatalogueStore } from '../../../products/store/products-catalogue.store';
 import { ProductListChangedEvent } from '../../../products/components/products-list/products-list.component';
+import { MealType } from '../../model';
+import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
+import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 
 
 @Component({
   selector: 'app-add-nutrition-entry',
   template: `
+    <mat-progress-bar *ngIf="loading$ | async" mode="indeterminate"></mat-progress-bar>
     <h2 mat-dialog-title>Wybierz produkty które chcesz dodać</h2>
     <mat-dialog-content>
       <div class="flex flex-row">
@@ -29,7 +33,7 @@ import { ProductListChangedEvent } from '../../../products/components/products-l
             <div class="w-1/3">
               <mat-form-field class="mt-2">
                 <mat-label>Gramatura</mat-label>
-                <input matInput min="0" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams">
+                <input matInput min="0" [readonly]="loading$ | async" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams">
                 <span matTextSuffix>g</span>
               </mat-form-field>
             </div>
@@ -41,18 +45,18 @@ import { ProductListChangedEvent } from '../../../products/components/products-l
   </mat-dialog-content>
     <div class="me-4 mt-4">
       <mat-dialog-actions align="end">
+        <button mat-button mat-raised-button color="primary" [disabled]="loading$ | async" (click)="onProductsConfirmed()" cdkFocusInitial>Zatwierdź</button>
         <button mat-button  [mat-dialog-close]="true" >Anuluj</button>
-        <button mat-button [mat-dialog-close]="true" color="primary" (click)="onProductsConfirmed()" cdkFocusInitial>Dalej</button>
     </mat-dialog-actions>
   </div>
   `,
-  styleUrl: './add-nutrition-entry.component.scss'
 })
 export class AddNutritionEntryComponent {
   public selectedProducts$ = this.store.select(ProductsCatalogueStore.selectedProducts);
+  public loading$ = this.store.select(NutritionDiaryStore.loading);
   public products: MealEntry[] = [];
-  constructor (private store: Store, private dialogRef: MatDialogRef<AddNutritionEntryComponent>) {
-    console.log(this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts));
+  constructor (private store: Store,
+  @Inject(MAT_DIALOG_DATA) public data: { mealType: MealType }) {
     this.products = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).map((product) =>
       new MealEntry(product.name,
         product.guid,
@@ -64,7 +68,14 @@ export class AddNutritionEntryComponent {
   }
 
   onProductsConfirmed() {
+    const entries = this.products.map(p => ({ productId: p.guid, portionSize: p.portionInGrams }));
+    const selectedDay = this.store.selectSnapshot(NutritionDiaryStore.selectedSummary)?.nutritionDay;
+    if (selectedDay === undefined) {
+      console.error('Selected day is undefined');
+      return;
+    }
 
+    this.store.dispatch(new AddNutritionEntries(entries, this.data.mealType, selectedDay));
   }
 
   onProductListModified(event: ProductListChangedEvent) {

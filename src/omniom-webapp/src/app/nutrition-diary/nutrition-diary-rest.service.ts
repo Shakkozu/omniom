@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DaySummaryDto, NutritionDayDetails } from './model';
+import { DaySummaryDto, MealProductEntry, MealType, NutritionDayDetails } from './model';
 import { environment } from '../../environments/environment';
 import { DatePipe } from '@angular/common';
 
@@ -16,9 +16,18 @@ export class NutritionDiaryService {
 		const url = `${ environment.apiUrl }/api/nutrition-diary/days-summary?dateFrom=${ start }&dateTo=${ end }`;
 		return this.http.get<DaySummaryDto[]>(url);
 	}
-
+	
 	fetchDayDetails(nutritionDay: Date): Observable<NutritionDayDetails[]> {
 		const url = `${ environment.apiUrl }/api/nutrition-diary/details?nutritionDay=${ this.datePipe.transform(nutritionDay, 'yyyy-MM-dd') }`;
 		return this.http.get<NutritionDayDetails[]>(url);
+	}
+
+	addNutritionEntries(products: MealProductEntry[], mealType: MealType, selectedDay: Date): Observable<void> {
+		const url = `${ environment.apiUrl }/api/nutrition-diary/entries`;
+		return this.http.post<void>(url, {
+			products: products,
+			mealType: mealType,
+			selectedDay: selectedDay
+		});
 	}
 }
