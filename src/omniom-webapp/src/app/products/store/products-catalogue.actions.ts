@@ -5,6 +5,7 @@ export enum ProductsCatalogueActionTypes {
 	FetchProductsSuccess = '[Products Catalogue] Fetch products success',
 	FetchProductsFailure = '[Products Catalogue] Fetch products failure',
 	ProductSelected = '[Products Catalogue] Product selected',
+	ClearProductsSelection = '[Products Catalogue] Product selection cleared',
 	ProductDeselected = '[Products Catalogue] Product deselected',
 }
 
@@ -13,6 +14,13 @@ export class ProductSelected {
 
 	constructor(public productId: string) {}
 }
+
+export class ClearProductsSelection {
+	static readonly type = ProductsCatalogueActionTypes.ClearProductsSelection;
+
+	constructor() {}
+}
+
 export class ProductDeselected {
 	static readonly type = ProductsCatalogueActionTypes.ProductDeselected;
 

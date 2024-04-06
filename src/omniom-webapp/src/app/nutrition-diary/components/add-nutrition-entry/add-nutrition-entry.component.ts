@@ -6,6 +6,7 @@ import { ProductListChangedEvent } from '../../../products/components/products-l
 import { MealType } from '../../model';
 import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
+import { ClearProductsSelection, ProductDeselected } from '../../../products/store/products-catalogue.actions';
 
 
 @Component({
@@ -75,7 +76,9 @@ export class AddNutritionEntryComponent {
       return;
     }
 
-    this.store.dispatch(new AddNutritionEntries(entries, this.data.mealType, selectedDay));
+    this.store.dispatch(new AddNutritionEntries(entries, this.data.mealType, selectedDay)).subscribe(_ => {
+      this.store.dispatch(new ClearProductsSelection());
+    });
   }
 
   onProductListModified(event: ProductListChangedEvent) {

@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { ProductDetailsDescription } from "../model";
 import { Injectable } from "@angular/core";
 import { ProductsRestService, SearchProductsResponse } from "../products-rest.service";
-import { FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected } from "./products-catalogue.actions";
+import { ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected } from "./products-catalogue.actions";
 
 export interface ProductsCatalogueStateModel {
 	selectedProducts: ProductDetailsDescription[];
@@ -51,11 +51,19 @@ export class ProductsCatalogueStore {
 			selectedProducts: [...ctx.getState().selectedProducts, selectedProduct]
 		});
 	}
+
 	@Action(ProductDeselected)
 	productDeselected(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductSelected) {
 		const selectedProducts = ctx.getState().selectedProducts.filter(p => p.guid !== action.productId);
 		ctx.patchState({
 			selectedProducts: selectedProducts
+		});
+	}
+	
+	@Action(ClearProductsSelection)
+	clearProductsSelection(ctx: StateContext<ProductsCatalogueStateModel>, action: ClearProductsSelection) {
+		ctx.patchState({
+			selectedProducts: []
 		});
 	}
 

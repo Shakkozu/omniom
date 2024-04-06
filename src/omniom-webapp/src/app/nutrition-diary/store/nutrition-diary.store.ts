@@ -26,8 +26,8 @@ export interface NutritionDiaryStateModel {
 })
 @Injectable()
 export class NutritionDiaryStore {
-	constructor(private nutritionDiaryService: NutritionDiaryService) { }
-		
+	constructor (private nutritionDiaryService: NutritionDiaryService) { }
+
 	@Selector()
 	static daySummaries(state: NutritionDiaryStateModel) {
 		return state.daySummaries;
@@ -38,6 +38,7 @@ export class NutritionDiaryStore {
 		return state.loading;
 	}
 
+
 	@Action(AddNutritionEntries)
 	addNutritionEntries(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntries) {
 		ctx.patchState({
@@ -45,15 +46,31 @@ export class NutritionDiaryStore {
 		});
 		return this.nutritionDiaryService.addNutritionEntries(action.products, action.mealType, action.selectedDay)
 			.subscribe({
-				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess()),
+				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess(action.selectedDay)),
 				error: error => ctx.dispatch(new AddNutritionEntriesFailure(error))
 			});
 	}
 
 	@Action(AddNutritionEntriesSuccess)
 	addNutritionEntriesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesSuccess) {
-		ctx.patchState({ loading: false });
+		this.nutritionDiaryService.fetchDaySummaries(action.date, action.date).subscribe(summaries => {
+			let stateNutritionDaySummaries = ctx.getState().daySummaries;
+			let modifiedSummary = ctx.getState().daySummaries.findIndex(s => s.nutritionDay === action.date);
+			stateNutritionDaySummaries[modifiedSummary].guid = uuidv4();
+			if (modifiedSummary >= 0) {
+				stateNutritionDaySummaries[modifiedSummary] = {
+					...summaries[0],
+					guid: uuidv4(),
+				};
+			}
+			ctx.dispatch(new SummaryDaySelected(stateNutritionDaySummaries[modifiedSummary]));
+			ctx.patchState({
+				daySummaries: stateNutritionDaySummaries,
+				loading: false,
+			});
+		});
 	}
+
 
 	@Action(AddNutritionEntriesFailure)
 	addNutritionEntriesFailure(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesFailure) {
@@ -133,7 +150,7 @@ export class NutritionDiaryStore {
 
 		return result;
 	}
-		
+
 	@Selector()
 	static nutritionDetailsLoading(state: NutritionDiaryStateModel) {
 		return state.nutritionDetailsLoading;
