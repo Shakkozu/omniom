@@ -24,6 +24,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class MealDetailsComponent implements OnDestroy {
   public dataSource = new MatTableDataSource<MealViewModel>();
   public displayedColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats', 'actions'];
+  public footerColumns: string[] = ['mealName','totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats'];
   public detailsRowColumns: string[] = ['productName', 'calories', 'proteins', 'carbohydrates', 'fats', 'actions'];
   public data: MealViewModel[] = [];
   public expandedElements: MealViewModel[] = [];
@@ -34,7 +35,6 @@ export class MealDetailsComponent implements OnDestroy {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
       this.dataSource = new MatTableDataSource<MealViewModel>(this.data);
-      this.expandedElements = this.data;
 
       this.actions$.pipe(
         ofActionDispatched(AddNutritionEntriesSuccess),
@@ -128,6 +128,32 @@ export class MealDetailsComponent implements OnDestroy {
   public toDataSource(vm: MealViewModel): MatTableDataSource<NutritionDiaryEntry> {
     return new MatTableDataSource<NutritionDiaryEntry>(vm.entries);
   }
+
+  public getTotalKcal() {
+
+  }
+  public getTotalFats() {
+
+  }
+  public getTotalProteins() {
+
+  }
+  public getTotalCarbs() {
+
+  }
+
+  public getTotals(): MealSummary { 
+    return this.data.reduce((acc, curr) => {
+      acc.kcal += curr.summary.kcal;
+      acc.proteins += curr.summary.proteins;
+      acc.carbohydrates += curr.summary.carbohydrates;
+      acc.fats += curr.summary.fats;
+      return acc;
+    }, { kcal: 0, proteins: 0, carbohydrates: 0, fats: 0 });
+  
+
+  }
+
 }
 
 

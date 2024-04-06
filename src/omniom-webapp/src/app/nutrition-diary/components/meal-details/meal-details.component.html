@@ -2,26 +2,31 @@
 	<ng-container matColumnDef="mealName">
 		<th mat-header-cell *matHeaderCellDef style="width: 40%;"> </th>
 		<td mat-cell *matCellDef="let element" style="width: 40%;"> {{element.meal}} </td>
+		<td mat-footer-cell *matFooterCellDef>Łącznie</td>
 	</ng-container>
 
 	<ng-container matColumnDef="totalCalories">
 		<th mat-header-cell *matHeaderCellDef style="width: 15%;"> Kalorie </th>
 		<td mat-cell *matCellDef="let element" style="width: 15%;"> {{element.summary.kcal.toFixed(2)}}kcal</td>
+		<td mat-footer-cell *matFooterCellDef> {{getTotals().kcal.toFixed(2)}}kcal </td>
 	</ng-container>
 
 	<ng-container matColumnDef="totalProteins">
 		<th mat-header-cell *matHeaderCellDef style="width: 15%;"> Białka </th>
 		<td mat-cell *matCellDef="let element" style="width: 15%;"> {{element.summary.proteins.toFixed(2)}}g</td>
+		<td mat-footer-cell *matFooterCellDef> {{getTotals().proteins.toFixed(2)}}g </td>
 	</ng-container>
 
 	<ng-container matColumnDef="totalFats">
 		<th mat-header-cell *matHeaderCellDef style="width: 15%;"> Tłuszcze </th>
 		<td mat-cell *matCellDef="let element" style="width: 15%;"> {{element.summary.fats.toFixed(2)}}g</td>
+		<td mat-footer-cell *matFooterCellDef> {{getTotals().fats.toFixed(2)}}g </td>
 	</ng-container>
 
 	<ng-container matColumnDef="totalCarbohydrates">
 		<th mat-header-cell *matHeaderCellDef style="width: 15%;"> Węglowodany </th>
 		<td mat-cell *matCellDef="let element" style="width: 15%;"> {{element.summary.carbohydrates.toFixed(2)}}g</td>
+		<td mat-footer-cell *matFooterCellDef> {{getTotals().carbohydrates}}g</td>
 	</ng-container>
 
 	<ng-container matColumnDef="actions">
@@ -88,4 +93,5 @@
 		[class.expanded-row]="isElementExpanded(element)" (click)="onElementClicked(element)">
 	</tr>
 	<tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+	<tr mat-footer-row style="font-size: 1rem; font-weight: 500;" *matFooterRowDef="footerColumns"></tr>
 </table>
