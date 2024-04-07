@@ -34,6 +34,54 @@ public class NutritionDiaryIntegrationTests
     }
 
     [Test]
+    public async Task ShouldRemoveNutriitonEntryFromMeal()
+    {
+        var dateOfModifiedEntry = DateTime.Now;
+        var firstProduct = _productsSet.First();
+        var secondProduct = _productsSet.Last();
+        var modifyNutritionEntriesEndpoint = "/api/nutrition-diary/entries";
+        var retrieveEndpoint = "/api/nutrition-diary/details";
+        var authHttpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync();
+        var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
+            [
+                new MealProductEntryDto(firstProduct.Guid, 100),
+                new MealProductEntryDto(secondProduct.Guid, 250)
+            ],
+            MealType.Breakfast.ToString(),
+            dateOfModifiedEntry
+        );
+        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
+        var result = await authHttpClient.GetFromJsonAsync<IEnumerable<NutritionDayEntryDto>>($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
+        var entryToRemoveId = result.First().Entries.First(e => e.ProductId == firstProduct.Guid).Guid;
+        var removeEndpoint = $"/api/nutrition-diary/{entryToRemoveId}";
+
+        await authHttpClient.DeleteAsync(removeEndpoint);
+        result = await authHttpClient.GetFromJsonAsync<IEnumerable<NutritionDayEntryDto>>($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
+        result.Should().BeEquivalentTo(new[]
+        {
+            new NutritionDayEntryDto
+            {
+                Date = DateTime.Now.Date,
+                Entries = new List<DiaryEntryData>
+                {
+                    new DiaryEntryData
+                    {
+                        ProductId = secondProduct.Guid,
+                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        PortionInGrams = 250,
+                        Meal = MealType.Breakfast.ToString(),
+                        ProductName = secondProduct.Name,
+                        Calories = secondProduct.KcalPer100G * 2.5m,
+                        Proteins = secondProduct.ProteinsPer100G * 2.5m,
+                        Carbohydrates = secondProduct.CarbsPer100G * 2.5m,
+                        Fats = secondProduct.FatPer100G * 2.5m
+                    }
+                }
+            }
+        }, options => options.Excluding(x => x.Name.EndsWith("Guid")));
+    }
+
+    [Test]
     public async Task ModifyingNutritionEntriesWorkflowIntegrationTests()
     {
         var dateOfModifiedEntry = DateTime.Now;

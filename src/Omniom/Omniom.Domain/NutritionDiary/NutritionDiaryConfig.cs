@@ -8,6 +8,7 @@ using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetNutritionDay;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
+using Omniom.Domain.NutritionDiary.RemovingNutritionEntries;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.Shared.BuildingBlocks;
@@ -21,6 +22,7 @@ public static class NutritionDiaryConfig
         services.AddTransient<GetNutritionDayQueryHandler>();
         services.AddTransient<GetShortSummaryForDaysQueryHandler>();
         services.AddTransient<SaveMealNutritionEntriesCommandHandler>();
+        services.AddTransient<ICommandHandler<RemoveNutritionEntryCommand>, RemoveNutritionEntryCommandHandler>();
         services.AddTransient<ICommandHandler<SaveMealNutritionEntriesCommand>>(ctx =>
             new TransactionalSaveMealNutritionEntriesCommandHandler(
                 ctx.GetRequiredService<SaveMealNutritionEntriesCommandHandler>(),
@@ -37,6 +39,7 @@ public static class NutritionDiaryConfig
         endpointRouteBuilder.MapGetShortSummaryEndpoint();
         endpointRouteBuilder.MapGetNutritionDayDetails();
         endpointRouteBuilder.MapAddNutritionEntriesEndpoint();
+        endpointRouteBuilder.MapRemoveNutritionEntryEndpoint();
 
         return endpointRouteBuilder;
     }
