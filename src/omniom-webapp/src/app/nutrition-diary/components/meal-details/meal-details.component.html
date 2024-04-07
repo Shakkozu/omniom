@@ -26,14 +26,13 @@
 	<ng-container matColumnDef="totalCarbohydrates">
 		<th mat-header-cell *matHeaderCellDef style="width: 15%;"> Węglowodany </th>
 		<td mat-cell *matCellDef="let element" style="width: 15%;"> {{element.summary.carbohydrates.toFixed(2)}}g</td>
-		<td mat-footer-cell *matFooterCellDef> {{getTotals().carbohydrates}}g</td>
+		<td mat-footer-cell *matFooterCellDef> {{getTotals().carbohydrates.toFixed(2)}}g</td>
 	</ng-container>
 
 	<ng-container matColumnDef="actions">
 		<th mat-header-cell *matHeaderCellDef >
 			 </th>
 		<td mat-cell *matCellDef="let element" class="flex">
-			<button mat-icon-button (click)="addNutritionEntryButtonClicked(element.mealType)"><mat-icon>add</mat-icon></button>
 			<button mat-icon-button (click)="modifyNutritionEntries(element.mealType)"><mat-icon>edit</mat-icon></button>
 			<button mat-icon-button aria-label="expand row"> @if (isElementExpanded(element)) {
 				<mat-icon>keyboard_arrow_up</mat-icon>

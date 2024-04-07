@@ -6,7 +6,7 @@ import { ProductListChangedEvent } from '../../../products/components/products-l
 import { MealType, NutritionDiaryEntry } from '../../model';
 import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
-import { ClearProductsSelection, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
+import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
 
 
 @Component({
@@ -25,19 +25,20 @@ import { ClearProductsSelection, SelectMultipleProducts } from '../../../product
       <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit">
           <div *ngFor="let product of products" class="">
           <div class="flex flex-row content-evenly">
-            <div class="w-2/3">
+            <div class="w-4/6">
               <mat-list-item class="">
                 <span matListItemTitle>{{ product.name }}</span>
                 <span matListItemLine>{{product.kcal }}kcal  B: {{product.proteins}}g T: {{product.fats}}g W:{{product.carbohydrates}}g</span>
               </mat-list-item>
             </div>
-            <div class="w-1/3">
+            <div class="w-2/6">
               <mat-form-field class="mt-2">
                 <mat-label>Gramatura</mat-label>
                 <input matInput min="0" [readonly]="loading$ | async" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams">
                 <span matTextSuffix>g</span>
               </mat-form-field>
             </div>
+            <button class="mx-2" style="align-self: center;" mat-icon-button (click)="removeProductFromSelection(product)"><mat-icon>delete</mat-icon></button>
           </div>
           <mat-divider class=""></mat-divider>
         </div>
@@ -79,6 +80,11 @@ export class ModifyMealNutritionEntriesComponent {
           product.fatPer100G,
           product.carbsPer100G));
     }
+  }
+
+  removeProductFromSelection(product: MealEntry) {
+    this.store.dispatch(new ProductDeselected(product.guid));
+    this.onProductListModified({ type: 'deselected', productId: product.guid })
   }
 
   onProductsConfirmed() {

@@ -48,16 +48,8 @@ export class MealDetailsComponent implements OnDestroy {
     this.destroy$.complete();
   }
 
-  public addNutritionEntryButtonClicked(mealType: MealType): void {
-    this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
-      width: '70vw',
-      height: '80vh',
-      data: { mealType: mealType }
-    });
-  }
-
   public modifyNutritionEntries(mealType: MealType) {
-    const productOfSelectedMeal = this.data.find(meal => meal.mealType === mealType)?.entries;
+    const productOfSelectedMeal = this.data.find(meal => meal.mealType === mealType)?.entries ?? [];
     this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
       width: '70vw',
       height: '80vh',
