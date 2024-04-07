@@ -3,6 +3,7 @@ using Omniom.Domain;
 using Omniom.Domain.Auth;
 using Omniom.Domain.NutritionDiary;
 using Omniom.Domain.ProductsCatalogue;
+using Omniom.Domain.Shared;
 
 namespace Omniom.WebAPI;
 
@@ -20,6 +21,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddCors();
+        builder.Services.AddSharedBuildingBlocks();
         builder.Services.AddProductsCatalogue(config);
         builder.Services.AddAuthorizationModule(config);
         builder.Services.AddNutritionDiary(config);
