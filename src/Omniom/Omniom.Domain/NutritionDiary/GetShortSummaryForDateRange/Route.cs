@@ -7,7 +7,7 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 namespace Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 public static class Route
 {
-    public const string GetShortSummaryForDays = "/api/nutrition-diary/days-summary";
+    public const string GetShortSummaryForDays = "/api/nutrition-diary/summary";
 
     public static IEndpointRouteBuilder MapGetShortSummaryEndpoint(this IEndpointRouteBuilder endpointRouteBuilder)
     {

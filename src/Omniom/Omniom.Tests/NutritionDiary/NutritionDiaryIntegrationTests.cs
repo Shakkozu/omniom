@@ -8,19 +8,13 @@ using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Tests.Auth;
 using Omniom.Tests.Products;
 using Omniom.Tests.Shared;
-using System.Net.Http.Json;
 
 namespace Omniom.Tests.NutritionDiary;
 public class NutritionDiaryIntegrationTests
 {
     private OmniomApp _omniomApp;
     private Guid _userId;
-    private Guid _secondProductGuid;
-    private Guid _firstProductGuid;
     private List<ProductDetailsDescription> _productsSet;
-
-    private ICommandHandler<SaveMealNutritionEntriesCommand> AddNutritionEntriesCommandHandler => _omniomApp.AddNutritionEntriesCommandHandler;
-    private GetShortSummaryForDaysQueryHandler ShortSummaryForDaysQueryHandler => _omniomApp.GetShortSummaryForDaysQueryHandler;
     private ProductsTestsFixture ProductsTestsFixture => _omniomApp.ProductsTestsFixture;
     private AuthFixture AuthFixture => _omniomApp.AuthFixture;
 
@@ -36,12 +30,10 @@ public class NutritionDiaryIntegrationTests
     [Test]
     public async Task ShouldRemoveNutriitonEntryFromMeal()
     {
+        var restClient = new NutritionDiaryRestClient(await _omniomApp.CreateHttpClientWithAuthorizationAsync());
         var dateOfModifiedEntry = DateTime.Now;
         var firstProduct = _productsSet.First();
         var secondProduct = _productsSet.Last();
-        var modifyNutritionEntriesEndpoint = "/api/nutrition-diary/entries";
-        var retrieveEndpoint = "/api/nutrition-diary/details";
-        var authHttpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync();
         var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
                 new MealProductEntryDto(firstProduct.Guid, 100),
@@ -50,13 +42,13 @@ public class NutritionDiaryIntegrationTests
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
-        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
-        var result = await authHttpClient.GetFromJsonAsync<IEnumerable<NutritionDayEntryDto>>($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
-        var entryToRemoveId = result.First().Entries.First(e => e.ProductId == firstProduct.Guid).Guid;
-        var removeEndpoint = $"/api/nutrition-diary/{entryToRemoveId}";
 
-        await authHttpClient.DeleteAsync(removeEndpoint);
-        result = await authHttpClient.GetFromJsonAsync<IEnumerable<NutritionDayEntryDto>>($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
+        await restClient.SaveNutritionEntries(saveEntriesRequest);
+        var result = await restClient.GetNutritionDayEntries(dateOfModifiedEntry);
+        var entryToRemoveId = result.First().Entries.First(e => e.ProductId == firstProduct.Guid).Guid;
+
+        await restClient.RemoveNutritionEntry(entryToRemoveId);
+        result = await restClient.GetNutritionDayEntries(dateOfModifiedEntry);
         result.Should().BeEquivalentTo(new[]
         {
             new NutritionDayEntryDto
@@ -86,11 +78,8 @@ public class NutritionDiaryIntegrationTests
     {
         var dateOfModifiedEntry = DateTime.Now;
         var firstProduct = _productsSet.First();
-        var secondProduct= _productsSet.Last();
+        var secondProduct = _productsSet.Last();
         var anotherProduct = _productsSet[_productsSet.Count - 2];
-        var modifyNutritionEntriesEndpoint = "/api/nutrition-diary/entries";
-        var retrieveEndpoint = "/api/nutrition-diary/details";
-        var authHttpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync();
         var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
                 new MealProductEntryDto(firstProduct.Guid, 100),
@@ -99,10 +88,12 @@ public class NutritionDiaryIntegrationTests
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
-        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
+        var restClient = new NutritionDiaryRestClient(await _omniomApp.CreateHttpClientWithAuthorizationAsync());
 
-        var result = await authHttpClient.GetAsync($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
-        (await result.Content.ReadFromJsonAsync<IEnumerable<NutritionDayEntryDto>>()).Should().BeEquivalentTo(new[]
+        await restClient.SaveNutritionEntries(saveEntriesRequest);
+
+        var result = await restClient.GetNutritionDayEntries(dateOfModifiedEntry);
+        result.Should().BeEquivalentTo(new[]
         {
             new NutritionDayEntryDto
             {
@@ -144,9 +135,8 @@ public class NutritionDiaryIntegrationTests
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
-        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
-        result = await authHttpClient.GetAsync($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
-        result.Content.ReadFromJsonAsync<IEnumerable<NutritionDayEntryDto>>().Result.Should().BeEquivalentTo(new[]
+        await restClient.SaveNutritionEntries(saveEntriesRequest);
+        (await restClient.GetNutritionDayEntries(dateOfModifiedEntry)).Should().BeEquivalentTo(new[]
         {
             new NutritionDayEntryDto
             {
@@ -174,31 +164,30 @@ public class NutritionDiaryIntegrationTests
     public async Task ShouldReturnShortSummaryRangeForDays()
     {
         var dateOfModifiedEntry = DateTime.Now;
-        var firstProduct= _productsSet.First();
-        var secondProduct= _productsSet.Last();
-        var addNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
+        var firstProduct = _productsSet.First();
+        var secondProduct = _productsSet.Last();
+        var addNutritionEntryRequest = new SaveMealNutritionEntriesRequest(
             [new MealProductEntryDto(firstProduct.Guid, 100)],
-            MealType.Breakfast,
-            dateOfModifiedEntry,
-            _userId
+            MealType.Breakfast.ToString(),
+            dateOfModifiedEntry
         );
-        var addSecondMealNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
-            [ new MealProductEntryDto(secondProduct.Guid, 100) ],
-            MealType.Dinner,
-            dateOfModifiedEntry,
-            _userId
+        var addSecondNutritionEntryRequest = new SaveMealNutritionEntriesRequest(
+            [new MealProductEntryDto(secondProduct.Guid, 100)],
+            MealType.Dinner.ToString(),
+            dateOfModifiedEntry
         );
-        var addPreviousDayNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
+        var addPreviousDayNutritionEntriesRequest = new SaveMealNutritionEntriesRequest(
             [new MealProductEntryDto(secondProduct.Guid, 250)],
-            MealType.Breakfast,
-            dateOfModifiedEntry.AddDays(-1),
-            _userId
+            MealType.Breakfast.ToString(),
+            dateOfModifiedEntry.AddDays(-1)
         );
-        await AddNutritionEntriesCommandHandler.HandleAsync(addNutritionEntriesCommand, CancellationToken.None);
-        await AddNutritionEntriesCommandHandler.HandleAsync(addSecondMealNutritionEntriesCommand, CancellationToken.None);
-        await AddNutritionEntriesCommandHandler.HandleAsync(addPreviousDayNutritionEntriesCommand, CancellationToken.None);
+        var restClient = new NutritionDiaryRestClient(await _omniomApp.CreateHttpClientWithAuthorizationAsync());
 
-        var summary = await ShortSummaryForDaysQueryHandler.HandleAsync(new GetShortDaysSummary(_userId, DateTime.Now.AddDays(-1).Date, DateTime.Now.Date), CancellationToken.None);
+        await restClient.SaveNutritionEntries(addNutritionEntryRequest);
+        await restClient.SaveNutritionEntries(addSecondNutritionEntryRequest);
+        await restClient.SaveNutritionEntries(addPreviousDayNutritionEntriesRequest);
+
+        var summary = await restClient.GetShortSummaryForDays(_userId, DateTime.Now.AddDays(-1).Date, DateTime.Now.Date);
 
         summary.Should().HaveCount(2);
         summary.Single(entry => entry.NutritionDay.Date == dateOfModifiedEntry.Date).Should().BeEquivalentTo<ShortSummary>(new ShortSummary

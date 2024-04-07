@@ -13,7 +13,7 @@ export class NutritionDiaryService {
 	fetchDaySummaries(startDate: Date, endDate: Date): Observable<DaySummaryDto[]> {
 		const start = this.datePipe.transform(startDate, 'yyyy-MM-dd');
 		const end = this.datePipe.transform(endDate, 'yyyy-MM-dd');
-		const url = `${ environment.apiUrl }/api/nutrition-diary/days-summary?dateFrom=${ start }&dateTo=${ end }`;
+		const url = `${ environment.apiUrl }/api/nutrition-diary/summary?dateFrom=${ start }&dateTo=${ end }`;
 		return this.http.get<DaySummaryDto[]>(url);
 	}
 	
