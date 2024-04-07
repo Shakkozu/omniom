@@ -96,7 +96,7 @@ internal class OmniomApp : WebApplicationFactory<Program>
     internal ProductsTestsFixture ProductsTestsFixture  => RequestScope().ServiceProvider.GetRequiredService<ProductsTestsFixture>();
     internal AuthFixture AuthFixture => RequestScope().ServiceProvider.GetRequiredService<AuthFixture>();
 
-    internal ICommandHandler<AddNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<AddNutritionEntriesCommand>>();
+    internal ICommandHandler<SaveNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<SaveNutritionEntriesCommand>>();
     internal ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ModifyProductPortionCommandHandler>();
     internal GetNutritionDayQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetNutritionDayQueryHandler>();
     internal GetShortSummaryForDaysQueryHandler GetShortSummaryForDaysQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetShortSummaryForDaysQueryHandler>();

@@ -21,7 +21,7 @@ public class NutritionDiaryIntegrationTests
     private List<ProductDetailsDescription> _productsSet;
 
     private ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => _omniomApp.ModifyProductPortionCommandHandler;
-    private ICommandHandler<AddNutritionEntriesCommand> AddNutritionEntriesCommandHandler => _omniomApp.AddNutritionEntriesCommandHandler;
+    private ICommandHandler<SaveNutritionEntriesCommand> AddNutritionEntriesCommandHandler => _omniomApp.AddNutritionEntriesCommandHandler;
     private GetNutritionDayQueryHandler GetDiaryQueryHandler => _omniomApp.GetDiaryQueryHandler;
     private GetShortSummaryForDaysQueryHandler ShortSummaryForDaysQueryHandler => _omniomApp.GetShortSummaryForDaysQueryHandler;
     private ProductsTestsFixture ProductsTestsFixture => _omniomApp.ProductsTestsFixture;
@@ -37,25 +37,70 @@ public class NutritionDiaryIntegrationTests
     }
 
     [Test]
-    public async Task AddingNutritionEntriesIntegrationTests()
+    public async Task ModifyingNutritionEntriesWorkflowIntegrationTests()
     {
         var dateOfModifiedEntry = DateTime.Now;
-        _firstProductGuid = _productsSet.First().Guid;
-        _secondProductGuid = _productsSet.Last().Guid;
-        var addEndpoint = "/api/nutrition-diary/entries";
+        var firstProduct = _productsSet.First();
+        var secondProduct= _productsSet.Last();
+        var anotherProduct = _productsSet[_productsSet.Count - 2];
+        var modifyNutritionEntriesEndpoint = "/api/nutrition-diary/entries";
         var retrieveEndpoint = "/api/nutrition-diary/details";
         var authHttpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync();
-        var addEntriesRequest = new AddNutritionEntriesRequest(
+        var saveEntriesRequest = new SaveNutritionEntriesRequest(
             [
-                new MealProductEntryDto(_firstProductGuid, 100),
-                new MealProductEntryDto(_secondProductGuid, 250)
+                new MealProductEntryDto(firstProduct.Guid, 100),
+                new MealProductEntryDto(secondProduct.Guid, 250)
             ],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
-        await authHttpClient.PostAsJsonAsync(addEndpoint, addEntriesRequest);
+        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
 
         var result = await authHttpClient.GetAsync($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
+        (await result.Content.ReadFromJsonAsync<IEnumerable<NutritionDayEntryDto>>()).Should().BeEquivalentTo(new[]
+        {
+            new NutritionDayEntryDto
+            {
+                Date = DateTime.Now.Date,
+                Entries = new List<DiaryEntryData>
+                {
+                    new DiaryEntryData
+                    {
+                        ProductId = firstProduct.Guid,
+                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        PortionInGrams = 100,
+                        Meal = MealType.Breakfast.ToString(),
+                        ProductName = firstProduct.Name,
+                        Calories = firstProduct.KcalPer100G,
+                        Proteins = firstProduct.ProteinsPer100G,
+                        Carbohydrates = firstProduct.CarbsPer100G,
+                        Fats = firstProduct.FatPer100G
+                    },
+                    new DiaryEntryData
+                    {
+                        ProductId = secondProduct.Guid,
+                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        PortionInGrams = 250,
+                        Meal = MealType.Breakfast.ToString(),
+                        ProductName = secondProduct.Name,
+                        Calories = secondProduct.KcalPer100G * 2.5m,
+                        Proteins = secondProduct.ProteinsPer100G * 2.5m,
+                        Carbohydrates = secondProduct.CarbsPer100G * 2.5m,
+                        Fats = secondProduct.FatPer100G * 2.5m
+                    }
+                }
+            }
+        }, options => options.Excluding(x => x.Name.EndsWith("Guid")));
+
+        saveEntriesRequest = new SaveNutritionEntriesRequest(
+            [
+                new MealProductEntryDto(anotherProduct.Guid, 50),
+            ],
+            MealType.Breakfast.ToString(),
+            dateOfModifiedEntry
+        );
+        await authHttpClient.PostAsJsonAsync(modifyNutritionEntriesEndpoint, saveEntriesRequest);
+        result = await authHttpClient.GetAsync($"{retrieveEndpoint}?nutritionDay={dateOfModifiedEntry:yyyy-MM-dd}");
         result.Content.ReadFromJsonAsync<IEnumerable<NutritionDayEntryDto>>().Result.Should().BeEquivalentTo(new[]
         {
             new NutritionDayEntryDto
@@ -65,28 +110,16 @@ public class NutritionDiaryIntegrationTests
                 {
                     new DiaryEntryData
                     {
-                        ProductId = _firstProductGuid,
+                        ProductId = anotherProduct.Guid,
                         UserId = await AuthFixture.GetSuperuserIdAsync(),
-                        ProductName = _productsSet.First().Name,
-                        PortionInGrams = 100,
+                        PortionInGrams = 50,
                         Meal = MealType.Breakfast.ToString(),
-                        Calories = _productsSet.First().KcalPer100G,
-                        Proteins = _productsSet.First().ProteinsPer100G,
-                        Carbohydrates = _productsSet.First().CarbsPer100G,
-                        Fats = _productsSet.First().FatPer100G
+                        ProductName = anotherProduct.Name,
+                        Calories = anotherProduct.KcalPer100G * .5m,
+                        Proteins = anotherProduct.ProteinsPer100G * .5m,
+                        Carbohydrates = anotherProduct.CarbsPer100G * .5m,
+                        Fats = anotherProduct.FatPer100G * .5m
                     },
-                    new DiaryEntryData
-                    {
-                        ProductId = _secondProductGuid,
-                        UserId = await AuthFixture.GetSuperuserIdAsync(),
-                        ProductName = _productsSet.Last().Name,
-                        PortionInGrams = 250,
-                        Meal = MealType.Breakfast.ToString(),
-                        Calories = _productsSet.Last().KcalPer100G * 2.5m,
-                        Proteins = _productsSet.Last().ProteinsPer100G * 2.5m,
-                        Carbohydrates = _productsSet.Last().CarbsPer100G * 2.5m,
-                        Fats = _productsSet.Last().FatPer100G * 2.5m
-                    }
                 }
             }
         }, options => options.Excluding(x => x.Name.EndsWith("Guid")));
@@ -98,7 +131,7 @@ public class NutritionDiaryIntegrationTests
         var dateOfModifiedEntry = DateTime.Now;
         _firstProductGuid = _productsSet.First().Guid;
         _secondProductGuid = _productsSet.Last().Guid;
-        var addNutritionEntriesCommand = new AddNutritionEntriesCommand(
+        var addNutritionEntriesCommand = new SaveNutritionEntriesCommand(
             new[]
             {
                 new MealProductEntryDto(_firstProductGuid, 100),
@@ -107,7 +140,7 @@ public class NutritionDiaryIntegrationTests
             dateOfModifiedEntry,
             _userId
         );
-        var addPreviousDayNutritionEntriesCommand = new AddNutritionEntriesCommand(
+        var addPreviousDayNutritionEntriesCommand = new SaveNutritionEntriesCommand(
             new[]
             {
                 new MealProductEntryDto(_secondProductGuid, 250),

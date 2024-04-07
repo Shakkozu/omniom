@@ -1,16 +1,12 @@
 ﻿using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.ProductsCatalogue.FindById;
 using Omniom.Domain.Shared.BuildingBlocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Omniom.Domain.Shared.Repositories;
 
 namespace Omniom.Domain.NutritionDiary.AddNutritionEntries;
 public record MealProductEntryDto(Guid ProductId, int PortionSize);
-public record AddNutritionEntriesRequest(IEnumerable<MealProductEntryDto> Products, string MealType, DateTime SelectedDay);
-public record AddNutritionEntriesCommand(
+public record SaveNutritionEntriesRequest(IEnumerable<MealProductEntryDto> Products, string MealType, DateTime SelectedDay);
+public record SaveNutritionEntriesCommand(
     IEnumerable<MealProductEntryDto> Products,
     MealType MealType,
     DateTime SelectedDay,
@@ -19,21 +15,43 @@ public record AddNutritionEntriesCommand(
 {
 }
 
-public class AddNutritionEntriesCommandHandler : ICommandHandler<AddNutritionEntriesCommand>
+public class TransactionalSaveNutritionEntriesCommandHandler : ICommandHandler<SaveNutritionEntriesCommand>
+{
+    private readonly ICommandHandler<SaveNutritionEntriesCommand> _inner;
+    private readonly ITransactions _transactions;
+
+    public TransactionalSaveNutritionEntriesCommandHandler(ICommandHandler<SaveNutritionEntriesCommand> inner,
+        ITransactions transactions)
+    {
+        _inner = inner;
+        _transactions = transactions;
+    }
+
+    public async Task HandleAsync(SaveNutritionEntriesCommand command, CancellationToken ct)
+    {
+        var transaction = await _transactions.BeginTransactionAsync();
+        await _inner.HandleAsync(command, ct);
+        await transaction.Commit();
+        
+    }
+}
+public class SaveNutritionEntriesCommandHandler : ICommandHandler<SaveNutritionEntriesCommand>
 {
     private readonly NutritionDiaryDbContext _dbContext;
     private readonly FindProductByIdQueryHandler _findProductByIdQueryHandler;
 
-    public AddNutritionEntriesCommandHandler(NutritionDiaryDbContext dbContext,
+    public SaveNutritionEntriesCommandHandler(NutritionDiaryDbContext dbContext,
         FindProductByIdQueryHandler findProductByIdQueryHandler)
     {
         _dbContext = dbContext;
         _findProductByIdQueryHandler = findProductByIdQueryHandler;
     }
 
-    public async Task HandleAsync(AddNutritionEntriesCommand command, CancellationToken ct)
+    public async Task HandleAsync(SaveNutritionEntriesCommand command, CancellationToken ct)
     {
         var products = await _findProductByIdQueryHandler.HandleAsync(new FindMultipleByIdQuery(command.Products.Select(p => p.ProductId)), ct);
+        var previousEntries = _dbContext.DiaryEntries.Where(x => x.UserId == command.UserId && x.DateTime == command.SelectedDay.ToUniversalTime().Date);
+        _dbContext.DiaryEntries.RemoveRange(previousEntries);
 
         var result = new List<DiaryEntry>();
         foreach(var entry in command.Products)
@@ -61,6 +79,5 @@ public class AddNutritionEntriesCommandHandler : ICommandHandler<AddNutritionEnt
 
 
         await _dbContext.DiaryEntries.AddRangeAsync(result, ct);
-        await _dbContext.SaveChangesAsync(ct);        
     }
 }
