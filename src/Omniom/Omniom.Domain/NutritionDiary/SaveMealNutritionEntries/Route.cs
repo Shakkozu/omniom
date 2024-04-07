@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 
@@ -16,15 +17,15 @@ public static class Route
             [FromBody] SaveMealNutritionEntriesRequest RequestBody,
             [FromServices] ICommandHandler<SaveMealNutritionEntriesCommand> addNutritionEntriesCommandHandler,
             HttpContext context,
+            IFetchUserIdentifierFromContext userIdProvider,
             CancellationToken ct
             ) =>
         {
-            var userId = context.User.Identity.Name ?? throw new UnauthorizedAccessException();
             var command = new SaveMealNutritionEntriesCommand(
                 RequestBody.Products,
                 (MealType)Enum.Parse(typeof(MealType), RequestBody.MealType),
                 RequestBody.SelectedDay,
-                Guid.Parse(userId)
+                userIdProvider.GetUserId()
             );
             await addNutritionEntriesCommandHandler.HandleAsync(command, ct);
             context.Response.StatusCode = 204;

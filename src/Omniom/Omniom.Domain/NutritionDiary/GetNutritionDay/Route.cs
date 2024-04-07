@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.NutritionDiary.GetDiary;
 
 namespace Omniom.Domain.NutritionDiary.GetNutritionDay;
@@ -15,11 +16,10 @@ public static class Route
             [FromQuery] DateTime nutritionDay,
             [FromServices] GetNutritionDayQueryHandler handler,
             HttpContext context,
+            IFetchUserIdentifierFromContext userIdProvider,
             CancellationToken ct
             ) =>
         {
-            var userId = context.User.Identity.Name ?? throw new UnauthorizedAccessException();
-
             if (nutritionDay == default)
             {
                 context.Response.StatusCode = 400;
@@ -27,7 +27,7 @@ public static class Route
                 return;
             }
 
-            var query = new GetNutritionDayQuery(Guid.Parse(userId), nutritionDay);
+            var query = new GetNutritionDayQuery(userIdProvider.GetUserId(), nutritionDay);
             var result = await handler.HandleAsync(query, context.RequestAborted);
             await context.Response.WriteAsJsonAsync(result, ct);
         });

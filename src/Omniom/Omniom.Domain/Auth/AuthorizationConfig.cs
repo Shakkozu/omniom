@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Auth.GetUserIdByEmail;
 using Omniom.Domain.Auth.Login;
 using Omniom.Domain.Auth.RegisterUser;
@@ -53,6 +55,12 @@ public static class AuthorizationConfig
                 ValidAudience = jwtSettings.Audience,                
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
+        });
+        serviceCollection.AddScoped<HttpContextAccessor>();
+        serviceCollection.AddScoped<IFetchUserIdentifierFromContext>(provider =>
+        {
+            var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+            return new HttpContextUserIdProvider(httpContextAccessor);
         });
 
         return serviceCollection;

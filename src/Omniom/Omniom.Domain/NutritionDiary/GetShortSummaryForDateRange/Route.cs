@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 
 namespace Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 public static class Route
@@ -15,10 +16,10 @@ public static class Route
             [FromQuery] DateTime dateTo,
             [FromServices] GetShortSummaryForDaysQueryHandler handler,
             HttpContext context,
+            IFetchUserIdentifierFromContext userIdProvider,
             CancellationToken ct
             ) =>
         {
-            var userId = context.User.Identity.Name ?? throw new UnauthorizedAccessException();
             var startDate = context.Request.Query["dateFrom"];
             var endDate = context.Request.Query["dateTo"];
 
@@ -29,7 +30,7 @@ public static class Route
                 return;
             }
 
-            var query = new GetShortDaysSummary(Guid.Parse(userId), dateFrom, dateTo);
+            var query = new GetShortDaysSummary(userIdProvider.GetUserId(), dateFrom, dateTo);
             var result = await handler.HandleAsync(query, context.RequestAborted);
 
             await context.Response.WriteAsJsonAsync(result);

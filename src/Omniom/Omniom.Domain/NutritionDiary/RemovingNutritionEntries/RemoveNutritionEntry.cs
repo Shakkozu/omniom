@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Shared.Exceptions;
@@ -21,12 +22,12 @@ internal static class Route
             [FromServices] ICommandHandler<RemoveNutritionEntryCommand> removeNutritionEntryCommandHandler,
             HttpContext context,
             ILogger<RemoveNutritionEntryCommandHandler> _logger,
+            IFetchUserIdentifierFromContext userIdProvider,
             CancellationToken ct) =>
         {
-            var userId = context.User.Identity.Name ?? throw new UnauthorizedAccessException();
             var command = new RemoveNutritionEntryCommand
             {
-                UserId = Guid.Parse(userId),
+                UserId = userIdProvider.GetUserId(),
                 EntryId = Id,
                 Date = DateTime.UtcNow
             };
