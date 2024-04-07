@@ -20,10 +20,10 @@ public static class NutritionDiaryConfig
     {
         services.AddTransient<GetNutritionDayQueryHandler>();
         services.AddTransient<GetShortSummaryForDaysQueryHandler>();
-        services.AddTransient<SaveNutritionEntriesCommandHandler>();
-        services.AddTransient<ICommandHandler<SaveNutritionEntriesCommand>>(ctx =>
-            new TransactionalSaveNutritionEntriesCommandHandler(
-                ctx.GetRequiredService<SaveNutritionEntriesCommandHandler>(),
+        services.AddTransient<SaveMealNutritionEntriesCommandHandler>();
+        services.AddTransient<ICommandHandler<SaveMealNutritionEntriesCommand>>(ctx =>
+            new TransactionalSaveMealNutritionEntriesCommandHandler(
+                ctx.GetRequiredService<SaveMealNutritionEntriesCommandHandler>(),
                 ctx.GetRequiredService<NutritionContextTransactions>()));
 
         services.AddDbContext<NutritionDiaryDbContext>(options =>
@@ -47,7 +47,7 @@ public static class NutritionDiaryConfig
         {
             var getUserIdQueryHandler = scope.ServiceProvider.GetRequiredService<GetUserIdByEmailHandlerQueryHandler>();
             var searchProductsQueryHandler = scope.ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
-            var addProductToDiaryCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<SaveNutritionEntriesCommand>>();
+            var addProductToDiaryCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<SaveMealNutritionEntriesCommand>>();
             var superuserId = getUserIdQueryHandler.HandleAsync(new GetUserIdByEmailQuery(configuration.GetValue<string>("Administrator:Email"))).GetAwaiter().GetResult();
             AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today).GetAwaiter().GetResult();
             AddNutritionEntries(superuserId, searchProductsQueryHandler, addProductToDiaryCommandHandler, DateTime.Today.AddDays(-1)).GetAwaiter().GetResult();
@@ -56,13 +56,13 @@ public static class NutritionDiaryConfig
 
     private static async Task AddNutritionEntries(string userId,
         SearchProductsQueryHandler searchProducts,
-        ICommandHandler<SaveNutritionEntriesCommand> addNutritionEntriesCommandHandler,
+        ICommandHandler<SaveMealNutritionEntriesCommand> addNutritionEntriesCommandHandler,
         DateTime day)
     {
         var products = (await searchProducts.HandleAsync(new SearchProductsQuery(""), CancellationToken.None)).Products;
         if (!products.Any())
             return;
-        var command = new SaveNutritionEntriesCommand(
+        var command = new SaveMealNutritionEntriesCommand(
                        new[]
                        {
                 new MealProductEntryDto(products.First().Guid, 100),
@@ -72,7 +72,7 @@ public static class NutritionDiaryConfig
             day,
             Guid.Parse(userId)
         );
-        var command2 = new SaveNutritionEntriesCommand(
+        var command2 = new SaveMealNutritionEntriesCommand(
                        new[]
                        {
                 new MealProductEntryDto(products.First().Guid, 250),

@@ -13,14 +13,14 @@ public static class Route
     public static IEndpointRouteBuilder MapAddNutritionEntriesEndpoint (this IEndpointRouteBuilder endpointRouteBuilder)
     {
         endpointRouteBuilder.MapPost(AddNutritionEntries, async (
-            [FromBody] SaveNutritionEntriesRequest RequestBody,
-            [FromServices] ICommandHandler<SaveNutritionEntriesCommand> addNutritionEntriesCommandHandler,
+            [FromBody] SaveMealNutritionEntriesRequest RequestBody,
+            [FromServices] ICommandHandler<SaveMealNutritionEntriesCommand> addNutritionEntriesCommandHandler,
             HttpContext context,
             CancellationToken ct
             ) =>
         {
             var userId = context.User.Identity.Name ?? throw new UnauthorizedAccessException();
-            var command = new SaveNutritionEntriesCommand(
+            var command = new SaveMealNutritionEntriesCommand(
                 RequestBody.Products,
                 (MealType)Enum.Parse(typeof(MealType), RequestBody.MealType),
                 RequestBody.SelectedDay,

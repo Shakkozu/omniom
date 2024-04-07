@@ -2,7 +2,6 @@
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
-using Omniom.Domain.NutritionDiary.ModifyProductPortion;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.Shared.BuildingBlocks;
@@ -20,9 +19,7 @@ public class NutritionDiaryIntegrationTests
     private Guid _firstProductGuid;
     private List<ProductDetailsDescription> _productsSet;
 
-    private ModifyProductPortionCommandHandler ModifyProductPortionCommandHandler => _omniomApp.ModifyProductPortionCommandHandler;
-    private ICommandHandler<SaveNutritionEntriesCommand> AddNutritionEntriesCommandHandler => _omniomApp.AddNutritionEntriesCommandHandler;
-    private GetNutritionDayQueryHandler GetDiaryQueryHandler => _omniomApp.GetDiaryQueryHandler;
+    private ICommandHandler<SaveMealNutritionEntriesCommand> AddNutritionEntriesCommandHandler => _omniomApp.AddNutritionEntriesCommandHandler;
     private GetShortSummaryForDaysQueryHandler ShortSummaryForDaysQueryHandler => _omniomApp.GetShortSummaryForDaysQueryHandler;
     private ProductsTestsFixture ProductsTestsFixture => _omniomApp.ProductsTestsFixture;
     private AuthFixture AuthFixture => _omniomApp.AuthFixture;
@@ -46,7 +43,7 @@ public class NutritionDiaryIntegrationTests
         var modifyNutritionEntriesEndpoint = "/api/nutrition-diary/entries";
         var retrieveEndpoint = "/api/nutrition-diary/details";
         var authHttpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync();
-        var saveEntriesRequest = new SaveNutritionEntriesRequest(
+        var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
                 new MealProductEntryDto(firstProduct.Guid, 100),
                 new MealProductEntryDto(secondProduct.Guid, 250)
@@ -92,7 +89,7 @@ public class NutritionDiaryIntegrationTests
             }
         }, options => options.Excluding(x => x.Name.EndsWith("Guid")));
 
-        saveEntriesRequest = new SaveNutritionEntriesRequest(
+        saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
                 new MealProductEntryDto(anotherProduct.Guid, 50),
             ],
@@ -129,27 +126,28 @@ public class NutritionDiaryIntegrationTests
     public async Task ShouldReturnShortSummaryRangeForDays()
     {
         var dateOfModifiedEntry = DateTime.Now;
-        _firstProductGuid = _productsSet.First().Guid;
-        _secondProductGuid = _productsSet.Last().Guid;
-        var addNutritionEntriesCommand = new SaveNutritionEntriesCommand(
-            new[]
-            {
-                new MealProductEntryDto(_firstProductGuid, 100),
-            },
+        var firstProduct= _productsSet.First();
+        var secondProduct= _productsSet.Last();
+        var addNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
+            [new MealProductEntryDto(firstProduct.Guid, 100)],
             MealType.Breakfast,
             dateOfModifiedEntry,
             _userId
         );
-        var addPreviousDayNutritionEntriesCommand = new SaveNutritionEntriesCommand(
-            new[]
-            {
-                new MealProductEntryDto(_secondProductGuid, 250),
-            },
+        var addSecondMealNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
+            [ new MealProductEntryDto(secondProduct.Guid, 100) ],
+            MealType.Dinner,
+            dateOfModifiedEntry,
+            _userId
+        );
+        var addPreviousDayNutritionEntriesCommand = new SaveMealNutritionEntriesCommand(
+            [new MealProductEntryDto(secondProduct.Guid, 250)],
             MealType.Breakfast,
             dateOfModifiedEntry.AddDays(-1),
             _userId
         );
         await AddNutritionEntriesCommandHandler.HandleAsync(addNutritionEntriesCommand, CancellationToken.None);
+        await AddNutritionEntriesCommandHandler.HandleAsync(addSecondMealNutritionEntriesCommand, CancellationToken.None);
         await AddNutritionEntriesCommandHandler.HandleAsync(addPreviousDayNutritionEntriesCommand, CancellationToken.None);
 
         var summary = await ShortSummaryForDaysQueryHandler.HandleAsync(new GetShortDaysSummary(_userId, DateTime.Now.AddDays(-1).Date, DateTime.Now.Date), CancellationToken.None);
@@ -158,18 +156,18 @@ public class NutritionDiaryIntegrationTests
         summary.Single(entry => entry.NutritionDay.Date == dateOfModifiedEntry.Date).Should().BeEquivalentTo<ShortSummary>(new ShortSummary
         {
             NutritionDay = dateOfModifiedEntry.Date,
-            TotalCalories = _productsSet.First().KcalPer100G,
-            TotalFats = _productsSet.First().FatPer100G,
-            TotalCarbohydrates = _productsSet.First().CarbsPer100G,
-            TotalProteins = _productsSet.First().ProteinsPer100G
+            TotalCalories = firstProduct.KcalPer100G + secondProduct.KcalPer100G,
+            TotalFats = firstProduct.FatPer100G + secondProduct.FatPer100G,
+            TotalCarbohydrates = firstProduct.CarbsPer100G + secondProduct.CarbsPer100G,
+            TotalProteins = firstProduct.ProteinsPer100G + secondProduct.ProteinsPer100G
         });
         summary.Single(entry => entry.NutritionDay.Date == dateOfModifiedEntry.AddDays(-1).Date).Should().BeEquivalentTo(new ShortSummary
         {
             NutritionDay = dateOfModifiedEntry.AddDays(-1).Date,
-            TotalCalories = _productsSet.Last().KcalPer100G * 2.5m,
-            TotalFats = _productsSet.Last().FatPer100G * 2.5m,
-            TotalCarbohydrates = _productsSet.Last().CarbsPer100G * 2.5m,
-            TotalProteins = _productsSet.Last().ProteinsPer100G * 2.5m
+            TotalCalories = secondProduct.KcalPer100G * 2.5m,
+            TotalFats = secondProduct.FatPer100G * 2.5m,
+            TotalCarbohydrates = secondProduct.CarbsPer100G * 2.5m,
+            TotalProteins = secondProduct.ProteinsPer100G * 2.5m
         });
     }
 }
