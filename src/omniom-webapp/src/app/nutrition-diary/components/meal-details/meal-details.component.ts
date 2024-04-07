@@ -6,7 +6,7 @@ import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
-import { AddNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
+import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -31,13 +31,13 @@ export class MealDetailsComponent implements OnDestroy {
   private addNutritionDialog: MatDialogRef<ModifyMealNutritionEntriesComponent> | undefined;
   private destroy$ = new Subject<void>();
   
-  constructor(private store: Store, private actions$: Actions, private matDialog: MatDialog) {
+  constructor (private store: Store, private actions$: Actions, private matDialog: MatDialog) {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
       this.dataSource = new MatTableDataSource<MealViewModel>(this.data);
-
+      this.expandedElements = this.data;
       this.actions$.pipe(
-        ofActionDispatched(AddNutritionEntriesSuccess),
+        ofActionDispatched(ModifyNutritionEntriesSuccess),
         takeUntil(this.destroy$)
       ).subscribe(() => this.addNutritionDialog?.close());
     });

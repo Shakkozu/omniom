@@ -2,7 +2,7 @@ import { DaySummary, MealProductEntry, MealType } from '../model';
 
 export enum NutritionDiaryActionTypes {
 	AddNutritionEntries = '[Nutrition Diary] Add Nutrition Entries',
-	AddNutritionEntriesSuccess = '[Nutrition Diary] Add Nutrition Entries Success',
+	ModifyNutritionEntriesSuccess = '[Nutrition Diary] Modify Nutrition Entries Success',
 	AddNutritionEntriesFailure = '[Nutrition Diary] Add Nutrition Entries Failure',
 	SummaryDaySelected = '[Nutrition Diary] Summary day selected',
 	FetchNutritionSummaries = '[Nutrition Diary] Fetch Nutrition Summaries',
@@ -26,8 +26,8 @@ export class AddNutritionEntries {
 		public selectedDay: Date) { }
 }
 
-export class AddNutritionEntriesSuccess {
-	static readonly type = NutritionDiaryActionTypes.AddNutritionEntriesSuccess;
+export class ModifyNutritionEntriesSuccess {
+	static readonly type = NutritionDiaryActionTypes.ModifyNutritionEntriesSuccess;
 
 	constructor (public date: Date) { }
 }

@@ -13,7 +13,7 @@ namespace Omniom.Domain.NutritionDiary.RemovingNutritionEntries;
 
 internal static class Route
 {
-    public const string RemoveNutritionEntry = "/api/nutrition-diary/{id:guid}";
+    public const string RemoveNutritionEntry = "/api/nutrition-diary/entries/{id:guid}";
 
     public static IEndpointRouteBuilder MapRemoveNutritionEntryEndpoint(this IEndpointRouteBuilder endpointRouteBuilder)
     {
@@ -77,8 +77,7 @@ internal class RemoveNutritionEntryCommandHandler : ICommandHandler<RemoveNutrit
         var entry = await _dbContext.DiaryEntries
             .Where(x => 
                 x.UserId == command.UserId &&
-                x.Guid == command.EntryId &&
-                x.DateTime.Date == command.Date.ToUniversalTime().Date)
+                x.Guid == command.EntryId)
             .SingleOrDefaultAsync(ct);
 
         if (entry == null)

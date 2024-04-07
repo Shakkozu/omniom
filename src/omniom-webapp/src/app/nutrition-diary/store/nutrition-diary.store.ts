@@ -6,7 +6,7 @@ import { FetchNutritionSummaries,
 	FetchNutritionSummariesSuccess,
 	FetchNutritionSummariesFailure,
 	AddNutritionEntries,
-	AddNutritionEntriesSuccess,
+	ModifyNutritionEntriesSuccess,
 	AddNutritionEntriesFailure,
 	RemoveNutritionEntry,
 	SummaryDaySelected } from './nutrition-diary.actions';
@@ -85,14 +85,11 @@ export class NutritionDiaryStore {
 			return;
 		}
 
-		ctx.patchState({
-			loading: true
+		this.nutritionDiaryService.removeNutritionEntry(action.entryId).subscribe({
+			next: _ => ctx.dispatch([
+				new ModifyNutritionEntriesSuccess(selectedDay)]),
+			error: error => console.error(error)
 		});
-		return this.nutritionDiaryService.removeNutritionEntry(action.entryId, action.mealType, selectedDay)
-			.subscribe({
-				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess(new Date())),
-				error: error => ctx.dispatch(new AddNutritionEntriesFailure(error))
-			});
 	}
 
 
@@ -103,13 +100,13 @@ export class NutritionDiaryStore {
 		});
 		return this.nutritionDiaryService.addNutritionEntries(action.products, action.mealType, action.selectedDay)
 			.subscribe({
-				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess(action.selectedDay)),
+				next: _ => ctx.dispatch(new ModifyNutritionEntriesSuccess(action.selectedDay)),
 				error: error => ctx.dispatch(new AddNutritionEntriesFailure(error))
 			});
 	}
 
-	@Action(AddNutritionEntriesSuccess)
-	addNutritionEntriesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesSuccess) {
+	@Action(ModifyNutritionEntriesSuccess)
+	modifyNutritionEntriesSuccess(ctx: StateContext<NutritionDiaryStateModel>, action: ModifyNutritionEntriesSuccess) {
 		this.nutritionDiaryService.fetchDaySummaries(action.date, action.date).subscribe(summaries => {
 			let stateNutritionDaySummaries = ctx.getState().daySummaries;
 			let modifiedSummary = ctx.getState().daySummaries.findIndex(s => s.nutritionDay === action.date);
@@ -127,7 +124,6 @@ export class NutritionDiaryStore {
 			});
 		});
 	}
-
 
 	@Action(AddNutritionEntriesFailure)
 	addNutritionEntriesFailure(ctx: StateContext<NutritionDiaryStateModel>, action: AddNutritionEntriesFailure) {

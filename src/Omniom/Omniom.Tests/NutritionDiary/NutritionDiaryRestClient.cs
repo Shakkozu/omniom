@@ -33,7 +33,7 @@ internal class NutritionDiaryRestClient
 
     public async Task RemoveNutritionEntry(Guid entryId)
     {
-        await _httpClient.DeleteAsync($"/api/nutrition-diary/{entryId}");
+        await _httpClient.DeleteAsync($"/api/nutrition-diary/entries/{entryId}");
     }
 
 
