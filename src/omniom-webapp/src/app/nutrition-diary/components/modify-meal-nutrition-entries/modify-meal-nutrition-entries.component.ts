@@ -3,14 +3,14 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Store } from '@ngxs/store';
 import { ProductsCatalogueStore } from '../../../products/store/products-catalogue.store';
 import { ProductListChangedEvent } from '../../../products/components/products-list/products-list.component';
-import { MealType } from '../../model';
+import { MealType, NutritionDiaryEntry } from '../../model';
 import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
-import { ClearProductsSelection, ProductDeselected } from '../../../products/store/products-catalogue.actions';
+import { ClearProductsSelection, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
 
 
 @Component({
-  selector: 'app-add-nutrition-entry',
+  selector: 'app-meal-nutrition-entry-details',
   template: `
     <mat-progress-bar *ngIf="loading$ | async" mode="indeterminate"></mat-progress-bar>
     <h2 mat-dialog-title>Wybierz produkty które chcesz dodać</h2>
@@ -52,20 +52,33 @@ import { ClearProductsSelection, ProductDeselected } from '../../../products/sto
   </div>
   `,
 })
-export class AddNutritionEntryComponent {
+export class ModifyMealNutritionEntriesComponent {
   public selectedProducts$ = this.store.select(ProductsCatalogueStore.selectedProducts);
   public loading$ = this.store.select(NutritionDiaryStore.loading);
   public products: MealEntry[] = [];
   constructor (private store: Store,
-  @Inject(MAT_DIALOG_DATA) public data: { mealType: MealType }) {
-    this.products = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).map((product) =>
-      new MealEntry(product.name,
-        product.guid,
-        product.suggestedPortionSizeG,
-        product.kcalPer100G,
-        product.proteinsPer100G,
-        product.fatPer100G,
-        product.carbsPer100G));
+    @Inject(MAT_DIALOG_DATA) public data: { mealType: MealType, initialSelection: NutritionDiaryEntry[] }) {
+    if (this.data.initialSelection) {
+      this.store.dispatch(new SelectMultipleProducts(this.data.initialSelection.map(p => p.productId)));
+      this.products = this.data.initialSelection.map((product) =>
+        new MealEntry(product.productName,
+          product.productId,
+          product.portionInGrams,
+          product.calories,
+          product.proteins,
+          product.fats,
+          product.carbohydrates));
+    }
+    else {
+      this.products = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).map((product) =>
+        new MealEntry(product.name,
+          product.guid,
+          product.suggestedPortionSizeG,
+          product.kcalPer100G,
+          product.proteinsPer100G,
+          product.fatPer100G,
+          product.carbsPer100G));
+    }
   }
 
   onProductsConfirmed() {

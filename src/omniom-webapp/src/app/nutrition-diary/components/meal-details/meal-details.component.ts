@@ -5,7 +5,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AddNutritionEntryComponent } from '../add-nutrition-entry/add-nutrition-entry.component';
+import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { AddNutritionEntriesSuccess } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -28,7 +28,7 @@ export class MealDetailsComponent implements OnDestroy {
   public detailsRowColumns: string[] = ['productName', 'calories', 'proteins', 'carbohydrates', 'fats', 'actions'];
   public data: MealViewModel[] = [];
   public expandedElements: MealViewModel[] = [];
-  private addNutritionDialog: MatDialogRef<AddNutritionEntryComponent> | undefined;
+  private addNutritionDialog: MatDialogRef<ModifyMealNutritionEntriesComponent> | undefined;
   private destroy$ = new Subject<void>();
   
   constructor(private store: Store, private actions$: Actions, private matDialog: MatDialog) {
@@ -49,10 +49,19 @@ export class MealDetailsComponent implements OnDestroy {
   }
 
   public addNutritionEntryButtonClicked(mealType: MealType): void {
-    this.addNutritionDialog = this.matDialog.open(AddNutritionEntryComponent, {
+    this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
       width: '70vw',
       height: '80vh',
       data: { mealType: mealType }
+    });
+  }
+
+  public modifyNutritionEntries(mealType: MealType) {
+    const productOfSelectedMeal = this.data.find(meal => meal.mealType === mealType)?.entries;
+    this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: { mealType: mealType, initialSelection: productOfSelectedMeal}
     });
   }
 

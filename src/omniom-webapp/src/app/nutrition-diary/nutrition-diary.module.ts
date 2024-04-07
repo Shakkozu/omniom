@@ -8,7 +8,7 @@ import { NutritionDiaryStore } from "./store/nutrition-diary.store";
 import { NgxsModule } from "@ngxs/store";
 import { DiaryDaySummaryComponent } from "./components/diary-day-selector/diary-day-summary/diary-day-summary.component";
 import { MealDetailsComponent } from "./components/meal-details/meal-details.component";
-import { AddNutritionEntryComponent } from "./components/add-nutrition-entry/add-nutrition-entry.component";
+import { ModifyMealNutritionEntriesComponent } from "./components/modify-meal-nutrition-entries/modify-meal-nutrition-entries.component";
 import { ProductsModule } from "../products/products.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
@@ -18,7 +18,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 		DiaryDaySelectorComponent,
 		DiaryDaySummaryComponent,
 		MealDetailsComponent,
-		AddNutritionEntryComponent
+		ModifyMealNutritionEntriesComponent,
 	],
 	imports: [
 		NgxsModule.forFeature([

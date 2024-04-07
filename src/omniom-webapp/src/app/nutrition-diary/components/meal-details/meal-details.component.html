@@ -34,6 +34,7 @@
 			 </th>
 		<td mat-cell *matCellDef="let element" class="flex">
 			<button mat-icon-button (click)="addNutritionEntryButtonClicked(element.mealType)"><mat-icon>add</mat-icon></button>
+			<button mat-icon-button (click)="modifyNutritionEntries(element.mealType)"><mat-icon>edit</mat-icon></button>
 			<button mat-icon-button aria-label="expand row"> @if (isElementExpanded(element)) {
 				<mat-icon>keyboard_arrow_up</mat-icon>
 				} @else {
@@ -74,9 +75,7 @@
 							<th  mat-header-cell *matHeaderCellDef></th>
 							<td mat-cell *matCellDef="let nestedElement" class="flex justify-end">
 								<div class="row inline-flex py-6">
-									<button mat-icon-button><mat-icon>edit</mat-icon></button>
 									<button mat-icon-button><mat-icon>remove</mat-icon></button>
-
 								</div>
 							</td>
 						</ng-container>

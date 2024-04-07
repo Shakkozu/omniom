@@ -2,7 +2,7 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { ProductDetailsDescription } from "../model";
 import { Injectable } from "@angular/core";
 import { ProductsRestService, SearchProductsResponse } from "../products-rest.service";
-import { ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected } from "./products-catalogue.actions";
+import { ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected, SelectMultipleProducts } from "./products-catalogue.actions";
 
 export interface ProductsCatalogueStateModel {
 	selectedProducts: ProductDetailsDescription[];
@@ -49,6 +49,16 @@ export class ProductsCatalogueStore {
 			return;
 		ctx.patchState({
 			selectedProducts: [...ctx.getState().selectedProducts, selectedProduct]
+		});
+	}
+
+	@Action(SelectMultipleProducts)
+	selectMultipleProductsproductSelected(ctx: StateContext<ProductsCatalogueStateModel>, action: SelectMultipleProducts) {
+		const selectedProducts = ctx.getState().products.filter(p => action.productIds.find(pid => pid === p.guid));
+		if (!selectedProducts || selectedProducts.length === 0)
+			return;
+		ctx.patchState({
+			selectedProducts: selectedProducts
 		});
 	}
 
