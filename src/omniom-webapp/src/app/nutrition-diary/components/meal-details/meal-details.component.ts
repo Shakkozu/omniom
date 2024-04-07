@@ -6,7 +6,7 @@ import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
-import { AddNutritionEntriesSuccess } from '../../store/nutrition-diary.actions';
+import { AddNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -55,6 +55,10 @@ export class MealDetailsComponent implements OnDestroy {
       height: '80vh',
       data: { mealType: mealType, initialSelection: productOfSelectedMeal}
     });
+  }
+
+  public removeProductFromMeal(element: NutritionDiaryEntry) {
+    this.store.dispatch(new RemoveNutritionEntry(element.guid, element.meal));
   }
 
   private convertNutritionDetailsToViewModels(entries: NutritionDetailsGroupeByMeal[]): MealViewModel[] {

@@ -17,6 +17,10 @@ export class NutritionDiaryService {
 		return this.http.get<DaySummaryDto[]>(url);
 	}
 	
+	removeNutritionEntry(entryId: string, mealType: MealType, selectedDay: Date): Observable<void> {
+		throw new Error('Method not implemented.');
+	}
+
 	fetchDayDetails(nutritionDay: Date): Observable<NutritionDayDetails[]> {
 		const url = `${ environment.apiUrl }/api/nutrition-diary/details?nutritionDay=${ this.datePipe.transform(nutritionDay, 'yyyy-MM-dd') }`;
 		return this.http.get<NutritionDayDetails[]>(url);

@@ -2,14 +2,21 @@ import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { tap } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { NutritionDiaryService } from '../nutrition-diary-rest.service';
-import { FetchNutritionSummaries, FetchNutritionSummariesSuccess, FetchNutritionSummariesFailure, SummaryDaySelected, AddNutritionEntries, AddNutritionEntriesSuccess, AddNutritionEntriesFailure } from './nutrition-diary.actions';
+import { FetchNutritionSummaries,
+	FetchNutritionSummariesSuccess,
+	FetchNutritionSummariesFailure,
+	AddNutritionEntries,
+	AddNutritionEntriesSuccess,
+	AddNutritionEntriesFailure,
+	RemoveNutritionEntry,
+	SummaryDaySelected } from './nutrition-diary.actions';
 import { DaySummary, MealType, NutritionDayDetails, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../model';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface NutritionDiaryStateModel {
 	daySummaries: DaySummary[];
 	loading: boolean;
-	selectedSummary: DaySummary | null;
+	selectedNutritionDay: Date | null;
 	selectedNutritionDayDetails: NutritionDayDetails | null;
 	nutritionDetailsLoading: boolean;
 }
@@ -19,14 +26,46 @@ export interface NutritionDiaryStateModel {
 	defaults: {
 		daySummaries: [],
 		loading: false,
-		selectedSummary: null,
 		selectedNutritionDayDetails: null,
+		selectedNutritionDay: null,
 		nutritionDetailsLoading: false,
 	}
 })
 @Injectable()
 export class NutritionDiaryStore {
 	constructor (private nutritionDiaryService: NutritionDiaryService) { }
+
+	@Selector()
+	static selectedNutritionDay(state: NutritionDiaryStateModel) {
+		return state.selectedNutritionDay;
+	}
+
+	@Selector()
+	static nutritionDayEntriesGroupedByMeal(state: NutritionDiaryStateModel): NutritionDetailsGroupeByMeal[] {
+		if (!state.selectedNutritionDayDetails) {
+			return [];
+		}
+
+		const result: { key: MealType; entries: NutritionDiaryEntry[]; }[] = [];
+		const entries = state.selectedNutritionDayDetails.entries;
+		entries.forEach(entry => {
+			const key = entry.meal;
+			const existing = result.find(r => r.key === key);
+			if (existing) {
+				existing.entries.push(entry);
+			} else {
+				result.push({ key, entries: [entry] });
+			}
+
+		});
+
+		return result;
+	}
+
+	@Selector()
+	static nutritionDetailsLoading(state: NutritionDiaryStateModel) {
+		return state.nutritionDetailsLoading;
+	}
 
 	@Selector()
 	static daySummaries(state: NutritionDiaryStateModel) {
@@ -36,6 +75,24 @@ export class NutritionDiaryStore {
 	@Selector()
 	static loading(state: NutritionDiaryStateModel) {
 		return state.loading;
+	}
+
+	@Action(RemoveNutritionEntry)
+	removeNutritionEntry(ctx: StateContext<NutritionDiaryStateModel>, action: RemoveNutritionEntry) {
+		const selectedDay = ctx.getState().selectedNutritionDay;
+		if (!selectedDay) {
+			console.error('Selected day is undefined');
+			return;
+		}
+
+		ctx.patchState({
+			loading: true
+		});
+		return this.nutritionDiaryService.removeNutritionEntry(action.entryId, action.mealType, selectedDay)
+			.subscribe({
+				next: _ => ctx.dispatch(new AddNutritionEntriesSuccess(new Date())),
+				error: error => ctx.dispatch(new AddNutritionEntriesFailure(error))
+			});
 	}
 
 
@@ -63,7 +120,7 @@ export class NutritionDiaryStore {
 					guid: uuidv4(),
 				};
 			}
-			ctx.dispatch(new SummaryDaySelected(stateNutritionDaySummaries[modifiedSummary]));
+			ctx.dispatch(new SummaryDaySelected(stateNutritionDaySummaries[modifiedSummary].nutritionDay));
 			ctx.patchState({
 				daySummaries: stateNutritionDaySummaries,
 				loading: false,
@@ -108,52 +165,14 @@ export class NutritionDiaryStore {
 	@Action(SummaryDaySelected)
 	summaryDaySelected(ctx: StateContext<NutritionDiaryStateModel>, action: SummaryDaySelected) {
 		ctx.patchState({
-			selectedSummary: action.summary,
+			selectedNutritionDay: action.nutritionDay,
 			nutritionDetailsLoading: true
 		});
-		this.nutritionDiaryService.fetchDayDetails(action.summary.nutritionDay).subscribe(details => {
+		this.nutritionDiaryService.fetchDayDetails(action.nutritionDay).subscribe(details => {
 			ctx.patchState({
 				selectedNutritionDayDetails: details[0],
 				nutritionDetailsLoading: false
 			});
 		});
 	}
-
-	@Selector()
-	static selectedSummary(state: NutritionDiaryStateModel) {
-		return state.selectedSummary;
-	}
-
-	@Selector()
-	static selectedNutritionDayDetails(state: NutritionDiaryStateModel) {
-		return state.selectedNutritionDayDetails;
-	}
-
-	@Selector()
-	static nutritionDayEntriesGroupedByMeal(state: NutritionDiaryStateModel): NutritionDetailsGroupeByMeal[] {
-		if (!state.selectedNutritionDayDetails) {
-			return [];
-		}
-
-		const result: { key: MealType; entries: NutritionDiaryEntry[]; }[] = [];
-		const entries = state.selectedNutritionDayDetails.entries;
-		entries.forEach(entry => {
-			const key = entry.meal;
-			const existing = result.find(r => r.key === key);
-			if (existing) {
-				existing.entries.push(entry);
-			} else {
-				result.push({ key, entries: [entry] });
-			}
-
-		});
-
-		return result;
-	}
-
-	@Selector()
-	static nutritionDetailsLoading(state: NutritionDiaryStateModel) {
-		return state.nutritionDetailsLoading;
-	}
-
 }

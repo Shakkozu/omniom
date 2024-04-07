@@ -31,6 +31,6 @@ export class DiaryDaySummaryComponent {
 	}
 
 	onSummaryClicked(summary: DaySummary): void {
-		this.store.dispatch(new SummaryDaySelected(summary));
+		this.store.dispatch(new SummaryDaySelected(summary.nutritionDay));
 	}
 }

@@ -13,7 +13,7 @@ import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 export class DiaryDaySelectorComponent {
   public summariesFromRange$: Observable<DaySummary[]> = this.store.select(NutritionDiaryStore.daySummaries);
   public isLoading$: Observable<boolean> = this.store.select(state => state.nutritionDiary.loading);
-  public selectedDayId$: Observable<DaySummary | null> = this.store.select(NutritionDiaryStore.selectedSummary);
+  public selectedNutritionDay$: Observable<Date | null> = this.store.select(NutritionDiaryStore.selectedNutritionDay);
 
   public startDate: Date | null;
   public endDate: Date | null;
@@ -34,8 +34,7 @@ export class DiaryDaySelectorComponent {
         return
       };
 
-      this.store.dispatch(new SummaryDaySelected(todaySumary));
-
+      this.store.dispatch(new SummaryDaySelected(todaySumary.nutritionDay));
     });
   }
 

@@ -8,7 +8,14 @@ export enum NutritionDiaryActionTypes {
 	FetchNutritionSummaries = '[Nutrition Diary] Fetch Nutrition Summaries',
 	FetchNutritionSummariesSuccess = '[Nutrition Diary] Fetch Nutrition Summaries Success',
 	FetchNutritionSummariesFailure = '[Nutrition Diary] Fetch Nutrition Summaries Failure',
-	RefreshNutritionDaySummary = '[Nutrition Diary] Refresh Nutrition Day Summary'
+	RefreshNutritionDaySummary = '[Nutrition Diary] Refresh Nutrition Day Summary',
+	RemoveNutritionEntry = '[Nutrition Diary] Remove nutriiton entry'
+}
+
+export class RemoveNutritionEntry {
+	static readonly type = NutritionDiaryActionTypes.RemoveNutritionEntry;
+
+	constructor(public entryId: string, public mealType: MealType) {}
 }
 
 export class AddNutritionEntries {
@@ -59,12 +66,11 @@ export class RefreshNutritionDaySummary {
 export class SummaryDaySelected {
 	static readonly type = NutritionDiaryActionTypes.SummaryDaySelected;
 
-	constructor(public summary: DaySummary) {}
+	constructor(public nutritionDay: Date) {}
 }
 
 export type NutritionDiaryActions =
 	| AddNutritionEntries
-	| SummaryDaySelected
 	| FetchNutritionSummaries
 	| FetchNutritionSummariesSuccess
 	| FetchNutritionSummariesFailure;
