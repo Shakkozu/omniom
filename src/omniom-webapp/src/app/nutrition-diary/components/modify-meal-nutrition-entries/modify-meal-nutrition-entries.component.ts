@@ -70,16 +70,6 @@ export class ModifyMealNutritionEntriesComponent {
           product.fats,
           product.carbohydrates));
     }
-    else {
-      this.products = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).map((product) =>
-        new MealEntry(product.name,
-          product.guid,
-          product.suggestedPortionSizeG,
-          product.kcalPer100G,
-          product.proteinsPer100G,
-          product.fatPer100G,
-          product.carbsPer100G));
-    }
   }
 
   removeProductFromSelection(product: MealEntry) {

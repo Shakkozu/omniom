@@ -54,9 +54,7 @@ export class ProductsCatalogueStore {
 
 	@Action(SelectMultipleProducts)
 	selectMultipleProductsproductSelected(ctx: StateContext<ProductsCatalogueStateModel>, action: SelectMultipleProducts) {
-		const selectedProducts = ctx.getState().products.filter(p => action.productIds.find(pid => pid === p.guid));
-		if (!selectedProducts || selectedProducts.length === 0)
-			return;
+		const selectedProducts = ctx.getState().products.filter(p => action.productIds.find(pid => pid === p.guid)) ?? [];
 		ctx.patchState({
 			selectedProducts: selectedProducts
 		});
