@@ -1,5 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
 
 @Injectable({
 	providedIn: 'root',
@@ -14,8 +15,9 @@ export class UserProfileRestService implements IUserProfileService {
 	providedIn: 'root',
 })
 export class FakeUserProfileService implements IUserProfileService {
-	constructor(private http: HttpClient) {
-		this.http = http;
+
+	updateUserMealsConfiguration(mealsConfiguration: { mealName: string, enabled: boolean}[]): Observable<any> {
+		return of({})
 	}
 }
 
