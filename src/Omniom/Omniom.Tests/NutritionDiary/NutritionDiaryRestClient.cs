@@ -20,7 +20,7 @@ internal class NutritionDiaryRestClient
             await _httpClient.GetFromJsonAsync<IEnumerable<NutritionDayEntryDto>>($"/api/nutrition-diary/details?nutritionDay={dateTime:yyyy-MM-dd}")
             ?? throw new InvalidOperationException("Fetching nutriiton day entries failed");
     }
-    public async Task<IEnumerable<ShortSummary>> GetShortSummaryForDays(Guid userId, DateTime from, DateTime to)
+    public async Task<IEnumerable<ShortSummary>> GetShortSummaryForDays(DateTime from, DateTime to)
     {
         return await _httpClient.GetFromJsonAsync<IEnumerable<ShortSummary>>($"/api/nutrition-diary/summary?datefrom={from:yyyy-MM-dd}&dateTo={to:yyyy-MM-dd}")
             ?? throw new Exception("Fetching short summary for days failed");

@@ -13,7 +13,6 @@ namespace Omniom.Tests.NutritionDiary;
 public class NutritionDiaryIntegrationTests
 {
     private OmniomApp _omniomApp;
-    private Guid _userId;
     private List<ProductDetailsDescription> _productsSet;
     private ProductsTestsFixture ProductsTestsFixture => _omniomApp.ProductsTestsFixture;
     private AuthFixture AuthFixture => _omniomApp.AuthFixture;
@@ -22,7 +21,6 @@ public class NutritionDiaryIntegrationTests
     public async Task Setup()
     {
         _omniomApp = OmniomApp.CreateInstance();
-        _userId = Guid.NewGuid();
         _omniomApp.ProductsTestsFixture.SeedProductsCatalogue();
         _productsSet = (await ProductsTestsFixture.AProductsFromCatalogue()).ToList();
     }
@@ -187,7 +185,7 @@ public class NutritionDiaryIntegrationTests
         await restClient.SaveNutritionEntries(addSecondNutritionEntryRequest);
         await restClient.SaveNutritionEntries(addPreviousDayNutritionEntriesRequest);
 
-        var summary = await restClient.GetShortSummaryForDays(_userId, DateTime.Now.AddDays(-1).Date, DateTime.Now.Date);
+        var summary = await restClient.GetShortSummaryForDays(DateTime.Now.AddDays(-1).Date, DateTime.Now.Date);
 
         summary.Should().HaveCount(2);
         summary.Single(entry => entry.NutritionDay.Date == dateOfModifiedEntry.Date).Should().BeEquivalentTo<ShortSummary>(new ShortSummary
