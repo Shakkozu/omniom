@@ -58,11 +58,11 @@ internal class UserProfileRestClient
 
     internal async Task CustomizeAvailableMealsConfiguration(CustomizeAvailableMealsConfigurationRequest configuration)
     {
-        await _httpClient.PostAsJsonAsync("api/user-profile/customize-meals-configuration", configuration);
+        await _httpClient.PostAsJsonAsync(Omniom.Domain.UserProfile.CustomizingAvailableMeals.Route.ModifyMealConfiguration, configuration);
     }
 
     internal async Task<IEnumerable<MealConfigurationItem>> GetAvailableMealsConfiguration()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<MealConfigurationItem>>("api/user-profile/meals-configuration") ?? [];
+        return await _httpClient.GetFromJsonAsync<IEnumerable<MealConfigurationItem>>(Omniom.Domain.UserProfile.GettingUserMealsConfiguration.Route.GetMealsConfiguration) ?? [];
     }
 }
