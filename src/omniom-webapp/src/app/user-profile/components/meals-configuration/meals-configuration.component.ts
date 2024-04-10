@@ -19,7 +19,7 @@ import { Subject, takeUntil } from 'rxjs';
       <mat-card-content class="text-left mt-4">
         <h3>Wybierz posiłki które chcesz uwzględnić w swoim dzienniku</h3>
         <mat-error class="text-yellow-500" *ngIf="!canDisableMoreMeals">Co najmniej {{MINIMUM_MEALS_COUNT}} posiłki muszą zostać wybrane</mat-error>
-        <div class="row">
+        <div *ngIf="!(loading$ | async)" class="row">
           <mat-selection-list>
             <mat-list-option
             *ngFor="let meal of viewModel.availableMeals"
@@ -97,11 +97,11 @@ export class MealsConfigurationComponent implements OnDestroy, OnInit {
   private defaultMealConfigurationViewModel(): MealConfiguraitonViewModel {
     return {
       availableMeals: [
-        { key: MealType.Breakfast, value: 'Śniadanie', enabled: true },
-        { key: MealType.SecondBreakfast, value: 'Drugie śniadanie', enabled: true },
-        { key: MealType.Dinner, value: 'Obiad', enabled: true },
-        { key: MealType.Snack, value: 'Przekąska', enabled: true },
-        { key: MealType.Supper, value: 'Kolacja', enabled: true }
+        { key: MealType.Breakfast, value: 'Śniadanie', enabled:true },
+        { key: MealType.SecondBreakfast, value: 'Drugie śniadanie', enabled:true },
+        { key: MealType.Dinner, value: 'Obiad', enabled:true },
+        { key: MealType.Snack, value: 'Przekąska', enabled:true },
+        { key: MealType.Supper, value: 'Kolacja', enabled:true }
       ],
     };
   }

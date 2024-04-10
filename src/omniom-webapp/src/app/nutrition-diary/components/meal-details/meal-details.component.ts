@@ -134,19 +134,6 @@ export class MealDetailsComponent implements OnDestroy {
     return new MatTableDataSource<NutritionDiaryEntry>(vm.entries);
   }
 
-  public getTotalKcal() {
-
-  }
-  public getTotalFats() {
-
-  }
-  public getTotalProteins() {
-
-  }
-  public getTotalCarbs() {
-
-  }
-
   public getTotals(): MealSummary { 
     return this.data.reduce((acc, curr) => {
       acc.kcal += curr.summary.kcal;
@@ -155,10 +142,7 @@ export class MealDetailsComponent implements OnDestroy {
       acc.fats += curr.summary.fats;
       return acc;
     }, { kcal: 0, proteins: 0, carbohydrates: 0, fats: 0 });
-  
-
   }
-
 }
 
 
