@@ -10,11 +10,11 @@ public class ModifyMealsConfigurationIntergrationTests
     private OmniomApp _omniomApp;
     public IEnumerable<MealConfigurationItem> AllMealsEnabledConfiguration => new List<MealConfigurationItem>
     {
-        new MealConfigurationItem(MealType.Breakfast, true),
-        new MealConfigurationItem(MealType.SecondBreakfast, true),
-        new MealConfigurationItem(MealType.Snack, true),
-        new MealConfigurationItem(MealType.Dinner, true),
-        new MealConfigurationItem(MealType.Supper, true),
+        new MealConfigurationItem(MealType.Breakfast.ToString(), true),
+        new MealConfigurationItem(MealType.SecondBreakfast.ToString(), true),
+        new MealConfigurationItem(MealType.Snack.ToString(), true),
+        new MealConfigurationItem(MealType.Dinner.ToString(), true),
+        new MealConfigurationItem(MealType.Supper.ToString(), true),
     };
 
     [SetUp]
@@ -33,11 +33,11 @@ public class ModifyMealsConfigurationIntergrationTests
         {
             Configuration = new List<MealConfigurationItem>
             {
-                new MealConfigurationItem(MealType.Breakfast, false),
-                new MealConfigurationItem(MealType.SecondBreakfast, true),
-                new MealConfigurationItem(MealType.Snack, false),
-                new MealConfigurationItem(MealType.Dinner, true),
-                new MealConfigurationItem(MealType.Supper, true),
+                new MealConfigurationItem(MealType.Breakfast.ToString(), false),
+                new MealConfigurationItem(MealType.SecondBreakfast.ToString(), true),
+                new MealConfigurationItem(MealType.Snack.ToString(), false),
+                new MealConfigurationItem(MealType.Dinner.ToString(), true),
+                new MealConfigurationItem(MealType.Supper.ToString(), true),
             }
         };
 

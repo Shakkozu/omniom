@@ -15,7 +15,7 @@ public record CustomizeAvailableMealsConfigurationRequest
     public List<MealConfigurationItem> Configuration { get; set; }
 }
 
-public record MealConfigurationItem(MealType MealType, bool Enabled);
+public record MealConfigurationItem(string MealName, bool Enabled);
 
 public class CustomizeAvailableMealsConfigurationCommand
 {
@@ -24,7 +24,7 @@ public class CustomizeAvailableMealsConfigurationCommand
         var allMealTypes = Enum.GetValues<MealType>();
         if(mealConfigurationItems.Count() != allMealTypes.Length)
             throw new ArgumentException($"All meal types must be provided. Correct meal types are: ${@allMealTypes}");
-        if (allMealTypes.All(x => mealConfigurationItems.All(y => y.MealType != x)))
+        if (allMealTypes.All(x => mealConfigurationItems.All(y => Enum.Parse<MealType>(y.MealName) != x)))
             throw new ArgumentException($"All meal types must be provided. Correct meal types are: ${@allMealTypes}");
 
         

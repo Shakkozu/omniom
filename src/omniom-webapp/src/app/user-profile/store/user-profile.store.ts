@@ -1,13 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Action, Selector, State, StateContext } from "@ngxs/store";
+import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { MealType } from "../../nutrition-diary/model";
-import { FakeUserProfileService } from "../user-profile-rest.service";
-import { UpdateUserMealsConfiguration } from "./user-profile.actions";
+import { UserProfileRestService } from "../user-profile-rest.service";
+import { FetchUserProfileConfiguration, UpdateUserMealsConfiguration } from "./user-profile.actions";
 
 export interface UserProfileStateModel {
 	mealsConfiguration: { key: MealType, enabled: boolean }[];
 	loading: boolean;
-
 }
 
 @State<UserProfileStateModel>({
@@ -25,7 +24,7 @@ export interface UserProfileStateModel {
 })
 @Injectable()
 export class UserProfileStore {
-	constructor (private profileService: FakeUserProfileService) { 
+	constructor (private profileService: UserProfileRestService) {
 	}
 
 	@Selector()
@@ -38,21 +37,42 @@ export class UserProfileStore {
 		return state.loading;
 	}
 
+	@Action(FetchUserProfileConfiguration)
+	initializeUserProfile(ctx: StateContext<UserProfileStateModel>) {
+		ctx.patchState({
+			loading: true
+		})
+		this.profileService.getUserMealsConfiguration().subscribe(
+			config => {
+				const mapped = config.map(m => ({ key: this.getMealTypeFromName(m.mealName), enabled: m.enabled }));
+				ctx.patchState({
+					mealsConfiguration: mapped,
+					loading: false
+				});
+			},
+			error => {
+				console.error('Error fetching user meals configuration');
+				ctx.patchState({
+					loading: false
+				});
+			}
+		);
+	}
+
 	@Action(UpdateUserMealsConfiguration)
 	updateUserMealsConfiguration(ctx: StateContext<UserProfileStateModel>, action: UpdateUserMealsConfiguration) {
 		ctx.patchState({
 			loading: true
 		})
-		console.log('loading enabled')
 		this.profileService.updateUserMealsConfiguration(action.configuration).subscribe(
-			complete => { 
+			_ => { 
 				const mapped = action.configuration.map(m => ({key: this.getMealTypeFromName(m.mealName), enabled: m.enabled}));
 				ctx.patchState({
 					mealsConfiguration: mapped,
 					loading: false
 				});
 			},
-			error => { }
+			_ => { }
 		);
 	}
 

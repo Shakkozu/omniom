@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MealType } from '../../../nutrition-diary/model';
 import { Store } from '@ngxs/store';
 import { UpdateUserMealsConfiguration } from '../../store/user-profile.actions';
@@ -40,31 +40,33 @@ import { Subject, takeUntil } from 'rxjs';
   `,
   styles: `.dashboard-card { position: absolute; top: 1rem; left: 1rem; right: 1rem; bottom: 1rem;}`
 })
-export class MealsConfigurationComponent implements OnDestroy {
+export class MealsConfigurationComponent implements OnDestroy, OnInit {
   public readonly MINIMUM_MEALS_COUNT = 3;
   public loading$ = this.store.select(UserProfileStore.loading);
   private destroy$ = new Subject<void>();
-  private mealsTranslations = {
-    [MealType.Breakfast]: 'Śniadanie',
-    [MealType.SecondBreakfast]: 'Drugie śniadanie',
-    [MealType.Dinner]: 'Obiad',
-    [MealType.Snack]: 'Przekąska',
-    [MealType.Supper]: 'Kolacja'
-  };
   public viewModel: MealConfiguraitonViewModel;
   constructor (private store: Store) {
     this.viewModel = this.defaultMealConfigurationViewModel();
-    this.store.select(UserProfileStore.mealsConfiguration).subscribe(config => {
-      if (!config) {
-        return;
-      }
-
-      this.viewModel.availableMeals = config.map(m => ({ key: m.key, value: this.mealsTranslations[m.key], enabled: m.enabled }));
-    });
   }
 
-  
+  ngOnInit(): void {
+    this.store.select(UserProfileStore.mealsConfiguration)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(config => this.refreshMealConfigurationViewModel(config));
+  }
 
+  private refreshMealConfigurationViewModel(configEntry: { key: MealType, enabled: boolean }[]) {
+    if (!configEntry) {
+      return;
+    }
+
+    configEntry.forEach(c => {
+      const meal = this.viewModel.availableMeals.find(m => m.key === c.key);
+      if (meal) {
+        meal.enabled = c.enabled;
+      }
+    });
+  }
 
   public get canDisableMoreMeals() {
     return this.viewModel.availableMeals.filter(m => m.enabled).length > this.MINIMUM_MEALS_COUNT;
@@ -104,10 +106,6 @@ export class MealsConfigurationComponent implements OnDestroy {
     };
   }
 }
-
-
 interface MealConfiguraitonViewModel {
   availableMeals: { key: MealType, value: string, enabled: boolean }[];
 }
-
-

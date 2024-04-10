@@ -1,28 +1,24 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
+import { environment } from "../../environments/environment";
 
 @Injectable({
 	providedIn: 'root',
 })
-export class UserProfileRestService implements IUserProfileService {
+export class UserProfileRestService {
 	constructor(private http: HttpClient) {
 		this.http = http;
 	}
-}
 
-@Injectable({
-	providedIn: 'root',
-})
-export class FakeUserProfileService implements IUserProfileService {
+	updateUserMealsConfiguration(mealsConfiguration: { mealName: string, enabled: boolean }[]): Observable<any> {
+		const url = `${ environment.apiUrl }/api/user-profile/meals-configuration`;
+		return this.http.post(url, { configuration: mealsConfiguration });
+	}
 
-	updateUserMealsConfiguration(mealsConfiguration: { mealName: string, enabled: boolean}[]): Observable<any> {
-		return of({})
+	getUserMealsConfiguration(): Observable<{ mealName: string, enabled: boolean }[]> {
+		const url = `${environment.apiUrl}/api/user-profile/meals-configuration`;
+		return this.http.get<{ mealName: string, enabled: boolean }[]>(url);
 	}
 }
-
-
-export interface IUserProfileService {
-
-
-}
+ 

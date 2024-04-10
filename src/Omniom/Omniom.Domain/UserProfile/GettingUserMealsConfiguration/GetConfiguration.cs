@@ -33,11 +33,11 @@ internal class GetMealsConfigurationCommandHandler : IQueryHandler<GetMealsConfi
     {
         return new List<MealConfigurationItem>
         {
-            new(MealType.Breakfast, true),
-            new(MealType.SecondBreakfast, true),
-            new(MealType.Snack, true),
-            new(MealType.Dinner, true),
-            new(MealType.Supper, true),
+            new(MealType.Breakfast.ToString(), true),
+            new(MealType.SecondBreakfast.ToString(), true),
+            new(MealType.Snack.ToString(), true),
+            new(MealType.Dinner.ToString(), true),
+            new(MealType.Supper.ToString(), true),
         };
     }
 }

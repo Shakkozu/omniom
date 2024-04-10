@@ -9,10 +9,20 @@ public class ModifyMealTests
     public void ShouldNotCreateModificationCommandWhenMealTypeIsMissing()
     {
         var config = new List<MealConfigurationItem> {
-            new MealConfigurationItem(MealType.SecondBreakfast, true),
-            new MealConfigurationItem(MealType.Snack, true),
-            new MealConfigurationItem(MealType.Dinner, true),
-            new MealConfigurationItem(MealType.Supper, true),
+            new MealConfigurationItem(MealType.SecondBreakfast.ToString(), true),
+            new MealConfigurationItem(MealType.Snack.ToString(), true),
+            new MealConfigurationItem(MealType.Dinner.ToString(), true),
+            new MealConfigurationItem(MealType.Supper.ToString(), true),
+        };
+
+        Assert.Throws<ArgumentException>(() => CustomizeAvailableMealsConfigurationCommand.Create(Guid.NewGuid(), config));
+
+    }
+    [Test]
+    public void ShouldNotCreateModificationCommandWhenMealTypeIsInvalid()
+    {
+        var config = new List<MealConfigurationItem> {
+            new MealConfigurationItem("InvalidMeal", false),
         };
 
         Assert.Throws<ArgumentException>(() => CustomizeAvailableMealsConfigurationCommand.Create(Guid.NewGuid(), config));
@@ -22,11 +32,11 @@ public class ModifyMealTests
     public void ShouldCreateValidModificationCommand()
     {
         var config = new List<MealConfigurationItem> {
-            new MealConfigurationItem(MealType.Breakfast, false),
-            new MealConfigurationItem(MealType.SecondBreakfast, true),
-            new MealConfigurationItem(MealType.Snack, true),
-            new MealConfigurationItem(MealType.Dinner, true),
-            new MealConfigurationItem(MealType.Supper, true),
+            new MealConfigurationItem(MealType.Breakfast.ToString(), false),
+            new MealConfigurationItem(MealType.SecondBreakfast.ToString(), true),
+            new MealConfigurationItem(MealType.Snack.ToString(), true),
+            new MealConfigurationItem(MealType.Dinner.ToString(), true),
+            new MealConfigurationItem(MealType.Supper.ToString(), true),
         };
 
         Assert.NotNull(config);
