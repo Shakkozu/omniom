@@ -3,27 +3,15 @@ using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Domain.NutritionDiary.Storage;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Tests.Auth;
-using Omniom.Tests.Products;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.NutritionDiary;
-public class NutritionDiaryIntegrationTests
-{
-    private OmniomApp _omniomApp;
-    private List<ProductDetailsDescription> _productsSet;
-    private ProductsTestsFixture ProductsTestsFixture => _omniomApp.ProductsTestsFixture;
-    private AuthFixture AuthFixture => _omniomApp.AuthFixture;
 
-    [SetUp]
-    public async Task Setup()
-    {
-        _omniomApp = OmniomApp.CreateInstance();
-        _omniomApp.ProductsTestsFixture.SeedProductsCatalogue();
-        _productsSet = (await ProductsTestsFixture.AProductsFromCatalogue()).ToList();
-    }
+[TestFixture]
+public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
+{
+    private AuthFixture AuthFixture => _omniomApp.AuthFixture;
 
     [Test]
     public async Task ShouldRemoveNutriitonEntryFromMeal()

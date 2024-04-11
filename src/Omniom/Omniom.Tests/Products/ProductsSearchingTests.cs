@@ -1,23 +1,13 @@
 ﻿using Newtonsoft.Json;
-using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
 
-public class ProductsSearchingTests
+[TestFixture]
+public class ProductsSearchingTests : BaseIntegrationTestsFixture
 {
-
-    private OmniomApp _app = default!;
-    private SearchProductsQueryHandler SearchProductsQueryHandler => _app.SearchProductsQueryHandler;
-    private ProductsTestsFixture ProductsCatalogueFixture => _app.ProductsTestsFixture;
-
-    [OneTimeSetUp]
-    public void SetUp()
-    {
-        _app = OmniomApp.CreateInstance();
-        ProductsCatalogueFixture.SeedProductsCatalogue();
-    }
+    private SearchProductsQueryHandler SearchProductsQueryHandler => _omniomApp.SearchProductsQueryHandler;
 
     [Test]
     public async Task ShouldSearchProductsByName_ReturnProductsWhichMatchesNameOrGenericName()
@@ -25,7 +15,7 @@ public class ProductsSearchingTests
         var query = new SearchProductsQuery("Tortil");
         var endpoint = "/api/products";
 
-        var result = await _app.CreateHttpClient().GetAsync($"{endpoint}?search={query.Name}");
+        var result = await _omniomApp.CreateHttpClient().GetAsync($"{endpoint}?search={query.Name}");
 
         result.EnsureSuccessStatusCode();
         var responseContent = await result.Content.ReadAsStringAsync();
