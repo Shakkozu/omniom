@@ -9,6 +9,8 @@ import { UserSummaryPageComponent } from './user-summary-page/user-summary-page.
 import { MealsConfigurationComponent } from './components/meals-configuration/meals-configuration.component';
 import { UserProfileStore } from './store/user-profile.store';
 import { NgxsModule } from '@ngxs/store';
+import { NutritionTargetsConfigurationComponent } from './components/nutrition-targets-configuration/nutrition-targets-configuration.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,10 +19,13 @@ import { NgxsModule } from '@ngxs/store';
     UserSettingsPageComponent,
     UserSummaryPageComponent,
     MealsConfigurationComponent,
+    NutritionTargetsConfigurationComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
+    FormsModule,
+    ReactiveFormsModule,
     UserProfileRoutingModule,
     NgxsModule.forFeature([
       UserProfileStore

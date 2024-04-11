@@ -7,6 +7,9 @@ import { Component } from '@angular/core';
     <mat-grid-tile [colspan]="1" [rowspan]="2" class="dashboard-card" >
       <app-meals-configuration></app-meals-configuration>
     </mat-grid-tile>
+    <mat-grid-tile [colspan]="1" [rowspan]="3" class="dashboard-card" >
+      <app-nutrition-targets-configuration></app-nutrition-targets-configuration>
+    </mat-grid-tile>
   </mat-grid-list>
   `,
   styleUrl: './user-settings-page.component.scss'
@@ -17,5 +20,4 @@ export class UserSettingsPageComponent {
     { title: 'User Profile', cols: 1, rows: 1 },
     { title: 'User Summary', cols: 2, rows: 2 },
   ];
-
 }
