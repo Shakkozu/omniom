@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { FetchUserProfileConfiguration } from '../store/user-profile.actions';
 
 @Component({
   selector: 'app-user-settings-page',
@@ -14,10 +12,6 @@ import { FetchUserProfileConfiguration } from '../store/user-profile.actions';
   styleUrl: './user-settings-page.component.scss'
 })
 export class UserSettingsPageComponent {
-  constructor (private store: Store) { 
-    this.store.dispatch(new FetchUserProfileConfiguration());
-  }
-
   cards = [
     { title: 'Meals Configuration', cols: 1, rows: 1 },
     { title: 'User Profile', cols: 1, rows: 1 },

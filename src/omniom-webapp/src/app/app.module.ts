@@ -16,6 +16,7 @@ import { AuthenticationNavbarComponentComponent } from './shared/authentication-
 import localePl from '@angular/common/locales/pl';
 import { LOCALE_ID } from '@angular/core';
 import { JwtInterceptor } from './auth/auth.interceptor';
+import { UserProfileModule } from './user-profile/user-profile.module';
 
 registerLocaleData(localePl);
 
@@ -36,6 +37,7 @@ registerLocaleData(localePl);
     ReactiveFormsModule,
     RouterModule,
     ProductsModule,
+    UserProfileModule
   ],
   exports: [
     MaterialModule

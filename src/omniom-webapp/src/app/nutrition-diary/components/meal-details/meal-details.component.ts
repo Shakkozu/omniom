@@ -8,6 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
+import { UserProfileStore } from '../../../user-profile/store/user-profile.store';
 
 @Component({
   selector: 'app-meal-details',
@@ -62,8 +63,12 @@ export class MealDetailsComponent implements OnDestroy {
   }
 
   private convertNutritionDetailsToViewModels(entries: NutritionDetailsGroupeByMeal[]): MealViewModel[] {
+    const enabledMeals = this.store.selectSnapshot(UserProfileStore.mealsConfiguration)
+      .filter(m => m.enabled === true)
+      .map(m => MealType[m.key]);
     const result: MealViewModel[] = Object.keys(MealType)
       .filter(key => isNaN(Number(key)))
+      .filter(key => enabledMeals.includes(key))
       .map(key => ({
         meal: this.translateMealType(key),
         mealType: key as unknown as MealType,

@@ -89,7 +89,7 @@ export class UserProfileStore {
 			case 'Supper':
 				return MealType.Supper;
 			default:
-				throw new Error("Unknown meal name");
+				throw new Error("Unknown meal name: " + name);
 		}
 	}
 }
