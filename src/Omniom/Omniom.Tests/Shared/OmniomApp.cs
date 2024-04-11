@@ -15,8 +15,7 @@ using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Tests.Shared;
 
-
-internal class OmniomApp : WebApplicationFactory<Program>
+public class OmniomApp : WebApplicationFactory<Program>
 {
     private IServiceScope _scope;
     private bool _reuseScope;

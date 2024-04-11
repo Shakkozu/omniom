@@ -12,17 +12,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Omniom.Tests.Auth;
-public class AuthorizationTests
-{
-    private OmniomApp _omniomApp;
 
-    [OneTimeSetUp]
-    public void OneTimeSetUp()
-    {
-        _omniomApp = OmniomApp.CreateInstance();
-    }
-
-    [Test]
+[TestFixture]
+public class AuthorizationTests : BaseIntegrationTestsFixture
+{    [Test]
     public async Task ShouldRegisterUser()
     {
         var client = _omniomApp.CreateClient();

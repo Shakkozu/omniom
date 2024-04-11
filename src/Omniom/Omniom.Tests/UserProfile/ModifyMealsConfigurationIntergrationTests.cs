@@ -5,9 +5,10 @@ using Omniom.Tests.Shared;
 using System.Net.Http.Json;
 
 namespace Omniom.Tests.UserProfile;
-public class ModifyMealsConfigurationIntergrationTests
+
+[TestFixture]
+public class ModifyMealsConfigurationIntergrationTests : BaseIntegrationTestsFixture
 {
-    private OmniomApp _omniomApp;
     public IEnumerable<MealConfigurationItem> AllMealsEnabledConfiguration => new List<MealConfigurationItem>
     {
         new MealConfigurationItem(MealType.Breakfast.ToString(), true),
@@ -16,12 +17,6 @@ public class ModifyMealsConfigurationIntergrationTests
         new MealConfigurationItem(MealType.Dinner.ToString(), true),
         new MealConfigurationItem(MealType.Supper.ToString(), true),
     };
-
-    [SetUp]
-    public async Task Setup()
-    {
-        _omniomApp = OmniomApp.CreateInstance();
-    }
 
     [Test]
     public async Task ShouldModifyMealsConfiguration()

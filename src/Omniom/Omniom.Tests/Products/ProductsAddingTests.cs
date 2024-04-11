@@ -4,17 +4,11 @@ using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
 
-public class ProductsAddingTests
+[TestFixture]
+public class ProductsAddingTests : BaseIntegrationTestsFixture
 {
-    private OmniomApp _app = default!;
-    private CreateProductCommandHandler CreateProductCommandHandler => _app.CreateProductCommandHandler;
-    private SearchProductsQueryHandler SearchProductsQueryHandler => _app.SearchProductsQueryHandler;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _app = OmniomApp.CreateInstance();
-    }
+    private CreateProductCommandHandler CreateProductCommandHandler => _omniomApp.CreateProductCommandHandler;
+    private SearchProductsQueryHandler SearchProductsQueryHandler => _omniomApp.SearchProductsQueryHandler;
 
     [Test]
     public async Task ShouldCreateAndReadProduct()
