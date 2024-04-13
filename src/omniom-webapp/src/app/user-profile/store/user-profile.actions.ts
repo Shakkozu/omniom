@@ -1,4 +1,4 @@
-import { UserProfileConfiguration } from "../model";
+import { NutritionTargetsConfiguration, UserProfileConfiguration } from "../model";
 
 export class FetchUserProfileConfiguration {
 	static readonly type = '[UserProfile] Fetch user profile configuration';
@@ -10,22 +10,15 @@ export class FetchUserProfileConfigurationSuccess {
 	constructor(public configuration: UserProfileConfiguration) {}
 }
 
-export class FetchUserProfileConfigurationFailure {
-	static readonly type = '[UserProfile] Fetch user profile configuration failure';
-	constructor(public error: string) {}
-}
-
 export class UpdateUserMealsConfiguration {
 	static readonly type = '[UserProfile] Update user meals configuration';
 	constructor (public configuration: { mealName: string; enabled: boolean; }[]) {}
 }
 
-export class UpdateUserMealsConfigurationSuccess {
-	static readonly type = '[UserProfile] Update user meals configuration success';
-	constructor() {}
+export class UpdateNutritionTargetsConfiguration {
+	static readonly type = '[UserProfile] Update nutrition targets configuration';
+	constructor (public configuration: NutritionTargetsConfiguration) {}
 }
 
-export class UpdateUserMealsConfigurationFailure {
-	static readonly type = '[UserProfile] Update user meals configuration failure';
-	constructor(public error: string) {}
-}
+
+

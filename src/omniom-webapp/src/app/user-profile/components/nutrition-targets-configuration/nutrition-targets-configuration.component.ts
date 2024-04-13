@@ -3,6 +3,7 @@ import { UserProfileStore } from '../../store/user-profile.store';
 import { Store } from '@ngxs/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
+import { UpdateNutritionTargetsConfiguration } from '../../store/user-profile.actions';
 
 @Component({
   selector: 'app-nutrition-targets-configuration',
@@ -16,7 +17,7 @@ import { DecimalPipe } from '@angular/common';
         </mat-card-title>
       </mat-card-header>
       <mat-card-content class="mt-4 mx-4">
-        <form [formGroup]="form" *ngIf="!(loading$ | async)" class="grid grid-cols-2 gap-4 auto-rows-max hover:auto-rows-min">
+        <form [formGroup]="form" class="grid grid-cols-2 gap-4 auto-rows-max hover:auto-rows-min">
           <div class="col-span-2">
             <mat-form-field class="w-full">
               <mat-label>Zapotrzebowanie kaloryczne</mat-label>
@@ -69,12 +70,12 @@ import { DecimalPipe } from '@angular/common';
           <div class="col-start-2">
             <mat-form-field class="w-full">
               <mat-label>Łącznie %</mat-label>
-              <input readonly matInput type="number" [value]="getTotalPercents()">
+              <input [disabled]="loading$ | async" readonly matInput type="number" [value]="getTotalPercents()">
               <label matTextSuffix>%</label>
             </mat-form-field>
           </div>
         </form>
-        <mat-error class="my-4 text-lg">Suma % makroskładników musi wynosić 100%</mat-error>
+        <mat-error *ngIf="getTotalPercents() != 100" class="my-4 text-lg">Suma % makroskładników musi wynosić 100%</mat-error>
         <div class="row mt-8 pe-4 flex flex-row-reverse">
           <button [disabled]="loading$ | async" (click)="onSaveButtonClicked()" mat-raised-button color="primary">Zapisz</button>
         </div>
@@ -87,20 +88,37 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
   public loading$ = this.store.select(UserProfileStore.loading);
   public form: FormGroup<any> = new FormGroup({});
   constructor (private store: Store, private decimalPipe: DecimalPipe) { 
-
+    this.loading$.subscribe(loading => {
+      if (loading)
+        this.form.disable();
+      else
+        this.form.enable();
+    });
   }
 
-  ngOnInit(): void {
-    this.form = new FormGroup({
-      totalKcal: new FormControl(2500, [Validators.required]),
-      proteinsPercent: new FormControl(25, [Validators.required]),
-      proteinsG: new FormControl(0, [Validators.required]),
-      carbohydratesG: new FormControl(0, [Validators.required]),
-      carbohydratesPercent: new FormControl(60, [Validators.required]),
-      fatsG: new FormControl(0, [Validators.required]),
-      fatsPercent: new FormControl(15, [Validators.required]),
-    });
+  ngOnInit(): void {    
+    this.initializeForm();
+  }
 
+  private getFormControl(controlName: string): any {
+    return this.form.get(controlName);
+  }
+
+  public getTotalPercents(): number {
+    const proteinsPercent = +this.getFormControl('proteinsPercent').value || 0;
+    const carbohydratesPercent = +this.getFormControl('carbohydratesPercent').value || 0;
+    const fatsPercent = +this.getFormControl('fatsPercent').value || 0;
+
+    return proteinsPercent + carbohydratesPercent + fatsPercent;
+  }
+
+  private initializeForm() {
+    this.initliazeFormDefaultValues();
+    this.initializeFormValueChangesActions();
+    this.form.controls['totalKcal'].setValue(2500);
+  }
+
+  private initializeFormValueChangesActions() {
     const totalKcal = this.form.controls['totalKcal'].value;
     this.form.controls['proteinsPercent'].valueChanges.subscribe(value => {
       const grams = ((value / 100) * totalKcal / 4);
@@ -124,7 +142,7 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
       const grams = ((value / 100) * totalKcal / 9);
       this.form.controls['fatsG'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
     });
-    
+
     this.form.controls['fatsG'].valueChanges.subscribe(value => {
       const percent = ((value * 9 / totalKcal) * 100);
       this.form.controls['fatsPercent'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
@@ -143,25 +161,30 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
       const fatsGrams = ((fatsPercent / 100) * value / 9);
       this.form.controls['fatsG'].setValue(this.decimalPipe.transform(fatsGrams, '1.0-0'), { emitEvent: false });
     });
-    this.initializeForm();
   }
 
-  private getFormControl(controlName: string): any {
-    return this.form.get(controlName);
-  }
-
-  public getTotalPercents(): number {
-    const proteinsPercent = +this.getFormControl('proteinsPercent').value || 0;
-    const carbohydratesPercent = +this.getFormControl('carbohydratesPercent').value || 0;
-    const fatsPercent = +this.getFormControl('fatsPercent').value || 0;
-
-    return proteinsPercent + carbohydratesPercent + fatsPercent;
-  }
-
-  private initializeForm() {
-    this.form.controls['totalKcal'].setValue(2500);
+  private initliazeFormDefaultValues() {
+    const nutritionTargets = this.store.selectSnapshot(UserProfileStore.nutritionTargets);
+    const totalKcal = nutritionTargets?.totalKcal || 2500;
+    const proteinsPercent = nutritionTargets?.proteinsPercent || 25;
+    const proteinsG = nutritionTargets?.proteinsG || 0;
+    const carbohydratesG = nutritionTargets?.carbohydratesG || 0;
+    const carbohydratesPercent = nutritionTargets?.carbohydratesPercent || 60;
+    const fatsG = nutritionTargets?.fatsG || 0;
+    const fatsPercent = nutritionTargets?.fatsPercent || 15;
+      
+    this.form = new FormGroup({
+      totalKcal: new FormControl(totalKcal, [Validators.required]),
+      proteinsPercent: new FormControl(proteinsPercent, [Validators.required]),
+      proteinsG: new FormControl(proteinsG, [Validators.required]),
+      carbohydratesG: new FormControl(carbohydratesG, [Validators.required]),
+      carbohydratesPercent: new FormControl(carbohydratesPercent, [Validators.required]),
+      fatsG: new FormControl(fatsG, [Validators.required]),
+      fatsPercent: new FormControl(fatsPercent, [Validators.required]),
+    });
   }
 
   onSaveButtonClicked() {
+    this.store.dispatch(new UpdateNutritionTargetsConfiguration(this.form.value));
   }
 }

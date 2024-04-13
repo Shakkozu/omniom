@@ -2,11 +2,15 @@ import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext, Store } from "@ngxs/store";
 import { MealType } from "../../nutrition-diary/model";
 import { UserProfileRestService } from "../user-profile-rest.service";
-import { FetchUserProfileConfiguration, UpdateUserMealsConfiguration } from "./user-profile.actions";
+import { FetchUserProfileConfiguration, UpdateNutritionTargetsConfiguration, UpdateUserMealsConfiguration } from "./user-profile.actions";
+import { NutritionTargetsConfiguration } from "../model";
+import { switchMap } from "rxjs";
+
 
 export interface UserProfileStateModel {
 	mealsConfiguration: { key: MealType, enabled: boolean }[];
 	loading: boolean;
+	nutritionTargets: NutritionTargetsConfiguration | null
 }
 
 @State<UserProfileStateModel>({
@@ -20,7 +24,9 @@ export interface UserProfileStateModel {
 			{key: MealType.Supper, enabled: true},
 		],
 		loading: false,
+		nutritionTargets: null,
 	},
+
 })
 @Injectable()
 export class UserProfileStore {
@@ -37,11 +43,52 @@ export class UserProfileStore {
 		return state.loading;
 	}
 
+	@Selector()
+	static nutritionTargets(state: UserProfileStateModel): NutritionTargetsConfiguration | null {
+		return state.nutritionTargets;
+	}
+
+	@Action(UpdateNutritionTargetsConfiguration)
+	updateNutritionTargetsConfiguration(ctx: StateContext<UserProfileStateModel>, action: UpdateNutritionTargetsConfiguration) {
+		ctx.patchState({
+			loading: true
+		})
+		this.profileService.updateNutritionTargetsConfiguration(action.configuration).subscribe(
+			_ => {
+				ctx.patchState({
+					nutritionTargets: action.configuration,
+					loading: false
+				});
+			},
+			error => {
+				console.error('Error updating nutrition targets configuration');
+				ctx.patchState({loading: false});
+			 }
+		);
+	}
+
+
 	@Action(FetchUserProfileConfiguration)
 	initializeUserProfile(ctx: StateContext<UserProfileStateModel>) {
 		ctx.patchState({
 			loading: true
 		})
+
+		this.profileService.getNutritionTargetsConfiguration().subscribe(
+			config => {
+				ctx.patchState({
+					nutritionTargets: config,
+					loading: false
+				});
+			},
+			error => {
+				console.error('Error fetching user profile configuration');
+				ctx.patchState({
+					loading: false
+				});
+			}
+		);
+
 		this.profileService.getUserMealsConfiguration().subscribe(
 			config => {
 				const mapped = config.map(m => ({ key: this.getMealTypeFromName(m.mealName), enabled: m.enabled }));
