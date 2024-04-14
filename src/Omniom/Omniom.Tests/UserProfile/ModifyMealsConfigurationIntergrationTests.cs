@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Omniom.Domain.NutritionDiary.Storage;
-using Omniom.Domain.UserProfile.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
 using Omniom.Tests.Shared;
 using System.Net.Http.Json;
 
@@ -39,25 +39,5 @@ public class ModifyMealsConfigurationIntergrationTests : BaseIntegrationTestsFix
         await restClient.CustomizeAvailableMealsConfiguration(request);
         result = await restClient.GetAvailableMealsConfiguration();
         result.Should().BeEquivalentTo(request.Configuration);
-    }
-}
-
-internal class UserProfileRestClient
-{
-    private HttpClient _httpClient;
-
-    public UserProfileRestClient(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
-    internal async Task CustomizeAvailableMealsConfiguration(CustomizeAvailableMealsConfigurationRequest configuration)
-    {
-        await _httpClient.PostAsJsonAsync(Omniom.Domain.UserProfile.CustomizingAvailableMeals.Route.ModifyMealConfiguration, configuration);
-    }
-
-    internal async Task<IEnumerable<MealConfigurationItem>> GetAvailableMealsConfiguration()
-    {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<MealConfigurationItem>>(Omniom.Domain.UserProfile.GettingUserMealsConfiguration.Route.GetMealsConfiguration) ?? [];
     }
 }

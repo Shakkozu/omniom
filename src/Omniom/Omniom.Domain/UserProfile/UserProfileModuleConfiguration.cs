@@ -3,8 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Shared.BuildingBlocks;
-using Omniom.Domain.UserProfile.CustomizingAvailableMeals;
-using Omniom.Domain.UserProfile.GettingUserMealsConfiguration;
+using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.MealsConfiguration.GettingUserMealsConfiguration;
+using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.Contract;
+using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.CustomizingNutritionTargetsConfiguration;
+using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.GettingNutritionTargetsConfiguration;
 using Omniom.Domain.UserProfile.Storage;
 
 namespace Omniom.Domain.UserProfile;
@@ -19,6 +22,9 @@ public static class UserProfileModuleConfiguration
         });
         serviceCollection.AddTransient<IQueryHandler<GetMealsConfigurationQuery, IEnumerable<MealConfigurationItem>>, GetMealsConfigurationCommandHandler>();
         serviceCollection.AddTransient<ICommandHandler<CustomizeAvailableMealsConfigurationCommand>, CustomizeAvailableMealsConfigurationCommandHandler>();
+
+        serviceCollection.AddTransient<IQueryHandler<GetNutritionTargetsConfigurationQuery, NutritionTargetConfiguration>, GetNutritionTargetsConfigurationQueryHandler>();
+        serviceCollection.AddTransient<ICommandHandler<CustomizeNutritionTargetsCommand>, CustomizeNutritionTargetsCommandHandler>();
         return serviceCollection;
     }
 
@@ -26,6 +32,8 @@ public static class UserProfileModuleConfiguration
     {
         endpoints.MapGetMealsConfigurationEndpoint();
         endpoints.MapModifyAvailableMealsConfigurationEndpoint();
+        endpoints.MapSetNutritionTargetsEndpoint();
+        endpoints.MapGetNutritionTargetsEndpoint();
         return endpoints;
     }
 

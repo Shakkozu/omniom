@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
-using Omniom.Domain.UserProfile.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
 using Omniom.Domain.UserProfile.Storage;
 
-namespace Omniom.Domain.UserProfile.GettingUserMealsConfiguration;
+namespace Omniom.Domain.UserProfile.MealsConfiguration.GettingUserMealsConfiguration;
 public record GetMealsConfigurationQuery(Guid UserId) : IQuery;
 
 internal class GetMealsConfigurationCommandHandler : IQueryHandler<GetMealsConfigurationQuery, IEnumerable<MealConfigurationItem>>
@@ -23,10 +23,10 @@ internal class GetMealsConfigurationCommandHandler : IQueryHandler<GetMealsConfi
     public async Task<IEnumerable<MealConfigurationItem>> HandleAsync(GetMealsConfigurationQuery query, CancellationToken ct)
     {
         var userConfig = await _dbContext.UserProfileConfigurations.SingleOrDefaultAsync(config => config.UserId == query.UserId, ct);
-        if(userConfig == null)
+        if (userConfig == null)
             return GetDefaultMealsConfiguration();
 
-        return userConfig.MealsConfiguration;
+        return userConfig.MealsConfiguration ?? GetDefaultMealsConfiguration();
     }
 
     internal static IEnumerable<MealConfigurationItem> GetDefaultMealsConfiguration()

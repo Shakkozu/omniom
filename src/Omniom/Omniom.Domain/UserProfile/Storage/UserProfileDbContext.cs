@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using Omniom.Domain.UserProfile.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.Contract;
 
 namespace Omniom.Domain.UserProfile.Storage;
 
 internal class UserProfileDbContext : DbContext
 {
     internal DbSet<UserProfileConfiguration> UserProfileConfigurations { get; set; }
+
 
     public UserProfileDbContext(DbContextOptions<UserProfileDbContext> options) : base(options)
     {
@@ -48,6 +50,14 @@ internal static class UserProfileSchema
                 jsonString => string.IsNullOrEmpty(jsonString)
                     ? new List<MealConfigurationItem>()
                     : JsonConvert.DeserializeObject<List<MealConfigurationItem>>(jsonString)
+                );
+            entity.Property(e => e.NutritionTarget).HasColumnName("nutrition_targets_configuration")
+            .HasConversion
+            (
+                configuration => JsonConvert.SerializeObject(configuration),
+                jsonString => string.IsNullOrEmpty(jsonString)
+                    ? null
+                    : JsonConvert.DeserializeObject<NutritionTargetConfiguration>(jsonString)
                 );
         });
     }

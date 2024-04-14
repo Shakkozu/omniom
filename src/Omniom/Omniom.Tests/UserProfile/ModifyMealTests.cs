@@ -1,5 +1,5 @@
 ﻿using Omniom.Domain.NutritionDiary.Storage;
-using Omniom.Domain.UserProfile.CustomizingAvailableMeals;
+using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
 
 namespace Omniom.Tests.UserProfile;
 

@@ -9,7 +9,7 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Omniom.Domain.UserProfile.CustomizingAvailableMeals;
+namespace Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
 public record CustomizeAvailableMealsConfigurationRequest
 {
     public List<MealConfigurationItem> Configuration { get; set; }
@@ -22,12 +22,12 @@ public class CustomizeAvailableMealsConfigurationCommand
     public static CustomizeAvailableMealsConfigurationCommand Create(Guid userId, IEnumerable<MealConfigurationItem> mealConfigurationItems)
     {
         var allMealTypes = Enum.GetValues<MealType>();
-        if(mealConfigurationItems.Count() != allMealTypes.Length)
+        if (mealConfigurationItems.Count() != allMealTypes.Length)
             throw new ArgumentException($"All meal types must be provided. Correct meal types are: ${@allMealTypes}");
         if (allMealTypes.All(x => mealConfigurationItems.All(y => Enum.Parse<MealType>(y.MealName) != x)))
             throw new ArgumentException($"All meal types must be provided. Correct meal types are: ${@allMealTypes}");
 
-        
+
         return new CustomizeAvailableMealsConfigurationCommand(userId, mealConfigurationItems);
     }
     private CustomizeAvailableMealsConfigurationCommand(Guid userId, IEnumerable<MealConfigurationItem> mealConfigurationItems)
