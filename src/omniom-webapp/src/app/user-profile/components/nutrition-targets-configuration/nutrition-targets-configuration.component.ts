@@ -75,9 +75,9 @@ import { UpdateNutritionTargetsConfiguration } from '../../store/user-profile.ac
             </mat-form-field>
           </div>
         </form>
-        <mat-error *ngIf="getTotalPercents() != 100" class="my-4 text-lg">Suma % makroskładników musi wynosić 100%</mat-error>
+        <mat-error *ngIf="formTotalPercentsHasInvalidValue" class="my-4 text-lg">Suma % makroskładników musi wynosić 100%</mat-error>
         <div class="row mt-8 pe-4 flex flex-row-reverse">
-          <button [disabled]="loading$ | async" (click)="onSaveButtonClicked()" mat-raised-button color="primary">Zapisz</button>
+          <button [disabled]="(loading$ | async) || !isFormValid" (click)="onSaveButtonClicked()" mat-raised-button color="primary">Zapisz</button>
         </div>
       </mat-card-content>
     </mat-card>
@@ -100,8 +100,16 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
     this.initializeForm();
   }
 
+  public get isFormValid(): boolean {
+    return this.form.valid && !this.formTotalPercentsHasInvalidValue;
+  }
+
   private getFormControl(controlName: string): any {
     return this.form.get(controlName);
+  }
+
+  public get formTotalPercentsHasInvalidValue(): boolean {
+    return this.getTotalPercents() !== 100;
   }
 
   public getTotalPercents(): number {
@@ -185,6 +193,9 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
   }
 
   onSaveButtonClicked() {
+    if (!this.isFormValid)
+      return;
+
     this.store.dispatch(new UpdateNutritionTargetsConfiguration(this.form.value));
   }
 }
