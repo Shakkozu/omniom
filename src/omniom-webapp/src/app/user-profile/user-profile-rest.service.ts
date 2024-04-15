@@ -23,12 +23,20 @@ export class UserProfileRestService {
 	}
 
 	updateNutritionTargetsConfiguration(configuration: NutritionTargetsConfiguration): Observable<any> {
-		const url = `${ environment.apiUrl }/api/user-profile/nutrition-targets-configuration`;
-		return this.http.post(url, { configuration: configuration });
+		const url = `${ environment.apiUrl }/api/user-profile/nutrition-targets`;
+		return this.http.post(url, { 
+			Calories : configuration.calories,
+			ProteinsPercents : configuration.proteinsPercents,
+			CarbohydratesPercents : configuration.carbohydratesPercents,
+			FatsPercents : configuration.fatsPercents,
+			ProteinsGrams : configuration.proteinsGrams,
+			CarbohydratesGrams : configuration.carbohydratesGrams,
+			FatsGrams : configuration.fatsGrams,
+		 });
 	}
 
 	getNutritionTargetsConfiguration(): Observable<NutritionTargetsConfiguration> {
-		const url = `${environment.apiUrl}/api/user-profile/nutrition-targets-configuration`;
+		const url = `${environment.apiUrl}/api/user-profile/nutrition-targets`;
 		return this.http.get<NutritionTargetsConfiguration>(url);
 	}
 }

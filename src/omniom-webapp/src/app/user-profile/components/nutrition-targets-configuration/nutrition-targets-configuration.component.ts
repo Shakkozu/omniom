@@ -3,7 +3,8 @@ import { UserProfileStore } from '../../store/user-profile.store';
 import { Store } from '@ngxs/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
-import { UpdateNutritionTargetsConfiguration } from '../../store/user-profile.actions';
+import { FetchUserProfileConfiguration, UpdateNutritionTargetsConfiguration } from '../../store/user-profile.actions';
+import { NutritionTargetsConfiguration } from '../../model';
 
 @Component({
   selector: 'app-nutrition-targets-configuration',
@@ -21,49 +22,49 @@ import { UpdateNutritionTargetsConfiguration } from '../../store/user-profile.ac
           <div class="col-span-2">
             <mat-form-field class="w-full">
               <mat-label>Zapotrzebowanie kaloryczne</mat-label>
-              <input matInput type="number" placeholder="Kcal" formControlName="totalKcal">
+              <input matInput type="number" placeholder="Kcal" formControlName="calories">
               <span matTextSuffix="">Kcal</span>
             </mat-form-field>
           </div>
           <div>
             <mat-form-field class="w-full">
               <mat-label>Białko g</mat-label>
-              <input matInput type="number" formControlName="proteinsG">
+              <input matInput type="number" formControlName="proteinsGrams">
               <label matTextSuffix>g</label>
             </mat-form-field>
           </div>
           <div>
             <mat-form-field class="w-full">
               <mat-label>Białko %</mat-label>
-              <input matInput type="number" formControlName="proteinsPercent">
+              <input matInput type="number" formControlName="proteinsPercents">
               <label matTextSuffix>%</label>
             </mat-form-field>
           </div>
           <div class="col-start-1 col-span-1">
             <mat-form-field class="w-full">
               <mat-label>Węglowodany g</mat-label>
-              <input matInput type="number" formControlName="carbohydratesG">
+              <input matInput type="number" formControlName="carbohydratesGrams">
               <label matTextSuffix>g</label>
             </mat-form-field>
           </div>
           <div>
             <mat-form-field class="w-full">
               <mat-label>Węglowodany %</mat-label>
-              <input matInput type="number" formControlName="carbohydratesPercent">
+              <input matInput type="number" formControlName="carbohydratesPercents">
               <label matTextSuffix>%</label>
             </mat-form-field>
           </div>
           <div class="col-start-1 col-span-1">
             <mat-form-field class="w-full">
               <mat-label>Tłuszcze g</mat-label>
-              <input matInput type="number" formControlName="fatsG">
+              <input matInput type="number" formControlName="fatsGrams">
               <label matTextSuffix>g</label>
             </mat-form-field>
           </div>
           <div>
             <mat-form-field class="w-full">
               <mat-label>Tłuszcze %</mat-label>
-              <input matInput type="number" formControlName="fatsPercent">
+              <input matInput type="number" formControlName="fatsPercents">
               <label matTextSuffix>%</label>
             </mat-form-field>
           </div>
@@ -113,82 +114,81 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
   }
 
   public getTotalPercents(): number {
-    const proteinsPercent = +this.getFormControl('proteinsPercent').value || 0;
-    const carbohydratesPercent = +this.getFormControl('carbohydratesPercent').value || 0;
-    const fatsPercent = +this.getFormControl('fatsPercent').value || 0;
+    const proteinsPercent = +this.getFormControl('proteinsPercents').value || 0;
+    const carbohydratesPercent = +this.getFormControl('carbohydratesPercents').value || 0;
+    const fatsPercent = +this.getFormControl('fatsPercents').value || 0;
 
     return proteinsPercent + carbohydratesPercent + fatsPercent;
   }
 
   private initializeForm() {
-    this.initliazeFormDefaultValues();
+    const nutritionTargets = this.store.selectSnapshot(UserProfileStore.nutritionTargets);
+    this.initliazeFormDefaultValues(nutritionTargets);
     this.initializeFormValueChangesActions();
-    this.form.controls['totalKcal'].setValue(2500);
   }
 
   private initializeFormValueChangesActions() {
-    const totalKcal = this.form.controls['totalKcal'].value;
-    this.form.controls['proteinsPercent'].valueChanges.subscribe(value => {
+    const totalKcal = this.form.controls['calories'].value;
+    this.form.controls['proteinsPercents'].valueChanges.subscribe(value => {
       const grams = ((value / 100) * totalKcal / 4);
-      this.form.controls['proteinsG'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
+      this.form.controls['proteinsGrams'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
     });
-    this.form.controls['proteinsG'].valueChanges.subscribe(value => {
+    this.form.controls['proteinsGrams'].valueChanges.subscribe(value => {
       const percent = ((value * 4 / totalKcal) * 100);
-      this.form.controls['proteinsPercent'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
+      this.form.controls['proteinsPercents'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
     });
 
-    this.form.controls['carbohydratesPercent'].valueChanges.subscribe(value => {
+    this.form.controls['carbohydratesPercents'].valueChanges.subscribe(value => {
       const grams = ((value / 100) * totalKcal / 4);
-      this.form.controls['carbohydratesG'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
+      this.form.controls['carbohydratesGrams'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
     });
-    this.form.controls['carbohydratesG'].valueChanges.subscribe(value => {
+    this.form.controls['carbohydratesGrams'].valueChanges.subscribe(value => {
       const percent = ((value * 4 / totalKcal) * 100);
-      this.form.controls['carbohydratesPercent'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
+      this.form.controls['carbohydratesPercents'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
     });
 
-    this.form.controls['fatsPercent'].valueChanges.subscribe(value => {
+    this.form.controls['fatsPercents'].valueChanges.subscribe(value => {
       const grams = ((value / 100) * totalKcal / 9);
-      this.form.controls['fatsG'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
+      this.form.controls['fatsGrams'].setValue(this.decimalPipe.transform(grams, '1.0-0'), { emitEvent: false });
     });
 
-    this.form.controls['fatsG'].valueChanges.subscribe(value => {
+    this.form.controls['fatsGrams'].valueChanges.subscribe(value => {
       const percent = ((value * 9 / totalKcal) * 100);
-      this.form.controls['fatsPercent'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
+      this.form.controls['fatsPercents'].setValue(this.decimalPipe.transform(percent, '1.0-0'), { emitEvent: false });
     });
 
-    this.form.controls['totalKcal'].valueChanges.subscribe(value => {
-      const proteinsPercent = this.form.controls['proteinsPercent'].value;
+    this.form.controls['calories'].valueChanges.subscribe(value => {
+      const proteinsPercent = this.form.controls['proteinsPercents'].value;
       const proteinsGrams = ((proteinsPercent / 100) * value / 4);
-      this.form.controls['proteinsG'].setValue(this.decimalPipe.transform(proteinsGrams, '1.0-0'), { emitEvent: false });
+      this.form.controls['proteinsGrams'].setValue(this.decimalPipe.transform(proteinsGrams, '1.0-0'), { emitEvent: false });
 
-      const carbohydratesPercent = this.form.controls['carbohydratesPercent'].value;
+      const carbohydratesPercent = this.form.controls['carbohydratesPercents'].value;
       const carbohydratesGrams = ((carbohydratesPercent / 100) * value / 4);
-      this.form.controls['carbohydratesG'].setValue(this.decimalPipe.transform(carbohydratesGrams, '1.0-0'), { emitEvent: false });
+      this.form.controls['carbohydratesGrams'].setValue(this.decimalPipe.transform(carbohydratesGrams, '1.0-0'), { emitEvent: false });
 
-      const fatsPercent = this.form.controls['fatsPercent'].value;
+      const fatsPercent = this.form.controls['fatsPercents'].value;
       const fatsGrams = ((fatsPercent / 100) * value / 9);
-      this.form.controls['fatsG'].setValue(this.decimalPipe.transform(fatsGrams, '1.0-0'), { emitEvent: false });
+      this.form.controls['fatsGrams'].setValue(this.decimalPipe.transform(fatsGrams, '1.0-0'), { emitEvent: false });
     });
   }
 
-  private initliazeFormDefaultValues() {
-    const nutritionTargets = this.store.selectSnapshot(UserProfileStore.nutritionTargets);
-    const totalKcal = nutritionTargets?.totalKcal || 2500;
-    const proteinsPercent = nutritionTargets?.proteinsPercent || 25;
-    const proteinsG = nutritionTargets?.proteinsG || 0;
-    const carbohydratesG = nutritionTargets?.carbohydratesG || 0;
-    const carbohydratesPercent = nutritionTargets?.carbohydratesPercent || 60;
-    const fatsG = nutritionTargets?.fatsG || 0;
-    const fatsPercent = nutritionTargets?.fatsPercent || 15;
+  private initliazeFormDefaultValues(nutritionTargets: NutritionTargetsConfiguration | null) {
+    const totalKcal = nutritionTargets?.calories ?? 2500;
+    const proteinsPercent = nutritionTargets?.proteinsPercents ?? 25;
+    const proteinsG = nutritionTargets?.proteinsGrams ?? 0;
+    const carbohydratesG = nutritionTargets?.carbohydratesGrams ?? 0;
+    const carbohydratesPercent = nutritionTargets?.carbohydratesPercents ?? 60;
+    const fatsG = nutritionTargets?.fatsGrams ?? 0;
+    const fatsPercent = nutritionTargets?.fatsPercents ?? 15;
       
     this.form = new FormGroup({
-      totalKcal: new FormControl(totalKcal, [Validators.required]),
-      proteinsPercent: new FormControl(proteinsPercent, [Validators.required]),
-      proteinsG: new FormControl(proteinsG, [Validators.required]),
-      carbohydratesG: new FormControl(carbohydratesG, [Validators.required]),
-      carbohydratesPercent: new FormControl(carbohydratesPercent, [Validators.required]),
-      fatsG: new FormControl(fatsG, [Validators.required]),
-      fatsPercent: new FormControl(fatsPercent, [Validators.required]),
+      calories: new FormControl(totalKcal, [Validators.required]),
+      proteinsPercents: new FormControl(proteinsPercent, [Validators.required]),
+      proteinsGrams: new FormControl(proteinsG, [Validators.required]),
+      carbohydratesGrams: new FormControl(carbohydratesG, [Validators.required]),
+      carbohydratesPercents: new FormControl(carbohydratesPercent, [Validators.required]),
+      fatsGrams: new FormControl(fatsG, [Validators.required]),
+      fatsPercents: new FormControl(fatsPercent, [Validators.required]),
     });
   }
 
@@ -196,6 +196,9 @@ export class NutritionTargetsConfigurationComponent implements OnInit {
     if (!this.isFormValid)
       return;
 
-    this.store.dispatch(new UpdateNutritionTargetsConfiguration(this.form.value));
+    const formValue = this.form.value;
+    this.store.dispatch(new UpdateNutritionTargetsConfiguration(formValue));
+    this.initliazeFormDefaultValues(formValue);
+    this.initializeFormValueChangesActions();
   }
 }
