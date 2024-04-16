@@ -11,6 +11,7 @@ import { MealDetailsComponent } from "./components/meal-details/meal-details.com
 import { ModifyMealNutritionEntriesComponent } from "./components/modify-meal-nutrition-entries/modify-meal-nutrition-entries.component";
 import { ProductsModule } from "../products/products.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { DailyNutritionGoalComponent } from "./components/daily-nutrition-goal/daily-nutrition-goal.component";
 
 @NgModule({
 	declarations: [
@@ -19,6 +20,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 		DiaryDaySummaryComponent,
 		MealDetailsComponent,
 		ModifyMealNutritionEntriesComponent,
+		DailyNutritionGoalComponent,
 	],
 	imports: [
 		NgxsModule.forFeature([
