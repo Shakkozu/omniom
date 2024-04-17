@@ -12,6 +12,7 @@ import { FetchNutritionSummaries,
 	SummaryDaySelected } from './nutrition-diary.actions';
 import { DaySummary, MealType, NutritionDayDetails, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../model';
 import { v4 as uuidv4 } from 'uuid';
+import { Observable } from 'rxjs';
 
 export interface NutritionDiaryStateModel {
 	daySummaries: DaySummary[];
@@ -38,6 +39,14 @@ export class NutritionDiaryStore {
 	@Selector()
 	static selectedNutritionDay(state: NutritionDiaryStateModel) {
 		return state.selectedNutritionDay;
+	}
+
+	@Selector()
+	static selectedNutritionDaySummary(state: NutritionDiaryStateModel): DaySummary | undefined {
+		const selectedDay = state.selectedNutritionDay ?? new Date();
+		const summary = state.daySummaries.find(daySummary => daySummary.nutritionDay === selectedDay);
+
+		return summary;
 	}
 
 	@Selector()
