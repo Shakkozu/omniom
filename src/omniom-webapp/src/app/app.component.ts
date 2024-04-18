@@ -8,8 +8,6 @@ import { FetchUserProfileConfiguration } from './user-profile/store/user-profile
 })
 export class AppComponent {
   constructor (private store: Store) { 
-    this.store.dispatch(new FetchUserProfileConfiguration());
-
   }
   
   title = 'omniom-webapp';

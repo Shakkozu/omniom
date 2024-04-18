@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { Action, State, StateContext, Selector } from "@ngxs/store";
+import { Action, State, StateContext, Selector, Store } from "@ngxs/store";
 import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess, AuthorizationComponentOpened } from "./authorization.actions";
 import { AuthService } from "../auth.service";
+import { FetchUserProfileConfiguration } from "../../user-profile/store/user-profile.actions";
 
 
 export interface UserSessionStateModel {
@@ -35,6 +36,7 @@ export class AuthorizationState {
 	private static sessionLifetimeInMinutes = 45;
 
 	constructor (private authorizationService: AuthService,
+		private store: Store,
 		private router: Router) {
 	}
 
@@ -89,6 +91,7 @@ export class AuthorizationState {
 			sessionId: sessionId,
 			timestamp: Date.now(),
 		});
+		this.store.dispatch(new FetchUserProfileConfiguration());
 		this.router.navigate(['/']);
 	}
 
