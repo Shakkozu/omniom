@@ -13,11 +13,7 @@
     <mat-nav-list class="sidenav-links">
       <a mat-list-item routerLink="/products">Baza produktów</a>
       <a mat-list-item routerLink="/diary">Dziennik żywieniowy</a>
-      <a mat-list-item [matMenuTriggerFor]="menu">Profil użytkownika</a>
-      <mat-menu class="ms-8" #menu="matMenu">
-        <a mat-menu-item routerLink="/account/settings">Ustawienia konta</a>
-        <a mat-menu-item routerLink="/account/summary">Statystyki</a>
-      </mat-menu>
+      <a mat-list-item routerLink="/account/settings">Profil użytkownika</a>
       
     </mat-nav-list>
   </mat-sidenav>
