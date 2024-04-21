@@ -1,0 +1,66 @@
+<div class="registration-page">
+	<h1>Utwórz profil dietetyka</h1>
+	<h3>
+		Profil dietetyka umożliwia nawiązywanie współprac z użytkownikami aplikacji, monitorowanie ich postępów oraz
+		dzienników żywieniowych.
+	</h3>
+	<p>
+		Aby utworzyć profil dietetyka, musisz posiadać konto użytkownika aplikacji Omniom.
+		Utworzenie profilu dietetyka jest bezpłatne.
+
+		W przypadku posiadania dokumentów potwierdzających kwalifikacje dietetyczne, możesz je przesłać w celu
+		weryfikacji.
+		Po weryfikacji, Twój profil dietetyka zostanie oznaczony jako zweryfikowany.
+	</p>
+	<p>Wypełnij poniższe pola, aby utworzyć konto dietetyka</p>
+
+	<form mat-form [formGroup]="form" (submit)="onSubmit()">
+		<div class="row">
+			<mat-form-field>
+				<mat-label>Imię</mat-label>
+				<input formControlName="name" matInput placeholder="Imię">
+				<mat-error>{{getErrorMessage("name")}}</mat-error>
+			</mat-form-field>
+		</div>
+		<div class="row">
+			<mat-form-field>
+				<mat-label>Nazwisko</mat-label>
+				<input formControlName="surname" matInput placeholder="Nazwisko">
+				<mat-error>{{getErrorMessage("surname")}}</mat-error>
+			</mat-form-field>
+		</div>
+		<div class="row">
+			<mat-form-field>
+				<mat-label>Numer telefonu</mat-label>
+				<input formControlName="phoneNumber" matInput placeholder="Numer telefonu">
+				<mat-error>{{getErrorMessage("phoneNumber")}}</mat-error>
+			</mat-form-field>
+		</div>
+		<div class="row">
+			<mat-form-field>
+				<mat-label>Miasto</mat-label>
+				<input formControlName="city" matInput placeholder="Miasto">
+				<mat-error>{{getErrorMessage("city")}}</mat-error>
+			</mat-form-field>
+		</div>
+
+		<div>
+			<input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" multiple>
+			<button type="button" mat-raised-button (click)="triggerFileInput(fileInput)">Wybierz pliki</button>			
+			<mat-error>{{getErrorMessage("documents")}}</mat-error>
+		</div>
+		<div>
+			<mat-action-list>
+				<mat-list-item *ngFor="let file of files; index as i">
+					<mat-icon matListItemIcon>description</mat-icon>
+					{{ file.name }} {{convertSize(file.size)}}
+					<button type="button" mat-icon-button (click)="removeFile(i)">
+						<mat-icon>delete</mat-icon>
+					</button>
+				</mat-list-item>
+			</mat-action-list>
+		</div>
+
+		<button type="submit" mat-raised-button color="primary">Utwórz konto</button>
+	</form>
+</div>

@@ -1,45 +1,95 @@
 import { Component } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.component';
 
 @Component({
   selector: 'app-registration-page',
-  template: `
-    <div class="registration-page">
-      <h1>Utwórz profil dietetyka</h1>
-      <h4>
-        Profil dietetyka umożliwia nawiązywanie współprac z użytkownikami aplikacji, monitorowanie ich postępów oraz dzienników żywieniowych.
-      </h4>
-      <h5>
-        Aby utworzyć profil dietetyka, musisz posiadać konto użytkownika aplikacji Omniom.
-        Utworzenie profilu dietetyka jest bezpłatne.
-
-        W przypadku posiadania dokumentów potwierdzających kwalifikacje dietetyczne, możesz je przesłać w celu weryfikacji.
-        Po weryfikacji, Twój profil dietetyka zostanie oznaczony jako zweryfikowany.
-      </h5>
-      <p>Wypełnij poniższe pola, aby utworzyć konto dietetyka</p>
-      <form>
-        <mat-form-field>
-          <input matInput placeholder="Imię">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Nazwisko">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Numer telefonu">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput placeholder="Miasto">
-        </mat-form-field>
-        <mat-form-field>
-          <input type="file" placeholder="Skany dokumentów">
-        </mat-form-field>
-        <button mat-raised-button color="primary">Utwórz konto</button>
-      </form>
-
-    </div>
-
-  `,
+  templateUrl: './registration-page.component.html',
   styleUrl: './registration-page.component.scss'
 })
 export class RegistrationPageComponent {
+  form!: FormGroup;
+  files: File[] = [];
+  private maxMBFileSize = 3;
+
+  constructor (private dialog: MatDialog,
+    private formBuilder: FormBuilder
+  ) {
+    this.form = this.formBuilder.group({
+      name: new FormControl('', Validators.required),
+      surname: new FormControl('', Validators.required),
+      phoneNumber: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required),
+      documents: new FormControl([], [Validators.required]),
+    });
+   }
+
+  convertSize(sizeInBytes: number): string {
+    if (sizeInBytes < 1024) {
+      return sizeInBytes + ' Bytes';
+    } else if (sizeInBytes < 1024 * 1024) {
+      const sizeInKB = sizeInBytes / 1024;
+      return Math.round(sizeInKB * 100) / 100 + ' KB';
+    } else {
+      const sizeInMB = sizeInBytes / (1024 * 1024);
+      return Math.round(sizeInMB * 100) / 100 + ' MB'; 
+    }
+  }
+
+  public getErrorMessage(formControlName: string): string {
+    return this.form?.getError(formControlName);
+  }
+
+  openErrorDialog(errorMessage: string) {
+    this.dialog.open(ErrorDialogComponent, {
+      data: {
+        errorMessage: errorMessage
+      }
+    });
+  }
+
+  onFileSelected(event: Event) {
+    const fileInput = event.target as HTMLInputElement;
+
+    if (!fileInput.files) return;
+    const tooLargeFileThreshold = 1024 * 1024 * this.maxMBFileSize; // 2MB
+
+    const tooLargeFiles = Array.from(fileInput.files).filter(file => file.size > tooLargeFileThreshold);
+    if (tooLargeFiles.length > 0) {
+      let errorMessage = `Wybrano pliki o zbyt dużym rozmiarze. Maksymalny rozmiar pliku to ${ this.maxMBFileSize}MB. Nieprawidłowe pliki:`;
+      tooLargeFiles.forEach(file => errorMessage += `\n${ file.name } - ${ this.convertSize(file.size)}`);
+      this.openErrorDialog(errorMessage.trim());
+      return;
+    }
+
+    for (let i = 0; i < fileInput.files.length; i++) {
+      const file = fileInput.files[i];
+      
+      if (this.files.find(_file => _file.name === file.name))
+        continue;
+      
+      this.files.push(fileInput.files[i]);
+      const documents = this.form.controls['documents'].value;
+      this.form.controls['documents'].setValue([...documents, file]);
+    }
+  }
+
+  convertSizeToMB(sizeInBytes: number): number {
+    const sizeInMB = sizeInBytes / (1024 * 1024);
+    return Math.round(sizeInMB * 100) / 100;
+  }
+
+  removeFile(index: number) {
+    this.files.splice(index, 1);
+  }
+
+  onSubmit() {
+    console.log(this.form.value);
+  }
+
+  triggerFileInput(fileInput: HTMLInputElement) {
+    fileInput.click();
+  }
 
 }
