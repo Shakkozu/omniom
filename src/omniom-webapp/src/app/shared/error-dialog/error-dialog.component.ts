@@ -22,6 +22,4 @@ export class ErrorDialogComponent {
   public formatErrorMessage(errorMessage: string): string {
     return errorMessage.replace(/<br\/>/g, '\n');
   }
-  
-
 }

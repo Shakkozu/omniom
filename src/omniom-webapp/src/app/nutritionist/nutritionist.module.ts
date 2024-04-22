@@ -5,11 +5,13 @@ import { MaterialModule } from '../material.module';
 import { RegistrationPageComponent } from './pages/registration-page/registration-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { REACTIVE_NODE } from '@angular/core/primitives/signals';
+import { TermsAndConditionsDialogComponent } from './pages/registration-page/terms-and-conditions-dialog/terms-and-conditions-dialog.component';
 
 
 @NgModule({
   declarations: [
-    RegistrationPageComponent
+    RegistrationPageComponent,
+    TermsAndConditionsDialogComponent
   ],
   imports: [
     CommonModule,

@@ -31,29 +31,26 @@
 		</div>
 		<div class="row">
 			<mat-form-field>
-				<mat-label>Numer telefonu</mat-label>
-				<input formControlName="phoneNumber" matInput placeholder="Numer telefonu">
-				<mat-error>{{getErrorMessage("phoneNumber")}}</mat-error>
-			</mat-form-field>
-		</div>
-		<div class="row">
-			<mat-form-field>
 				<mat-label>Miasto</mat-label>
 				<input formControlName="city" matInput placeholder="Miasto">
 				<mat-error>{{getErrorMessage("city")}}</mat-error>
 			</mat-form-field>
 		</div>
-
+		<div class="row">
+			<mat-checkbox formControlName="termsAndConditions"></mat-checkbox><span class="text-blue-500 underline cursor-pointer" (click)="onTermsClicked()">Zapoznałem/am się z regulaminem i
+				akceptuję jego warunki.</span>
+			<mat-error *ngIf="termsAndConditionsNotAccepted">Akceptacja regulaminu jest wymagana</mat-error>
+		</div>
 		<div>
 			<input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" multiple>
-			<button type="button" mat-raised-button (click)="triggerFileInput(fileInput)">Wybierz pliki</button>			
-			<mat-error>{{getErrorMessage("documents")}}</mat-error>
+			<button type="button" color="primary" mat-stroked-button (click)="triggerFileInput(fileInput)">Wybierz pliki</button>			
+			<mat-error *ngIf="formFilesSizeExceeded">Maksymalny rozmiar załączników to {{maxAttachemntsTotalSizeInMB}}MB. Aktualny rozmiar: {{totalAttachmentsSizeInMB}}MB</mat-error>
 		</div>
 		<div>
 			<mat-action-list>
 				<mat-list-item *ngFor="let file of files; index as i">
 					<mat-icon matListItemIcon>description</mat-icon>
-					{{ file.name }} {{convertSize(file.size)}}
+					{{ file.name }} {{convertSizeInBytesToNearestAppropriateUnit(file.size)}}
 					<button type="button" mat-icon-button (click)="removeFile(i)">
 						<mat-icon>delete</mat-icon>
 					</button>

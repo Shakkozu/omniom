@@ -22,11 +22,13 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 
 const MaterialComponents = [
 	MatToolbarModule,
 	MatProgressBarModule,
+	MatCheckboxModule,
 	MatProgressSpinnerModule,
 	MatButtonModule,
 	MatNativeDateModule,

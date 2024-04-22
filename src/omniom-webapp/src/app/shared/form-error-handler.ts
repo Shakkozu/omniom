@@ -13,29 +13,29 @@ export class FormErrorHandler {
 			return '';
 
 		if (formControl.hasError('required')) {
-			return 'Field is required';
+			return 'Pole jest wymagane';
 		}
 
 		if (formControl.hasError('minlength')) {
-			return `Minimum length is ${ formControl?.errors?.['minlength'].requiredLength }`;
+			return `Minimalna długość to: ${ formControl?.errors?.['minlength'].requiredLength }`;
 		}
 
 		if (formControl.hasError('maxlength')) {
-			return `Maximum length is ${ formControl?.errors?.['maxlength'].requiredLength }`;
+			return `Maksymalna długość to ${ formControl?.errors?.['maxlength'].requiredLength }`;
 		}
 
 		if (formControl.hasError('email')) {
-			return `Please enter a valid email`;
+			return `Wprowadź poprawny adres email`;
 		}
 
 		if (formControl.hasError('pattern')) {
-			return `Invalid format`;
+			return `Niepoprawny format danych`;
 		}
 
 		if (formControl.hasError('passwordNotMatch')) {
-			return `Password does not match`;
+			return `Hasła nie są takie same`;
 		}
 
-		return 'Validation error';
+		return 'Niepoprawne dane';
 	}
 }
