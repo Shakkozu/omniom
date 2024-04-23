@@ -25,7 +25,6 @@ export class RegistrationPageComponent {
       name: new FormControl('', Validators.required),
       surname: new FormControl('', Validators.required),
       city: new FormControl('', Validators.required),
-      documents: new FormControl([], [Validators.required]),
       termsAndConditions: [{value: false, disabled: true}, Validators.requiredTrue]
     });
   }
@@ -84,17 +83,11 @@ export class RegistrationPageComponent {
         continue;
 
       this.files.push(fileInput.files[i]);
-      const documents = this.form.controls['documents'].value;
-      this.form.controls['documents'].setValue([...documents, file]);
-      this.form.controls['documents'].updateValueAndValidity();
     }
   }
 
   public removeFile(index: number) {
-    const updatedFilesList = this.files.filter((_, i) => i !== index);
-    this.files = updatedFilesList;
-    this.form.controls['documents'].setValue(updatedFilesList);
-    this.form.controls['documents'].updateValueAndValidity();
+    this.files = this.files.filter((_, i) => i !== index);
   }
 
   onSubmit() {
@@ -102,6 +95,7 @@ export class RegistrationPageComponent {
     if (this.form.invalid) {
       return;
     }
+    console.log(this.form.value);
     
   }
 
@@ -126,14 +120,12 @@ export class RegistrationPageComponent {
   }
 
   public get totalAttachmentsSizeInMB(): number {
-    const files = this.form.controls['documents'].value as File[];
-    const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+    const totalSize = this.files.reduce((acc, file) => acc + file.size, 0);
     return this.convertSizeToMB(totalSize);
   }
 
   public get formFilesSizeExceeded(): boolean {
-    const files = this.form.controls['documents'].value as File[];
-    const totalSize = files.reduce((acc, file) => acc + file.size, 0);
+    const totalSize = this.files.reduce((acc, file) => acc + file.size, 0);
     return this.convertSizeToMB(totalSize) > this.maxAttachemntsTotalSizeInMB;
   }
 
