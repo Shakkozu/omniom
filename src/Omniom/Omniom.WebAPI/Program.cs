@@ -5,6 +5,7 @@ using Omniom.Domain.NutritionDiary;
 using Omniom.Domain.ProductsCatalogue;
 using Omniom.Domain.UserProfile;
 using Omniom.Domain.Shared;
+using Omniom.Domain.Nutritionist;
 
 namespace Omniom.WebAPI;
 
@@ -17,6 +18,7 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddAuthorization();
+        builder.Services.AddAntiforgery();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +29,7 @@ public class Program
         builder.Services.AddAuthorizationModule(config);
         builder.Services.AddNutritionDiary(config);
         builder.Services.AddUserProfileModule(config);
+        builder.Services.AddNutritionistModule();
 
         var app = builder.Build();
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
@@ -53,6 +56,7 @@ public class Program
         }
 
         app.UseRouting();
+        app.UseAntiforgery();
 
         app.UseCors(options =>
         {
@@ -67,6 +71,7 @@ public class Program
         app.MapAuthenticationModuleEndpoints();
         app.MapNutritionDiaryEndpoints();
         app.MapUserProfileModuleEndpoints();
+        app.MapNutritionistEndpoints();
 
         app.Run();
     }

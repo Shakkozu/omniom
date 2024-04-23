@@ -4,6 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.component';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component';
+import { NutritionistRestService } from '../../nutritionist-rest.service';
+import { RegisterNutritionistRequest } from '../../model';
 
 @Component({
   selector: 'app-registration-page',
@@ -20,7 +22,7 @@ export class RegistrationPageComponent {
   constructor (private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private formErrorHandler: FormErrorHandler,
-  ) {
+    private restService: NutritionistRestService) {
     this.form = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       surname: new FormControl('', Validators.required),
@@ -92,11 +94,22 @@ export class RegistrationPageComponent {
 
   onSubmit() {
     this.form.markAllAsTouched();
-    if (this.form.invalid) {
+    if (this.formInvalid) {
       return;
     }
-    console.log(this.form.value);
-    
+
+    const formData: FormData = new FormData();
+    formData.append('name', this.form.value.name);
+    formData.append('surname', this.form.value.surname);
+    formData.append('city', this.form.value.city);
+    formData.append('termsAndConditionsAccepted', this.form.value.termsAndConditions);
+    this.files.forEach((file, index) => {
+      formData.append('file' + index, file);
+    });
+
+    this.restService.registerNutritionist(formData).subscribe(_ => {
+      console.log('Registration successful');
+    });
   }
 
   triggerFileInput(fileInput: HTMLInputElement) {
