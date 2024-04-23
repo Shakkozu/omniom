@@ -17,7 +17,7 @@ export class DiaryDaySelectorComponent {
 
   public startDate: Date | null;
   public endDate: Date | null;
-  private defaultDaysHistoryLoaded = 40;
+  private defaultDaysHistoryLoaded = 14;
   
   constructor (private store: Store) {
     this.startDate = new Date(new Date().setDate(new Date().getDate() - this.defaultDaysHistoryLoaded));
