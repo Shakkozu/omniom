@@ -5,7 +5,6 @@ import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component';
 import { NutritionistRestService } from '../../nutritionist-rest.service';
-import { RegisterNutritionistRequest } from '../../model';
 
 @Component({
   selector: 'app-registration-page',
