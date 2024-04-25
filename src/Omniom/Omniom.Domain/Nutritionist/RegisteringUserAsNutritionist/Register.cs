@@ -59,11 +59,6 @@ internal static class Route
                 return Results.Ok();
                 
             }
-            catch (AntiforgeryValidationException)
-            {
-                logger.LogWarning("User with id {userId} failed antiforgery validation", userId);
-                return Results.BadRequest("Invalid antiforgery token");
-            }
             catch (Exception)
             {
 
