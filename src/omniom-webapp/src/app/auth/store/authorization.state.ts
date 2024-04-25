@@ -100,9 +100,15 @@ export class AuthorizationState {
 		const state = ctx.getState();
 		if (!state.sessionId)
 			return;
-
-		ctx.patchState(defaultState);
-		this.router.navigate(['/']);
+		this.authorizationService.logout().subscribe({
+			next: () => { },
+			complete: () => {
+				ctx.dispatch(new OnLogoutSuccess());
+			},
+			error: () => { 
+				console.error('Logout failed');
+			}
+		});
 	}
 
 	@Action(OnLogoutSuccess)

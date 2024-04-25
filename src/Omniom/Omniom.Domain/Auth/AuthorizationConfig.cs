@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Auth.GetUserIdByEmail;
+using Omniom.Domain.Auth.LoggingOut;
 using Omniom.Domain.Auth.Login;
 using Omniom.Domain.Auth.RegisterUser;
 using Omniom.Domain.Auth.Storage;
@@ -85,12 +86,8 @@ public static class AuthorizationConfig
     public static IEndpointRouteBuilder MapAuthenticationModuleEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapLoginEndpoint();
+        endpoints.MapLogoutEndpoint();
         endpoints.MapRegisterUserEndpoint();
-
-        endpoints.MapGet("/api/weather", () =>
-        {
-            return "sunny";
-        }).RequireAuthorization();
 
         return endpoints;
     }

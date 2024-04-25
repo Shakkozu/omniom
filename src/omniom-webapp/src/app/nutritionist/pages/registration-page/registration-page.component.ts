@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.component';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component';
-import { NutritionistRestService } from '../../nutritionist-rest.service';
+import { NutritionistRestService, RegisterNutritionistCommand } from '../../nutritionist-rest.service';
 
 @Component({
   selector: 'app-registration-page',
@@ -91,22 +91,21 @@ export class RegistrationPageComponent {
     this.files = this.files.filter((_, i) => i !== index);
   }
 
-  onSubmit() {
+  async onSubmit() {
     this.form.markAllAsTouched();
     if (this.formInvalid) {
       return;
     }
 
-    const formData: FormData = new FormData();
-    formData.append('name', this.form.value.name);
-    formData.append('surname', this.form.value.surname);
-    formData.append('city', this.form.value.city);
-    formData.append('termsAndConditionsAccepted', this.form.value.termsAndConditions);
-    this.files.forEach((file, index) => {
-      formData.append('file' + index, file);
-    });
+    let command: RegisterNutritionistCommand = {
+      name: this.form.value.name,
+      surname: this.form.value.surname,
+      city: this.form.value.city,
+      termsAndConditionsAccepted: this.form.value.termsAndConditions,
+      files: this.files
+    };
 
-    this.restService.registerNutritionist(formData).subscribe(_ => {
+    (await this.restService.registerNutritionist(command)).subscribe(_ => {
       console.log('Registration successful');
     });
   }

@@ -24,7 +24,7 @@ public class RegisterNutritionistRequest
 
     public string City { get; set; }
     public bool TermsAndConditionsAccepted { get; set; }
-    public List<FormFile> Files { get; set; }
+    public List<string> FilesBase64Encoded { get; set; }
 }
 
 internal record RegisterNutritionistCommand(Guid UserId);
@@ -44,13 +44,33 @@ internal static class Route
     {
         endpoints.MapPost(NutritionistRoutes.RegisterNutritionist, async (
             HttpContext context,
-            [FromForm] RegisterNutritionistRequest request,
+            [FromBody] RegisterNutritionistRequest request,
             ILogger < RegisterNutritionistCommandHandler > logger,
+            [FromServices] ICommandHandler<RegisterNutritionistCommand> handler,
+            CancellationToken ct,
             IFetchUserIdentifierFromContext userIdProvider) =>
         {
             var userId = userIdProvider.GetUserId();
+
             logger.LogInformation($"User with id {userId} is registering as nutritionist");
-            // Registering user as nutritionist logic
+            try
+            {
+                await handler.HandleAsync(new RegisterNutritionistCommand(userId), ct);
+                return Results.Ok();
+                
+            }
+            catch (AntiforgeryValidationException)
+            {
+                logger.LogWarning("User with id {userId} failed antiforgery validation", userId);
+                return Results.BadRequest("Invalid antiforgery token");
+            }
+            catch (Exception)
+            {
+
+                logger.LogError("User with id {userId} failed to register as nutritionist", userId);
+                return Results.BadRequest("Failed to register as nutritionist");
+
+            }
         });
         return endpoints;
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
@@ -14,7 +14,11 @@ export class AuthService {
 		const loginData = { email, password };
 		return this.http.post<LoginResponse>(`${ environment.apiUrl}/api/accounts/login`, loginData);
 	}
-	
+
+	logout(): Observable<any> {
+		return this.http.post(`${ environment.apiUrl }/api/accounts/logout`, null );
+	}
+
 	register(email: string, password: string, confirmPassword: string): Observable<RegisterResponse>{
 		const registerData = { email, password, confirmPassword };
 		return this.http.post<RegisterResponse>(`${environment.apiUrl}/api/accounts/register`, registerData);

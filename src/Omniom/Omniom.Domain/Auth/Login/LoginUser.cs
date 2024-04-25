@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,7 +22,9 @@ public class LoginUserCommandHandler
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly IConfiguration _configuration;
 
-    public LoginUserCommandHandler(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration configuration)
+    public LoginUserCommandHandler(UserManager<IdentityUser> userManager,
+        SignInManager<IdentityUser> signInManager,
+        IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
