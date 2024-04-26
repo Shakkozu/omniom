@@ -63,7 +63,6 @@ public class Program
             options.AllowAnyOrigin();
             options.AllowAnyMethod();
             options.AllowAnyHeader();
-            options.AllowCredentials();
         });
 
         app.UseAuthorization();
