@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
@@ -25,28 +21,41 @@ public record AttachmentsValidationResult
 }
 public class AttachmentsValidator
 {
-    private AttachmentsValidatorConfig _validatorConfig;
+    private readonly AttachmentsValidatorConfig _validatorConfig;
 
-    public AttachmentsValidator(AttachmentsValidatorConfig validatorConfig)
+    public AttachmentsValidator(AttachmentsValidatorConfig? validatorConfig = null)
     {
-        _validatorConfig = validatorConfig;
+        _validatorConfig = validatorConfig ?? AttachmentsValidatorConfig.Default;
     }
 
     public AttachmentsValidationResult ValidateFiles(string[] files)
     {
-        var filesWithInvalidExtensions = files.Where(file => !file.StartsWith("data:application/pdf;base64,")).ToList();
-        var tooLargeFilesCount = files.Count(file =>
+        var filesWithInvalidExtensions = new List<string>();
+        var tooLargeFilesCount = 0;
+        var totalSize = 0;
+
+        foreach (var file in files)
         {
-            var base64Data = Regex.Match(file, @"data:application/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-            var binData = Convert.FromBase64String(base64Data);
-            return binData.Length > _validatorConfig.MaximumAllowedAttachmentSizeInMB * 1024 * 1024;
-        });
-        var totalSizeExceedsLimit = files.Sum(file =>
-        {
-            var base64Data = Regex.Match(file, @"data:application/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
-            var binData = Convert.FromBase64String(base64Data);
-            return binData.Length;
-        }) > _validatorConfig.MaximumAllowedAttachmentsTotalSizeInMB * 1024 * 1024;
+            if (!file.StartsWith("data:application/pdf;base64,"))
+            {
+                filesWithInvalidExtensions.Add(file);
+            }
+            else
+            {
+                var base64Data = Regex.Match(file, @"data:application/(?<type>.+?),(?<data>.+)").Groups["data"].Value;
+                var binData = Convert.FromBase64String(base64Data);
+                var fileSize = binData.Length;
+
+                if (fileSize > _validatorConfig.MaximumAllowedAttachmentSizeInMB * 1024 * 1024)
+                {
+                    tooLargeFilesCount++;
+                }
+
+                totalSize += fileSize;
+            }
+        }
+
+        var totalSizeExceedsLimit = totalSize > _validatorConfig.MaximumAllowedAttachmentsTotalSizeInMB * 1024 * 1024;
 
         return new AttachmentsValidationResult
         {
@@ -55,4 +64,5 @@ public class AttachmentsValidator
             TotalSizeExceedsLimit = totalSizeExceedsLimit
         };
     }
+
 }
