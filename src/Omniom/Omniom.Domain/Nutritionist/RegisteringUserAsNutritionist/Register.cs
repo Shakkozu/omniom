@@ -53,6 +53,11 @@ internal static class Route
             try
             {
                 var validationResult = new AttachmentsValidator(AttachmentsValidatorConfig.Default).ValidateFiles(request.FilesBase64Encoded.ToArray());
+                if (!validationResult.IsValid)
+                {
+                    logger.LogError("User with id {userId} failed to register as nutritionist due to invalid files. {validationResult}", userId, validationResult.ErrorMessage);
+                    return Results.BadRequest(validationResult.ErrorMessage);
+                }
                 
                 await handler.HandleAsync(new RegisterNutritionistCommand(userId), ct);
                 return Results.Ok();

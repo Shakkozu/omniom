@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
@@ -18,6 +19,27 @@ public record AttachmentsValidationResult
     public bool TotalSizeExceedsLimit { get; init; }
 
     public bool IsValid => !TotalSizeExceedsLimit && TooLargeFilesCount == 0 && FilesWithInvalidExtensions.Count == 0;
+
+    public string ErrorMessage
+    {
+        get
+        {
+            var sb = new StringBuilder();
+            if (TotalSizeExceedsLimit)
+            {
+                sb.Append("Total size of attachments exceeds the limit. ");
+            }
+            if (TooLargeFilesCount > 0)
+            {
+                sb.Append($"Too large files count: {TooLargeFilesCount}. ");
+            }
+            if (FilesWithInvalidExtensions.Count > 0)
+            {
+                sb.Append($"Files with invalid extensions: {string.Join(", ", FilesWithInvalidExtensions)}. ");
+            }
+            return sb.ToString();
+        }
+    }
 }
 public class AttachmentsValidator
 {
