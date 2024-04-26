@@ -63,7 +63,7 @@ internal static class Route
             }
 
             context.Response.StatusCode = StatusCodes.Status204NoContent;
-        });
+        }).RequireAuthorization();
 
         return endpoints;
     }

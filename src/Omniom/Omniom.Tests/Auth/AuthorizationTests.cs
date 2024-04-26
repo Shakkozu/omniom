@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Omniom.Domain.Auth.Login;
 using Omniom.Domain.Auth.RegisterUser;
+using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.Contract;
 using Omniom.Tests.Shared;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ public class AuthorizationTests : BaseIntegrationTestsFixture
         loginResponseDto.Success.Should().BeTrue();
         loginResponseDto.Token.Should().NotBeNullOrEmpty();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "/api/weather");
+        var request = new HttpRequestMessage(HttpMethod.Get, NutritionTargetsRoutes.GetNutritionTargets);
         request.Headers.Add("Authorization", $"Bearer {loginResponseDto.Token}");
         var response = await client.SendAsync(request);
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -94,8 +95,8 @@ public class AuthorizationTests : BaseIntegrationTestsFixture
     public async Task UnauthorizedUserCannotReachProtectedEndpoint()
     {
         var client = _omniomApp.CreateClient();
-        
-        var request = new HttpRequestMessage(HttpMethod.Get, "/api/weather");
+        var request = new HttpRequestMessage(HttpMethod.Get, NutritionTargetsRoutes.GetNutritionTargets);
+
         var response = await client.SendAsync(request);
 
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);

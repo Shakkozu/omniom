@@ -52,7 +52,7 @@ internal static class Route
                 context.Response.StatusCode = 500;
                 return null;
             }
-        });
+        }).RequireAuthorization();
 
         return endpoints;
     }

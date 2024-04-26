@@ -54,7 +54,7 @@ public static class Route
             {
                 var query = new GetMealsConfigurationQuery(userIdProvider.GetUserId());
                 return await handler.HandleAsync(query, ct);
-            });
+            }).RequireAuthorization();
 
         return endpoints;
     }

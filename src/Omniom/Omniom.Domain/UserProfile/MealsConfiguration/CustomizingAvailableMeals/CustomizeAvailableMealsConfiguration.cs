@@ -90,7 +90,7 @@ public static class Route
                     logger.LogError(e, "Modification of meals configuration failed");
                     context.Response.StatusCode = 500;
                 }
-            });
+            }).RequireAuthorization();
 
         return endpoints;
     }
