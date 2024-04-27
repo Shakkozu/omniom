@@ -7,9 +7,6 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
-internal class Register
-{
-}
 
 public class RegisterNutritionistRequest
 {
@@ -22,17 +19,13 @@ public class RegisterNutritionistRequest
 }
 
 internal record RegisterNutritionistCommand(Guid UserId);
+
 internal class RegisterNutritionistCommandHandler : ICommandHandler<RegisterNutritionistCommand>
 {
-    
-
     public async Task HandleAsync(RegisterNutritionistCommand command, CancellationToken ct)
     {
-        
     }
 }
-
-
 
 internal static class Route
 {
@@ -41,7 +34,7 @@ internal static class Route
         endpoints.MapPost(NutritionistRoutes.RegisterNutritionist, async (
             HttpContext context,
             [FromBody] RegisterNutritionistRequest request,
-            ILogger < RegisterNutritionistCommandHandler > logger,
+            ILogger<RegisterNutritionistCommandHandler> logger,
             [FromServices] ICommandHandler<RegisterNutritionistCommand> handler,
             CancellationToken ct,
             IFetchUserIdentifierFromContext userIdProvider) =>
@@ -58,21 +51,16 @@ internal static class Route
                     logger.LogError("User with id {userId} failed to register as nutritionist due to invalid files. {validationResult}", userId, validationResult.ErrorMessage);
                     return Results.BadRequest(validationResult.ErrorMessage);
                 }
-                
+
                 await handler.HandleAsync(new RegisterNutritionistCommand(userId), ct);
                 return Results.Ok();
-                
             }
             catch (Exception)
             {
-
                 logger.LogError("User with id {userId} failed to register as nutritionist", userId);
                 return Results.BadRequest("Failed to register as nutritionist");
-
             }
         });
         return endpoints;
     }
-
-
 }
