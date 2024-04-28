@@ -74,7 +74,7 @@ public class OmniomApp : WebApplicationFactory<Program>
         return CreateClient();
     }
 
-    public async Task<HttpClient> CreateHttpClientWithAuthorizationAsync()
+    public async Task<HttpClient> CreateHttpClientWithAuthorizationAsync(UserType userType = UserType.User)
     {
         var client = CreateClient();
         if (!string.IsNullOrEmpty(_token))
@@ -83,8 +83,18 @@ public class OmniomApp : WebApplicationFactory<Program>
             return client;
         }
 
-        var authToken = await RequestScope().ServiceProvider.GetRequiredService<AuthFixture>().GetAuthenticationTokenForSuperUserAsync();
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+        string? authToken;
+        switch(userType)
+        {   
+            case UserType.Admin:
+                authToken = await RequestScope().ServiceProvider.GetRequiredService<AuthFixture>().GetAuthenticationTokenForSuperUserAsync();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                break;
+            case UserType.User:
+                authToken = await RequestScope().ServiceProvider.GetRequiredService<AuthFixture>().GetAuthenticationTokenForUserAsync();
+                client.DefaultRequestHeaders.Add("Authorization", $"Bearer {authToken}");
+                break;
+        }   
         return client;
     }
 
@@ -97,4 +107,10 @@ public class OmniomApp : WebApplicationFactory<Program>
     internal ICommandHandler<SaveMealNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<SaveMealNutritionEntriesCommand>>();
     internal GetNutritionDayQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetNutritionDayQueryHandler>();
     internal GetShortSummaryForDaysQueryHandler GetShortSummaryForDaysQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetShortSummaryForDaysQueryHandler>();
+
+    public enum UserType
+    {
+        User,
+        Admin,
+    }
 }
