@@ -45,7 +45,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                     new DiaryEntryData
                     {
                         ProductId = secondProduct.Guid,
-                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 250,
                         Meal = MealType.Breakfast.ToString(),
                         ProductName = secondProduct.Name,
@@ -74,7 +74,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
-        var restClient = new NutritionDiaryRestClient(await _omniomApp.CreateHttpClientWithAuthorizationAsync());
+        var restClient = new NutritionDiaryRestClient(await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User));
 
         await restClient.SaveNutritionEntries(saveEntriesRequest);
 
@@ -89,7 +89,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                     new DiaryEntryData
                     {
                         ProductId = firstProduct.Guid,
-                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 100,
                         Meal = MealType.Breakfast.ToString(),
                         ProductName = firstProduct.Name,
@@ -101,7 +101,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                     new DiaryEntryData
                     {
                         ProductId = secondProduct.Guid,
-                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 250,
                         Meal = MealType.Breakfast.ToString(),
                         ProductName = secondProduct.Name,
@@ -132,7 +132,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                     new DiaryEntryData
                     {
                         ProductId = anotherProduct.Guid,
-                        UserId = await AuthFixture.GetSuperuserIdAsync(),
+                        UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 50,
                         Meal = MealType.Breakfast.ToString(),
                         ProductName = anotherProduct.Name,
