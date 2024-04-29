@@ -54,12 +54,16 @@ internal record GetPendingVerificationRequestsQueryHandler : IQueryHandler<GetPe
     {
         return await _nutritionistDbContext.VerificationRequests
             .Where(x => x.Status == NutritionistVerificationStatus.Pending.ToString())
-            .Select(x => new PendingVerificationListItem
-            {
-                Email = _nutritionistDbContext.Nutritionists.Single(nut => nut.UserId == x.UserId).Email,
-                UserId = x.UserId,
-                Name = _nutritionistDbContext.Nutritionists.Single(nut => nut.UserId == x.UserId).FirstName,
-                Surname = _nutritionistDbContext.Nutritionists.Single(nut => nut.UserId == x.UserId).LastName,
-            }).ToListAsync(ct);
+            .Join(_nutritionistDbContext.Nutritionists,
+                verificationRequest => verificationRequest.UserId,
+                nutritionist => nutritionist.UserId,
+                (verificationRequest, nutritionist) => new PendingVerificationListItem
+                {
+                    Email = nutritionist.Email,
+                    UserId = verificationRequest.UserId,
+                    Name = nutritionist.FirstName,
+                    Surname = nutritionist.LastName
+                })
+            .ToListAsync(ct);
     }
 }

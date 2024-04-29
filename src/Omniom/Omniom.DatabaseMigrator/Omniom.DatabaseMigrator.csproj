@@ -21,8 +21,4 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\Omniom\NewFolder\" />
-  </ItemGroup>
-
 </Project>
