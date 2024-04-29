@@ -5,7 +5,7 @@ namespace Omniom.Domain.Shared.Repositories;
 
 public interface ITransaction : IAsyncDisposable
 {
-    Task Commit();
+    Task CommitAsync();
 }
 
 public class FakeTransaction : ITransaction
@@ -15,7 +15,7 @@ public class FakeTransaction : ITransaction
 
     }
 
-    public async Task Commit()
+    public async Task CommitAsync()
     {
 
     }
@@ -34,7 +34,7 @@ public class Transaction : ITransaction
         _dbContext = dbContext;
     }
 
-    public async Task Commit()
+    public async Task CommitAsync()
     {
         await _dbContext.SaveChangesAsync();
         await _transaction.CommitAsync();

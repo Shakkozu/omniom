@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Shared.BuildingBlocks;
+using Omniom.Domain.Shared.Repositories;
 using Omniom.Domain.UserProfile.MealsConfiguration.CustomizingAvailableMeals;
 using Omniom.Domain.UserProfile.MealsConfiguration.GettingUserMealsConfiguration;
 using Omniom.Domain.UserProfile.NutritionTargetsConfiguration.Contract;

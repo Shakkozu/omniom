@@ -29,7 +29,7 @@ public class Program
         builder.Services.AddAuthorizationModule(config);
         builder.Services.AddNutritionDiary(config);
         builder.Services.AddUserProfileModule(config);
-        builder.Services.AddNutritionistModule();
+        builder.Services.AddNutritionistModule(config);
 
         var app = builder.Build();
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");

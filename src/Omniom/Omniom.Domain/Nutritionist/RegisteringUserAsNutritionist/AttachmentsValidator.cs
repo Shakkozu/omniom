@@ -56,6 +56,9 @@ public class AttachmentsValidator
         var tooLargeFilesCount = 0;
         var totalSize = 0;
 
+        if(files == null || files.Length == 0)
+            return new AttachmentsValidationResult();
+
         foreach (var file in files)
         {
             if (!file.StartsWith("data:application/pdf;base64,"))

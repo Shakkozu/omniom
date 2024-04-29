@@ -31,7 +31,7 @@ public class TransactionalSaveMealNutritionEntriesCommandHandler : ICommandHandl
     {
         var transaction = await _transactions.BeginTransactionAsync();
         await _inner.HandleAsync(command, ct);
-        await transaction.Commit();
+        await transaction.CommitAsync();
         
     }
 }
