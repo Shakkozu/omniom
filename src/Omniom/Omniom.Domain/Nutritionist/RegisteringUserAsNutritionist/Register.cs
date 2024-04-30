@@ -20,7 +20,6 @@ public class RegisterNutritionistRequest
     public List<Attachment> Attachments { get; set; }
     public string Email { get; set; }
 }
-public record Attachment(string FileName, string FileContentBase64Encoded);
 
 internal static class Route
 {
@@ -95,8 +94,7 @@ internal class RegisterNutritionistCommandHandler : ICommandHandler<RegisterNutr
                 UserId = command.UserId,
                 Attachments = command.Request.Attachments.Select(x => new NutritionistVerificationAttachment
                 {
-                    FileContent = x.FileContentBase64Encoded,
-                    FileName = x.FileName,
+                    Attachment = x,
                     RequestGuid = requestGuid
                 }).ToList()
             };

@@ -1,4 +1,5 @@
 ﻿using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
+using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
@@ -20,9 +21,9 @@ public static class NutritionistRestClient
         return await response.Content.ReadFromJsonAsync<List<PendingVerificationListItem>>() ?? throw new InvalidOperationException("Fetching pending verificatino requests failed with error");
     }
 
-    public static async Task<List<PendingVerificationListItem>> GetUserVerificationRequest(this HttpClient httpClient, Guid userId)
+    public static async Task<UserVerificationRequestDetails> GetUserVerificationRequestDetails(this HttpClient httpClient, Guid userId)
     {
-        var response = await httpClient.GetAsync(NutritionistRoutes.UserVerificationRequest.Replace("{{userId}}", userId.ToString()));
-        return await response.Content.ReadFromJsonAsync<List<PendingVerificationListItem>>() ?? throw new InvalidOperationException("Fetching pending verificatino requests failed with error");
+        var response = await httpClient.GetAsync(NutritionistRoutes.UserVerificationRequestDetails.Replace("{userId}", userId.ToString()));
+        return await response.Content.ReadFromJsonAsync<UserVerificationRequestDetails>() ?? throw new InvalidOperationException("Fetching user {userId} verification request details returned an error");
     }
 }

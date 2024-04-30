@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
 namespace Omniom.Domain.Nutritionist.Storage;
 internal class NutritionistDbContext : DbContext
@@ -52,8 +53,11 @@ internal static class NutritionistSchema
             model.ToTable("nutritionist_verification_attachments");
             model.Property(e => e.Id).HasColumnName("id").UseIdentityColumn();
             model.Property(e => e.RequestGuid).HasColumnName("request_guid");
-            model.Property(e => e.FileName).HasColumnName("file_name");
-            model.Property(e => e.FileContent).HasColumnName("file_content");
+            model.OwnsOne(e => e.Attachment, attachment =>
+            {
+                attachment.Property(x => x.FileName).HasColumnName("file_name");
+                attachment.Property(x => x.FileContentBase64Encoded).HasColumnName("file_content");
+            });
         });
 
         modelBuilder.Entity<Nutritionist>(model =>
@@ -87,11 +91,12 @@ internal class NutritionistVerificationRequest
     public DateTime UpdatedAt { get; internal set; }
 }
 
-internal class NutritionistVerificationAttachment
+public class NutritionistVerificationAttachment
 {
     public int Id { get; set; }
     public Guid RequestGuid { get; set; }
-    public string FileContent { get; set; }
-    public string FileName { get; set; }
+    public Attachment Attachment { get; set; }
 
 }
+
+public record Attachment(string FileName, string FileContentBase64Encoded);

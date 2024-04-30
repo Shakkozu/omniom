@@ -19,6 +19,7 @@ public record PendingVerificationListItem
     public string Email { get; init; }
 }
 
+
 public static class Route
 {
     internal static IEndpointRouteBuilder MapGetPendingVerificationRequestsEndpoint(this IEndpointRouteBuilder endpoints)

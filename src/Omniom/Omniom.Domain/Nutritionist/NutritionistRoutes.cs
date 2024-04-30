@@ -8,5 +8,5 @@ public static class NutritionistRoutes
 
     public const string PendingVerificationRequests = "/api/nutritionist/pending-verification-requests";
 
-    public const string UserVerificationRequest = "/api/nutritionist/{{userId}}/verification-requests";
+    public const string UserVerificationRequestDetails = "/api/nutritionist/{userId}/verification-requests";
 }

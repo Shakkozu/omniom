@@ -3,6 +3,7 @@ using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Shared.BuildingBlocks;
+using Omniom.Tests.Auth;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Nutritionist;
@@ -15,18 +16,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     {
         var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
         var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
-        var registerNutritionistRequest = new RegisterNutritionistRequest
-        {
-            Name = "John",
-            Surname = "Doe",
-            City = "Warsaw",
-            TermsAndConditionsAccepted = true,
-            Email = "test@example.com",
-            Attachments =
-            [
-                new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
-            ]
-        };
+        var registerNutritionistRequest = ARegisterNutritionistRequestWithAttachment();
         await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
 
         var response = await adminClient.GetPendingVerificationRequestsAsync();
@@ -40,12 +30,24 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         await _omniomApp.Services.GetRequiredService<ICommandHandler<CleanupNutritionistModuleCommand>>().HandleAsync(new CleanupNutritionistModuleCommand(), default);
     }
 
+    
+
     [Test]
     public async Task RegistrationWithoutAttachingQualificationsConfirmationsDoesNotApplyForVerificationProcess()
     {
         var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
         var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
-        var registerNutritionistRequest = new RegisterNutritionistRequest
+        var registerNutritionistRequest = ARegisterNutritionistRequestWithoutAttachment();
+        await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
+
+        var response = await adminClient.GetPendingVerificationRequestsAsync();
+
+        Assert.That(response.Count, Is.EqualTo(0));
+    }
+
+    private static RegisterNutritionistRequest ARegisterNutritionistRequestWithoutAttachment()
+    {
+        return new RegisterNutritionistRequest
         {
             Name = "John",
             Surname = "Doe",
@@ -54,12 +56,37 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
             TermsAndConditionsAccepted = true,
             Attachments = []
         };
-        await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
-
-        var response = await adminClient.GetPendingVerificationRequestsAsync();
-
-        Assert.That(response.Count, Is.EqualTo(0));
     }
+
+    [Test]
+    public async Task ShouldReturnUserVerificationRequestDetails()
+    {
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
+        var registerNutritionistRequest = ARegisterNutritionistRequestWithAttachment();
+        await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+
+        var response = await adminClient.GetUserVerificationRequestDetails(userId);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
+            Assert.That(registerNutritionistRequest.Surname, Is.EqualTo(response.Surname));
+            Assert.That(userId, Is.EqualTo(response.UserId));
+            Assert.That(registerNutritionistRequest.Email, Is.EqualTo(response.Email));
+            Assert.That(registerNutritionistRequest.Attachments, Is.EqualTo(response.Attachments));
+            Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
+        });
+    }
+
+    [Test]
+    public async Task ShouldReturnInformationThatNutritionistVerificationIsInProgressAfterRegisteringWithDocumentsConfirmingQualifications()
+    {
+        Assert.Fail();
+    }
+
+
 
 
 
@@ -79,12 +106,6 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
 
     [Test]
     public async Task NotAdministratorShouldNotBeAbleToSeePendingNutritionistRegistrationRequests()
-    {
-        Assert.Fail();
-    }
-
-    [Test]
-    public async Task ShouldReturnInformationThatNutritionistVerificationIsInProgressAfterRegisteringWithDocumentsConfirmingQualifications()
     {
         Assert.Fail();
     }
@@ -117,5 +138,21 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     public async Task VerifiedNutritionistShouldReceiveThatInformationWhenFetchingProfileInformation()
     {
         Assert.Fail();
+    }
+
+    private static RegisterNutritionistRequest ARegisterNutritionistRequestWithAttachment()
+    {
+        return new RegisterNutritionistRequest
+        {
+            Name = "John",
+            Surname = "Doe",
+            City = "Warsaw",
+            TermsAndConditionsAccepted = true,
+            Email = "test@example.com",
+            Attachments =
+                    [
+                        new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
+                    ]
+        };
     }
 }
