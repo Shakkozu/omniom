@@ -12,9 +12,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 public record UserVerificationRequestDetails
 {
+
+
     public Guid UserId { get; init; }
     public string Name { get; init; }
     public string Surname { get; init; }
+    public string City { get; init; }
     public string Email { get; init; }
 
     public List<Attachment> Attachments { get; init; } = [];
@@ -63,6 +66,7 @@ internal class GetUserVerificationRequestDetailsQueryHandler : IQueryHandler<Get
                 (verificationRequest, nutritionist) => new UserVerificationRequestDetails
                 {
                     Email = nutritionist.Email,
+                    City = nutritionist.City,
                     UserId = verificationRequest.UserId,
                     Name = nutritionist.FirstName,
                     Surname = nutritionist.LastName,

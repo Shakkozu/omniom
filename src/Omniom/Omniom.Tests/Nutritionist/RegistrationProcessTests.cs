@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
+using Omniom.Domain.Nutritionist.FetchingProfileDetails;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
+using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Tests.Auth;
 using Omniom.Tests.Shared;
@@ -11,6 +13,14 @@ namespace Omniom.Tests.Nutritionist;
 [TestFixture]
 public class RegistrationProcessTests : BaseIntegrationTestsFixture
 {
+    private ICommandHandler<CleanupNutritionistModuleCommand> CleanupHandler => _omniomApp.Services.GetRequiredService<ICommandHandler<CleanupNutritionistModuleCommand>>();
+
+    [TearDown]
+    public async Task Cleanup()
+    {
+        await CleanupHandler.HandleAsync(new CleanupNutritionistModuleCommand(), default);
+    }
+
     [Test]
     public async Task AdministratorShouldSeeAllPendingNutritionistRegistrationRequests()
     {
@@ -26,8 +36,6 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         Assert.That(pendingVerificationListItem.Name, Is.EqualTo("John"));
         Assert.That(pendingVerificationListItem.Surname, Is.EqualTo("Doe"));
         Assert.That(pendingVerificationListItem.Email, Is.EqualTo(registerNutritionistRequest.Email));
-
-        await _omniomApp.Services.GetRequiredService<ICommandHandler<CleanupNutritionistModuleCommand>>().HandleAsync(new CleanupNutritionistModuleCommand(), default);
     }
 
     
@@ -73,6 +81,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         {
             Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
             Assert.That(registerNutritionistRequest.Surname, Is.EqualTo(response.Surname));
+            Assert.That(registerNutritionistRequest.City, Is.EqualTo(response.City));
             Assert.That(userId, Is.EqualTo(response.UserId));
             Assert.That(registerNutritionistRequest.Email, Is.EqualTo(response.Email));
             Assert.That(registerNutritionistRequest.Attachments, Is.EqualTo(response.Attachments));
@@ -83,12 +92,29 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     [Test]
     public async Task ShouldReturnInformationThatNutritionistVerificationIsInProgressAfterRegisteringWithDocumentsConfirmingQualifications()
     {
-        Assert.Fail();
+        
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        var registerNutritionistRequest = ARegisterNutritionistRequestWithAttachment();
+        await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
+
+        var response = await userClient.GetProfileInformation();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
+            Assert.That(registerNutritionistRequest.Surname, Is.EqualTo(response.Surname));
+            Assert.That(registerNutritionistRequest.Email, Is.EqualTo(response.Email));
+            Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
+            Assert.That(NutritionistVerificationStatus.Pending.ToString(), Is.EqualTo(response.VerificationStatus));
+        });
     }
 
 
-
-
+    [Test]
+    public async Task SingleUserShouldNotBeAbleToMultipleRegistrationsAsNutritionist()
+    {
+        Assert.Fail();
+    }
 
     [Test]
     public async Task ShouldNotRegisterNutritionistWithoutAcceptingTermsAndConditions()
@@ -150,9 +176,9 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
             TermsAndConditionsAccepted = true,
             Email = "test@example.com",
             Attachments =
-                    [
-                        new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
-                    ]
+            [
+                new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
+            ]
         };
     }
 }

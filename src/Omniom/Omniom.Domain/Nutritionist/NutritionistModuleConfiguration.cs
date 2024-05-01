@@ -9,6 +9,7 @@ using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Omniom.Domain.Shared.Repositories;
 using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
+using Omniom.Domain.Nutritionist.FetchingProfileDetails;
 
 namespace Omniom.Domain.Nutritionist;
 
@@ -21,6 +22,7 @@ public static class NutritionistModuleConfiguration
         services.AddScoped<ICommandHandler<CleanupNutritionistModuleCommand>, CleanupNutritionistModuleCommandHandler>();
         services.AddScoped<IQueryHandler<GetPendingVerificationRequestsQuery, List<PendingVerificationListItem>>, GetPendingVerificationRequestsQueryHandler>();
         services.AddScoped<IQueryHandler<GetUserVerificationRequestDetailsQuery, UserVerificationRequestDetails>, GetUserVerificationRequestDetailsQueryHandler>();
+        services.AddScoped<IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse>, GetProfileDetailsQueryHandler>();
         services.AddDbContext<NutritionistDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("OmniomDatabase"));
@@ -33,5 +35,6 @@ public static class NutritionistModuleConfiguration
         endpoints.MapRegisterNutritionistEndpoint();
         endpoints.MapGetPendingVerificationRequestsEndpoint();
         endpoints.MapGetUserVerificationRequestDetailsEndpoint();
+        endpoints.MapGetProfileInformationEndpoint();
     }
 }

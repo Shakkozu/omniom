@@ -4,5 +4,6 @@ public enum NutritionistVerificationStatus
 {
     Pending,
     Approved,
-    Rejected
+    Rejected,
+    VerificationNotRequested
 }

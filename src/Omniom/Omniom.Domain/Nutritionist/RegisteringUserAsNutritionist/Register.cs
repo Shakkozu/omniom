@@ -79,6 +79,7 @@ internal class RegisterNutritionistCommandHandler : ICommandHandler<RegisterNutr
             TermsAndConditionsAccepted = command.Request.TermsAndConditionsAccepted,
             IsVerified = false,
             Email = command.Request.Email,
+            City = command.Request.City,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

@@ -68,6 +68,7 @@ internal static class NutritionistSchema
             model.Property(e => e.UserId).HasColumnName("user_id");
             model.Property(e => e.FirstName).HasColumnName("first_name");
             model.Property(e => e.LastName).HasColumnName("last_name");
+            model.Property(e => e.City).HasColumnName("city");
             model.Property(e => e.Email).HasColumnName("email");
             model.Property(e => e.TermsAndConditionsAccepted).HasColumnName("terms_and_conditions_accepted");
             model.Property(e => e.IsVerified).HasColumnName("is_verified");
