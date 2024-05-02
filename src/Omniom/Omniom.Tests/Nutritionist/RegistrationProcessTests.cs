@@ -14,6 +14,7 @@ namespace Omniom.Tests.Nutritionist;
 public class RegistrationProcessTests : BaseIntegrationTestsFixture
 {
     private ICommandHandler<CleanupNutritionistModuleCommand> CleanupHandler => _omniomApp.Services.GetRequiredService<ICommandHandler<CleanupNutritionistModuleCommand>>();
+    private ICommandHandler<RegisterNutritionistCommand> RegisterNutritionistCommandHandler => _omniomApp.Services.GetRequiredService<ICommandHandler<RegisterNutritionistCommand>>();
 
     [TearDown]
     public async Task Cleanup()
@@ -37,8 +38,6 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         Assert.That(pendingVerificationListItem.Surname, Is.EqualTo("Doe"));
         Assert.That(pendingVerificationListItem.Email, Is.EqualTo(registerNutritionistRequest.Email));
     }
-
-    
 
     [Test]
     public async Task RegistrationWithoutAttachingQualificationsConfirmationsDoesNotApplyForVerificationProcess()
@@ -92,7 +91,6 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     [Test]
     public async Task ShouldReturnInformationThatNutritionistVerificationIsInProgressAfterRegisteringWithDocumentsConfirmingQualifications()
     {
-        
         var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
         var registerNutritionistRequest = ARegisterNutritionistRequestWithAttachment();
         await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
@@ -109,11 +107,14 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         });
     }
 
-
     [Test]
     public async Task SingleUserShouldNotBeAbleToMultipleRegistrationsAsNutritionist()
     {
-        Assert.Fail();
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        var registrationCommand = new RegisterNutritionistCommand(userId, ARegisterNutritionistRequestWithoutAttachment());
+        await RegisterNutritionistCommandHandler.HandleAsync(registrationCommand, CancellationToken.None);
+
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await RegisterNutritionistCommandHandler.HandleAsync(registrationCommand, CancellationToken.None));
     }
 
     [Test]
@@ -121,8 +122,6 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     {
         Assert.Fail();
     }
-
-
 
     [Test]
     public async Task UserCannotRequestVerificationWhenHasActiveRequest()
@@ -141,7 +140,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     {
         Assert.Fail();
     }
-    
+
     [Test]
     public async Task NutritionistShouldBeAbleToReapplyForVerificationAfterRejection()
     {

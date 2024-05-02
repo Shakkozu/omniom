@@ -25,8 +25,8 @@ public class AuthFixture
 
     internal async Task<string> GetAuthenticationTokenForSuperUserAsync()
     {
-        var email = UserCredentials.Administrator(_configuration).Email;
-        var password = UserCredentials.Administrator(_configuration).Password;
+        var email = TestUserCredentials.Administrator(_configuration).Email;
+        var password = TestUserCredentials.Administrator(_configuration).Password;
 
         var authenticationResult = await _loginUserCommandHandler.HandleAsync(new LoginUserDto
         {
@@ -40,11 +40,28 @@ public class AuthFixture
 
         return authenticationResult.Token;
     }
-    
+
     internal async Task<string> GetAuthenticationTokenForUserAsync()
     {
-        var email = UserCredentials.User.Email;
-        var password = UserCredentials.User.Password;
+        var email = TestUserCredentials.User.Email;
+        var password = TestUserCredentials.User.Password;
+        await AssertThatUserIsRegistred(email, password);
+
+        var authenticationResult = await _loginUserCommandHandler.HandleAsync(new LoginUserDto
+        {
+            Email = email,
+            Password = password
+        }, CancellationToken.None);
+        if (!authenticationResult.Success)
+        {
+            throw new Exception("Failed to authenticate user");
+        }
+
+        return authenticationResult.Token;
+    }
+
+    private async Task AssertThatUserIsRegistred(string email, string password)
+    {
         var userAlreadyExists = false;
         try
         {
@@ -54,35 +71,21 @@ public class AuthFixture
 
         if (!userAlreadyExists)
         {
-
             var dto = new UserForRegistrationDto { Email = email, Password = password, ConfirmPassword = password };
             await _registerUserCommandHandler.HandleAsync(dto, CancellationToken.None);
         }
-
-        var authenticationResult = await _loginUserCommandHandler.HandleAsync(new LoginUserDto
-        {
-            Email = email,
-            Password = password
-        }, CancellationToken.None);
-        if (!authenticationResult.Success)
-        {
-            throw new Exception("Failed to authenticate user");
-        }
-
-        return authenticationResult.Token;
     }
-
-    
 
     internal async Task<Guid> GetSuperuserIdAsync()
     {
-        var result = await _getUserIdByEmailQueryHandler.HandleAsync(new GetUserIdByEmailQuery(UserCredentials.Administrator(_configuration).Email));
+        var result = await _getUserIdByEmailQueryHandler.HandleAsync(new GetUserIdByEmailQuery(TestUserCredentials.Administrator(_configuration).Email));
         return Guid.Parse(result);
     }
+
     internal async Task<Guid> GetUserIdAsync()
     {
-        var result = await _getUserIdByEmailQueryHandler.HandleAsync(new GetUserIdByEmailQuery(UserCredentials.User.Email));
+        await AssertThatUserIsRegistred(TestUserCredentials.User.Email, TestUserCredentials.User.Password);
+        var result = await _getUserIdByEmailQueryHandler.HandleAsync(new GetUserIdByEmailQuery(TestUserCredentials.User.Email));
         return Guid.Parse(result);
     }
 }
-

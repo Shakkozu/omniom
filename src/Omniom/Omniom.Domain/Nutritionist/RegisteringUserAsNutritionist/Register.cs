@@ -7,6 +7,7 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
@@ -63,14 +64,24 @@ public record RegisterNutritionistCommand(Guid UserId, RegisterNutritionistReque
 internal class RegisterNutritionistCommandHandler : ICommandHandler<RegisterNutritionistCommand>
 {
     private readonly NutritionistDbContext _nutritionistDbContext;
+    private readonly ILogger<RegisterNutritionistCommandHandler> _logger;
 
-    public RegisterNutritionistCommandHandler(NutritionistDbContext nutritionistDbContext)
+    public RegisterNutritionistCommandHandler(NutritionistDbContext nutritionistDbContext,
+        ILogger<RegisterNutritionistCommandHandler> logger)
     {
         _nutritionistDbContext = nutritionistDbContext;
+        _logger = logger;
     }
+
     public async Task HandleAsync(RegisterNutritionistCommand command, CancellationToken ct)
     {
         var requestGuid = Guid.NewGuid();
+        var userAlreadyRegisteredAsNutritionist = await _nutritionistDbContext.Nutritionists.AnyAsync(x => x.UserId == command.UserId, ct);
+        if (userAlreadyRegisteredAsNutritionist)
+        {
+            _logger.LogError("User with id {userId} is already registered as nutritionist", command.UserId);
+            throw new InvalidOperationException("User already registered as nutritionist");
+        }
         var nutritionist = new Storage.Nutritionist
         {
             UserId = command.UserId,
@@ -117,6 +128,7 @@ internal class TransactionalRegisterNutritionistCommandHandler : ICommandHandler
         _transactions = transactions;
         _inner = inner;
     }
+
     public async Task HandleAsync(RegisterNutritionistCommand command, CancellationToken ct)
     {
         var transaction = await _transactions.BeginTransactionAsync();
