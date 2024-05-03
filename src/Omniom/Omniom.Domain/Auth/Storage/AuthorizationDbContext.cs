@@ -28,8 +28,8 @@ public class AuthorizationDbContext : IdentityDbContext<IdentityUser>
         base.OnConfiguring(optionsBuilder);
         optionsBuilder.EnableSensitiveDataLogging();
     }
-
 }
+
 internal static class AuthorizationContextSchema
 {
     internal static void MapAuthorizationSchema(this ModelBuilder modelBuilder)
@@ -60,6 +60,7 @@ internal static class AuthorizationContextSchema
             entity.Property(e => e.Id).HasColumnName("id").IsRequired();
             entity.Property(e => e.Name).HasColumnName("name").IsRequired();
             entity.Property(e => e.NormalizedName).HasColumnName("normalized_name").IsRequired();
+            entity.Property(e => e.ConcurrencyStamp).HasColumnName("concurrency_stamp");
         });
 
         modelBuilder.Entity<IdentityUserRole<string>>(entity =>
@@ -68,7 +69,6 @@ internal static class AuthorizationContextSchema
             entity.Property(e => e.UserId).HasColumnName("user_id").IsRequired();
             entity.Property(e => e.RoleId).HasColumnName("role_id").IsRequired();
         });
-
 
         modelBuilder.Entity<IdentityUserClaim<string>>(entity =>
         {

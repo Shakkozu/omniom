@@ -15,6 +15,7 @@ public class AuthFixture
     public AuthFixture(LoginUserCommandHandler loginUserCommandHandler,
         RegisterUserCommandHandler registerUserCommandHandler,
         GetUserIdByEmailHandlerQueryHandler getUserIdByEmailQueryHandler,
+
         IConfiguration configuration)
     {
         _loginUserCommandHandler = loginUserCommandHandler;
@@ -78,6 +79,9 @@ public class AuthFixture
 
     internal async Task<Guid> GetSuperuserIdAsync()
     {
+        var email = TestUserCredentials.Administrator(_configuration).Email;
+        var password = TestUserCredentials.Administrator(_configuration).Password;
+        await AssertThatUserIsRegistred(email, password);
         var result = await _getUserIdByEmailQueryHandler.HandleAsync(new GetUserIdByEmailQuery(TestUserCredentials.Administrator(_configuration).Email));
         return Guid.Parse(result);
     }

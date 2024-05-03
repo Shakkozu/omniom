@@ -5,8 +5,10 @@ using Omniom.Domain.Nutritionist.FetchingProfileDetails;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
+using Omniom.Domain.Shared.Exceptions;
 using Omniom.Tests.Auth;
 using Omniom.Tests.Shared;
+using System.Net;
 
 namespace Omniom.Tests.Nutritionist;
 
@@ -52,7 +54,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         Assert.That(response.Count, Is.EqualTo(0));
     }
 
-    private static RegisterNutritionistRequest ARegisterNutritionistRequestWithoutAttachment()
+    private static RegisterNutritionistRequest ARegisterNutritionistRequestWithoutAttachment(bool acceptedTermsAndConditions = true)
     {
         return new RegisterNutritionistRequest
         {
@@ -60,7 +62,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
             Surname = "Doe",
             City = "Warsaw",
             Email = "test@example.com",
-            TermsAndConditionsAccepted = true,
+            TermsAndConditionsAccepted = acceptedTermsAndConditions,
             Attachments = []
         };
     }
@@ -120,19 +122,20 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     [Test]
     public async Task ShouldNotRegisterNutritionistWithoutAcceptingTermsAndConditions()
     {
-        Assert.Fail();
-    }
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        var request = ARegisterNutritionistRequestWithoutAttachment(acceptedTermsAndConditions: false);
 
-    [Test]
-    public async Task UserCannotRequestVerificationWhenHasActiveRequest()
-    {
-        Assert.Fail();
+        Assert.Throws<CommandValidationException>(() => new RegisterNutritionistCommand(userId, request));
     }
 
     [Test]
     public async Task NotAdministratorShouldNotBeAbleToSeePendingNutritionistRegistrationRequests()
     {
-        Assert.Fail();
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+
+        var result = await userClient.GetPendingVerificationRequestsHttpResponseAsync();
+
+        Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
     }
 
     [Test]
@@ -148,7 +151,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     }
 
     [Test]
-    public async Task RegistrationAsNutritionistShouldShouldCreateNutritionistProfile()
+    public async Task RegistrationAsNutritionistShouldCreateNutritionistProfile()
     {
         Assert.Fail();
     }

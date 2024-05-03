@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Omniom.Domain.Auth.Login;
 using Omniom.Domain.Auth.RegisterUser;
@@ -16,7 +18,8 @@ namespace Omniom.Tests.Auth;
 
 [TestFixture]
 public class AuthorizationTests : BaseIntegrationTestsFixture
-{    [Test]
+{
+    [Test]
     public async Task ShouldRegisterUser()
     {
         var client = _omniomApp.CreateClient();
@@ -35,6 +38,19 @@ public class AuthorizationTests : BaseIntegrationTestsFixture
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         registrationResponse.Errors.Should().BeNull();
         registrationResponse.Success.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task ShouldCreateRole()
+    {
+        var role = "TestRole";
+        var rolesManager = _omniomApp.Services.GetRequiredService<RoleManager<IdentityRole>>();
+        var roleExists = await rolesManager.RoleExistsAsync(role);
+
+        var result = await rolesManager.CreateAsync(new IdentityRole(role));
+
+        Assert.AreEqual(false, roleExists);
+        Assert.IsTrue(result.Succeeded);
     }
 
     [Test]

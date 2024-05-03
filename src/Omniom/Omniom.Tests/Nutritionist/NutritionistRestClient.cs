@@ -16,6 +16,11 @@ public static class NutritionistRestClient
         response.EnsureSuccessStatusCode();
     }
 
+    public static async Task<HttpResponseMessage> GetPendingVerificationRequestsHttpResponseAsync(this HttpClient httpClient)
+    {
+        return await httpClient.GetAsync(NutritionistRoutes.PendingVerificationRequests);
+    }
+
     public static async Task<List<PendingVerificationListItem>> GetPendingVerificationRequestsAsync(this HttpClient httpClient)
     {
         var response = await httpClient.GetAsync(NutritionistRoutes.PendingVerificationRequests);

@@ -20,14 +20,17 @@ public class LoginUserCommandHandler
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IConfiguration _configuration;
 
     public LoginUserCommandHandler(UserManager<IdentityUser> userManager,
         SignInManager<IdentityUser> signInManager,
+        RoleManager<IdentityRole> roleManager,
         IConfiguration configuration)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _roleManager = roleManager;
         _configuration = configuration;
     }
 
@@ -44,17 +47,18 @@ public class LoginUserCommandHandler
 
         if (result.Succeeded)
         {
-            var token = GenerateJwtToken(user);
+            var token = await GenerateJwtTokenAsync(user);
             return new LoginResponseDto(true, token, user.Id, null);
         }
 
         return new LoginResponseDto(false, null, null, new[] { "Invalid password." });
     }
 
-    private string GenerateJwtToken(IdentityUser user)
+    private async Task<string> GenerateJwtTokenAsync(IdentityUser user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Secret"]);
+        var hasAdminRole = await _userManager.IsInRoleAsync(user, AuthorizationRoles.Administrator);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
@@ -70,7 +74,12 @@ public class LoginUserCommandHandler
             },
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
+
+        if (hasAdminRole)
+        {
+            tokenDescriptor.Subject.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
+        }
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
-}     
+}

@@ -8,6 +8,9 @@ using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Nutritionist.Storage;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using Omniom.Domain.Shared.Extensions;
+using Omniom.Domain.Auth;
 
 namespace Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 
@@ -18,7 +21,6 @@ public record PendingVerificationListItem
     public string Surname { get; init; }
     public string Email { get; init; }
 }
-
 
 public static class Route
 {
@@ -36,7 +38,7 @@ public static class Route
 
             var response = await handler.HandleAsync(query, ct);
             return Results.Ok(response);
-        });
+        }).RequireAdministratorRole();
         return endpoints;
     }
 }

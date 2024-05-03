@@ -8,6 +8,7 @@ using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Omniom.Domain.Shared.Exceptions;
 
 namespace Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
@@ -59,7 +60,21 @@ internal static class Route
     }
 }
 
-public record RegisterNutritionistCommand(Guid UserId, RegisterNutritionistRequest Request);
+public record RegisterNutritionistCommand
+{
+    public RegisterNutritionistCommand(Guid userId, RegisterNutritionistRequest request)
+    {
+        UserId = userId;
+        Request = request;
+        if (!request.TermsAndConditionsAccepted)
+        {
+            throw new CommandValidationException("Terms and conditions must be accepted");
+        }
+    }
+
+    public Guid UserId { get; }
+    public RegisterNutritionistRequest Request { get; }
+}
 
 internal class RegisterNutritionistCommandHandler : ICommandHandler<RegisterNutritionistCommand>
 {

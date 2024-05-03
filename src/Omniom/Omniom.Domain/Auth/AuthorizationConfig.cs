@@ -37,6 +37,7 @@ public static class AuthorizationConfig
             options.UseNpgsql(configuration.GetConnectionString("OmniomDatabase"));
         });
         serviceCollection.AddIdentityApiEndpoints<IdentityUser>()
+            .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<AuthorizationDbContext>();
 
         var jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
@@ -53,7 +54,7 @@ public static class AuthorizationConfig
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,                
+                ValidAudience = jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtSettings.Secret))
             };
         });
@@ -67,7 +68,7 @@ public static class AuthorizationConfig
         return serviceCollection;
     }
 
-    public static void AddSuperuser(this WebApplication application, IConfiguration configuration)
+    public static async Task AddSuperuser(this WebApplication application, IConfiguration configuration)
     {
         using (var scope = application.Services.CreateScope())
         {
@@ -80,6 +81,19 @@ public static class AuthorizationConfig
             };
 
             registerUser.HandleAsync(request, CancellationToken.None).GetAwaiter().GetResult();
+
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            if (!await roleManager.RoleExistsAsync(AuthorizationRoles.Administrator))
+            {
+                await roleManager.CreateAsync(new IdentityRole(AuthorizationRoles.Administrator));
+            }
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var user = await userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new Exception("Failed to create superuser");
+            }
+            await userManager.AddToRoleAsync(user, AuthorizationRoles.Administrator);
         }
     }
 

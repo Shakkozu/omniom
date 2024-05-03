@@ -48,7 +48,7 @@ public class Program
             app.InitializeProductsCatalogueDatabase();
         if (config.GetValue<bool>("Configuration:AddSuperuser"))
         {
-            app.AddSuperuser(config);
+            app.AddSuperuser(config).GetAwaiter().GetResult();
         }
         if (config.GetValue<bool>("Configuration:SeedApplicationStateWithData"))
         {
@@ -65,6 +65,7 @@ public class Program
             options.AllowAnyHeader();
         });
 
+        app.UseAuthentication();
         app.UseAuthorization();
 
         app.MapProductsCatalogueEndpoints();
