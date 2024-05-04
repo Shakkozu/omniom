@@ -26,8 +26,8 @@ internal class CleanupNutritionistModuleCommandHandler : ICommandHandler<Cleanup
             throw new InvalidOperationException("This method should only be called in the context of automated tests");
         }
 
-        _nutritionistDb.Nutritionists.RemoveRange(_nutritionistDb.Nutritionists);
-        _nutritionistDb.VerificationRequests.RemoveRange(_nutritionistDb.VerificationRequests.Include(x => x.Attachments));
+        _nutritionistDb.Nutritionists.RemoveRange(_nutritionistDb.Nutritionists.ToList());
+        _nutritionistDb.VerificationRequests.RemoveRange(_nutritionistDb.VerificationRequests.Include(x => x.Attachments).ToList());
         await _nutritionistDb.SaveChangesAsync(ct);
     }
 }

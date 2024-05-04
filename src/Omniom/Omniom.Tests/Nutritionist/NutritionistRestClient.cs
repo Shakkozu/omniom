@@ -2,6 +2,7 @@
 using Omniom.Domain.Nutritionist.FetchingProfileDetails;
 using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
+using Omniom.Domain.Nutritionist.RespondingToVerificationRequest;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 
@@ -14,6 +15,20 @@ public static class NutritionistRestClient
         var content = JsonContent.Create(request);
         var response = await httpClient.PostAsync(NutritionistRoutes.RegisterNutritionist, content);
         response.EnsureSuccessStatusCode();
+    }
+
+    public static async Task<HttpResponseMessage> RejectVerificationRequestAsync(this HttpClient httpClient, Guid userId, string rejectionReason)
+    {
+        var request = new VerifyRequest(userId, VerificationStatus.Rejected.ToString(), rejectionReason);
+        var content = JsonContent.Create(request);
+        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest, content);
+    }
+
+    public static async Task<HttpResponseMessage> ApproveVerificationRequestAsync(this HttpClient httpClient, Guid userId, string? message = null)
+    {
+        var request = new VerifyRequest(userId, VerificationStatus.Approved.ToString(), message);
+        var content = JsonContent.Create(request);
+        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest, content);
     }
 
     public static async Task<HttpResponseMessage> GetPendingVerificationRequestsHttpResponseAsync(this HttpClient httpClient)

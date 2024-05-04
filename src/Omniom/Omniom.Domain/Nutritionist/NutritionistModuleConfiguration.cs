@@ -10,6 +10,7 @@ using Omniom.Domain.Shared.Repositories;
 using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.FetchingProfileDetails;
+using Omniom.Domain.Nutritionist.RespondingToVerificationRequest;
 
 namespace Omniom.Domain.Nutritionist;
 
@@ -20,6 +21,7 @@ public static class NutritionistModuleConfiguration
         services.AddScoped<RegisterNutritionistCommandHandler>();
         services.AddScoped<ICommandHandler<RegisterNutritionistCommand>, TransactionalRegisterNutritionistCommandHandler>();
         services.AddScoped<ICommandHandler<CleanupNutritionistModuleCommand>, CleanupNutritionistModuleCommandHandler>();
+        services.AddScoped<ICommandHandler<VerifyQualificationsCommand>, VerifyQualificationsCommandHandler>();
         services.AddScoped<IQueryHandler<GetPendingVerificationRequestsQuery, List<PendingVerificationListItem>>, GetPendingVerificationRequestsQueryHandler>();
         services.AddScoped<IQueryHandler<GetUserVerificationRequestDetailsQuery, UserVerificationRequestDetails>, GetUserVerificationRequestDetailsQueryHandler>();
         services.AddScoped<IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse>, GetProfileDetailsQueryHandler>();
@@ -36,5 +38,6 @@ public static class NutritionistModuleConfiguration
         endpoints.MapGetPendingVerificationRequestsEndpoint();
         endpoints.MapGetUserVerificationRequestDetailsEndpoint();
         endpoints.MapGetProfileInformationEndpoint();
+        endpoints.MapVerifyQualificationsEndpoint();
     }
 }

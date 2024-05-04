@@ -2,6 +2,7 @@
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
 namespace Omniom.Domain.Nutritionist.Storage;
+
 internal class NutritionistDbContext : DbContext
 {
     public NutritionistDbContext(DbContextOptions<NutritionistDbContext> options) : base(options)
@@ -43,9 +44,9 @@ internal static class NutritionistSchema
             model.Property(e => e.CreatedAt).HasColumnName("created_at");
             model.Property(e => e.UpdatedAt).HasColumnName("updated_at");
             model.Property(e => e.Status).HasColumnName("status");
+            model.Property(e => e.Message).HasColumnName("message");
             model.HasMany(e => e.Attachments).WithOne().HasForeignKey(e => e.RequestGuid)
             .HasPrincipalKey(p => p.Guid);
-
         });
 
         modelBuilder.Entity<NutritionistVerificationAttachment>(model =>
@@ -87,6 +88,7 @@ internal class NutritionistVerificationRequest
     public DateTime CreatedAt { get; set; }
 
     public string Status { get; set; }
+    public string? Message { get; set; }
 
     public virtual List<NutritionistVerificationAttachment> Attachments { get; set; }
     public DateTime UpdatedAt { get; internal set; }
@@ -97,7 +99,6 @@ public class NutritionistVerificationAttachment
     public int Id { get; set; }
     public Guid RequestGuid { get; set; }
     public Attachment Attachment { get; set; }
-
 }
 
 public record Attachment(string FileName, string FileContentBase64Encoded);

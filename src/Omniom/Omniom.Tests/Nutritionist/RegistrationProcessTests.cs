@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Omniom.Domain.Nutritionist.FetchingProfileDetails;
@@ -141,31 +142,48 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     [Test]
     public async Task NutritionistShouldSeeInformationsWhyVerificationWasRejected()
     {
-        Assert.Fail();
-    }
+        var command = ARegisterNutritionistRequestWithAttachment();
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        await userClient.RegisterNutritionistAsync(command);
+        var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
+        var verificationResponse = await adminClient.RejectVerificationRequestAsync(userId, "Rejected due some reason");
 
-    [Test]
-    public async Task NutritionistShouldBeAbleToReapplyForVerificationAfterRejection()
-    {
-        Assert.Fail();
-    }
+        var response = await userClient.GetProfileInformation();
 
-    [Test]
-    public async Task RegistrationAsNutritionistShouldCreateNutritionistProfile()
-    {
-        Assert.Fail();
-    }
-
-    [Test]
-    public async Task VerifyingNutritionistDiplomasByAdministratorShouldMarkNutritionistAsVerified()
-    {
-        Assert.Fail();
+        verificationResponse.EnsureSuccessStatusCode();
+        Assert.That(response.VerificationStatus, Is.EqualTo(NutritionistVerificationStatus.Rejected.ToString()));
+        Assert.That(response.VerificationMessage, Is.EqualTo("Rejected due some reason"));
     }
 
     [Test]
     public async Task VerifiedNutritionistShouldReceiveThatInformationWhenFetchingProfileInformation()
     {
-        Assert.Fail();
+        var command = ARegisterNutritionistRequestWithAttachment();
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        await userClient.RegisterNutritionistAsync(command);
+        var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
+        var verificationResponse = await adminClient.ApproveVerificationRequestAsync(userId, "LGTM!");
+
+        var response = await userClient.GetProfileInformation();
+
+        verificationResponse.EnsureSuccessStatusCode();
+        Assert.That(response.VerificationStatus, Is.EqualTo(NutritionistVerificationStatus.Approved.ToString()));
+        Assert.That(response.VerificationMessage, Is.EqualTo("LGTM!"));
+    }
+
+    [Test]
+    public async Task OnlyAdministratorShouldBeAbletoVerifyRequests()
+    {
+        var command = ARegisterNutritionistRequestWithAttachment();
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        await userClient.RegisterNutritionistAsync(command);
+
+        var verificationResponse = await userClient.ApproveVerificationRequestAsync(userId, "LGTM!");
+
+        Assert.That(verificationResponse.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
     }
 
     private static RegisterNutritionistRequest ARegisterNutritionistRequestWithAttachment()

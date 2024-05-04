@@ -6,15 +6,10 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Omniom.Domain.Shared.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Omniom.Domain.Nutritionist.FetchingProfileDetails;
 
@@ -23,7 +18,8 @@ public record GetProfileDetailsResponse(string Name,
     string Surname,
     string City,
     string Email,
-    string VerificationStatus)
+    string VerificationStatus,
+    string VerificationMessage)
 {
 }
 
@@ -70,19 +66,16 @@ internal class GetProfileDetailsQueryHandler : IQueryHandler<GetProfileDetailsQu
             throw new ResourceNotFoundException("Nutritionist not found");
         }
 
-        var verificationStatus = NutritionistVerificationStatus.VerificationNotRequested.ToString();
-        var verification = await _nutritionistDbContext.VerificationRequests
+        var verificationRequest = await _nutritionistDbContext.VerificationRequests
             .Where(x => x.UserId == query.UserId)
-            .Select(x => x.Status)
             .SingleOrDefaultAsync(ct);
-
-        if (!string.IsNullOrEmpty(verification))
-            verificationStatus = verification;
 
         return new GetProfileDetailsResponse(nutritionist.FirstName,
             nutritionist.LastName,
             nutritionist.City,
             nutritionist.Email,
-            verificationStatus);
+            verificationRequest?.Status ?? NutritionistVerificationStatus.VerificationNotRequested.ToString(),
+            verificationRequest?.Message ?? string.Empty
+            );
     }
 }
