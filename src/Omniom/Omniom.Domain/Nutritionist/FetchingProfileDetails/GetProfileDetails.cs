@@ -14,17 +14,18 @@ using System.Threading.Tasks;
 using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Omniom.Domain.Shared.Exceptions;
 
 namespace Omniom.Domain.Nutritionist.FetchingProfileDetails;
-
 
 public record GetProfileDetailsQuery(Guid UserId);
 public record GetProfileDetailsResponse(string Name,
     string Surname,
     string City,
     string Email,
-    string VerificationStatus);
-
+    string VerificationStatus)
+{
+}
 
 public static class Route
 {
@@ -41,8 +42,8 @@ public static class Route
         });
         return endpoints;
     }
-
 }
+
 internal class GetProfileDetailsQueryHandler : IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse>
 {
     private readonly NutritionistDbContext _nutritionistDbContext;
@@ -63,11 +64,10 @@ internal class GetProfileDetailsQueryHandler : IQueryHandler<GetProfileDetailsQu
             .AsNoTracking()
             .SingleOrDefaultAsync(ct);
 
-
         if (nutritionist is null)
         {
             _logger.LogError("Nutritionist not found for user {userId}", query.UserId);
-            throw new NotFoundException("Nutritionist not found");
+            throw new ResourceNotFoundException("Nutritionist not found");
         }
 
         var verificationStatus = NutritionistVerificationStatus.VerificationNotRequested.ToString();
@@ -76,11 +76,11 @@ internal class GetProfileDetailsQueryHandler : IQueryHandler<GetProfileDetailsQu
             .Select(x => x.Status)
             .SingleOrDefaultAsync(ct);
 
-        if(!string.IsNullOrEmpty(verification))
+        if (!string.IsNullOrEmpty(verification))
             verificationStatus = verification;
 
         return new GetProfileDetailsResponse(nutritionist.FirstName,
-            nutritionist.LastName, 
+            nutritionist.LastName,
             nutritionist.City,
             nutritionist.Email,
             verificationStatus);
