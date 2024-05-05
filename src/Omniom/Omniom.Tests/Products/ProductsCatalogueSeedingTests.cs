@@ -6,17 +6,11 @@ using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
 
-public class ProductsCatalogueSeedingTests
+[TestFixture]
+public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
 {
-    private OmniomApp _app = default!;
-    private ImportProductsToCatalogue Importer => _app.ProductCatalogueImportHandler;
-    private SearchProductsQueryHandler SearchProductsHandler => _app.SearchProductsQueryHandler;
-
-    [OneTimeSetUp]
-    public void SetUp()
-    {
-        _app = OmniomApp.CreateInstance();
-    }
+    private ImportProductsToCatalogue Importer => _omniomApp.ProductCatalogueImportHandler;
+    private SearchProductsQueryHandler SearchProductsHandler => _omniomApp.SearchProductsQueryHandler;
 
     [Test]
     public async Task ShouldSeedDatabaseWithProductsDataImportFile()

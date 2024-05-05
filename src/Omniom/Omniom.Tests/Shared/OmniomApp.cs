@@ -12,6 +12,8 @@ using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Tests.Auth;
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.Shared.BuildingBlocks;
+using Omniom.Domain.Nutritionist.CleaningModule;
+using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
 namespace Omniom.Tests.Shared;
 
@@ -107,6 +109,8 @@ public class OmniomApp : WebApplicationFactory<Program>
     internal ICommandHandler<SaveMealNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<SaveMealNutritionEntriesCommand>>();
     internal GetNutritionDayQueryHandler GetDiaryQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetNutritionDayQueryHandler>();
     internal GetShortSummaryForDaysQueryHandler GetShortSummaryForDaysQueryHandler => RequestScope().ServiceProvider.GetRequiredService<GetShortSummaryForDaysQueryHandler>();
+    internal ICommandHandler<CleanupNutritionistModuleCommand> CleanupNutritionistModuleCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<CleanupNutritionistModuleCommand>>();
+    internal ICommandHandler<RegisterNutritionistCommand> RegisterNutritionistCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<RegisterNutritionistCommand>>();
 
     public enum UserType
     {

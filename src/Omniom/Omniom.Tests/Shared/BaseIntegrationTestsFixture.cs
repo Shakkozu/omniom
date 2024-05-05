@@ -11,7 +11,7 @@ public abstract class BaseIntegrationTestsFixture
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
-        _omniomApp = OmniomApp.CreateInstance(true);
+        _omniomApp = OmniomApp.CreateInstance(false);
         _omniomApp.ProductsTestsFixture.SeedProductsCatalogue();
         _productsSet = (await _omniomApp.ProductsTestsFixture.AProductsFromCatalogue()).ToList();
     }

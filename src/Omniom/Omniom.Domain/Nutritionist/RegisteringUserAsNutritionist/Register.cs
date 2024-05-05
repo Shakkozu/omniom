@@ -50,9 +50,9 @@ internal static class Route
                 await handler.HandleAsync(new RegisterNutritionistCommand(userId, request), ct);
                 return Results.Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                logger.LogError("User with id {userId} failed to register as nutritionist", userId);
+                logger.LogError(e, "User with id {userId} failed to register as nutritionist", userId);
                 return Results.BadRequest("Failed to register as nutritionist");
             }
         });
