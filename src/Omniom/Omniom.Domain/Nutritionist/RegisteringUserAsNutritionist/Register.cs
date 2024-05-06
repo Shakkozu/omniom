@@ -40,7 +40,7 @@ internal static class Route
 
             try
             {
-                var validationResult = new AttachmentsValidator(AttachmentsValidatorConfig.Default).ValidateFiles(request.Attachments.Select(x => x.FileContentBase64Encoded).ToArray());
+                var validationResult = new AttachmentsValidator(AttachmentsValidatorConfig.Default).ValidateFiles(request.Attachments?.Select(x => x.FileContentBase64Encoded).ToArray());
                 if (!validationResult.IsValid)
                 {
                     logger.LogError("User with id {userId} failed to register as nutritionist due to invalid files. {validationResult}", userId, validationResult.ErrorMessage);

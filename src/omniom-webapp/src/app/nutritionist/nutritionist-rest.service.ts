@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin, from, map, of, switchMap } from "rxjs";
+import { NutritionistProfile } from "./store/nutritionist.store";
 
 @Injectable({
 	providedIn: 'root',
@@ -17,8 +18,9 @@ export class NutritionistRestService {
 			name: command.name,
 			surname: command.surname,
 			city: command.city,
+			email: command.email,
 			termsAndConditionsAccepted: command.termsAndConditionsAccepted,
-			filesBase64Encoded: filesBase64Encoded
+			attachments: []
 		};
 
 		return this.http.post<void>(url, nutritionist);
@@ -32,6 +34,13 @@ export class NutritionistRestService {
 			reader.onerror = error => reject(error);
 		});
 	}
+
+	fetchNutritionistProfile(): Observable<NutritionistProfile> {
+		const url = `${ environment.apiUrl }/api/nutritionist/profile-details`;
+
+		return this.http.get<NutritionistProfile>(url);
+        
+    }
 }
 
 export interface RegisterNutritionistCommand {
@@ -39,12 +48,19 @@ export interface RegisterNutritionistCommand {
 	surname: string;
 	city: string;
 	termsAndConditionsAccepted: boolean;
+	email: string;
 	files: File[];
 }
 export interface RegisterNutritionistRequest {
 	name: string;
 	surname: string;
 	city: string;
+	email: string;
 	termsAndConditionsAccepted: boolean;
-	filesBase64Encoded: string[];
+	attachments: Attachment[];
+}
+
+export interface Attachment {
+	fileName: string;
+	fileContentBase64Encoded: string;
 }

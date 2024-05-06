@@ -6,14 +6,21 @@ import { RegistrationPageComponent } from './pages/registration-page/registratio
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { REACTIVE_NODE } from '@angular/core/primitives/signals';
 import { TermsAndConditionsDialogComponent } from './pages/registration-page/terms-and-conditions-dialog/terms-and-conditions-dialog.component';
+import { NutritionistProfilePageComponent } from './pages/nutritionist-profile-page/nutritionist-profile-page.component';
+import { NgxsModule } from '@ngxs/store';
+import { NutritionistStore } from './store/nutritionist.store';
 
 
 @NgModule({
   declarations: [
     RegistrationPageComponent,
-    TermsAndConditionsDialogComponent
+    TermsAndConditionsDialogComponent,
+    NutritionistProfilePageComponent
   ],
   imports: [
+    NgxsModule.forFeature([
+      NutritionistStore
+    ]),
     CommonModule,
     FormsModule,
     ReactiveFormsModule,

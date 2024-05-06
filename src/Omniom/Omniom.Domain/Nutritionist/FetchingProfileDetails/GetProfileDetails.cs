@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
+﻿using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Microsoft.EntityFrameworkCore;
+
 using Microsoft.Extensions.Logging;
+
 using Omniom.Domain.Shared.Exceptions;
 using Microsoft.IdentityModel.Tokens;
+using System.Net;
 
 namespace Omniom.Domain.Nutritionist.FetchingProfileDetails;
 
@@ -29,12 +33,26 @@ public static class Route
     {
         endpoints.MapGet(NutritionistRoutes.ProfileInformationDetails, async (
             HttpContext context,
+            ILogger<GetProfileDetailsQuery> logger,
             [FromServices] IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse> handler,
             CancellationToken ct,
             IFetchUserIdentifierFromContext userIdProvider) =>
         {
             var userId = userIdProvider.GetUserId();
-            return await handler.HandleAsync(new GetProfileDetailsQuery(userId), ct);
+            try
+            {
+                var result = await handler.HandleAsync(new GetProfileDetailsQuery(userId), ct);
+                return Results.Ok(result);
+            }
+            catch (ResourceNotFoundException)
+            {
+                return Results.NotFound();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Fetching user {userId} profile details failed with error {errorMessage}", userId, e.Message);
+                return Results.Problem();
+            }
         });
         return endpoints;
     }

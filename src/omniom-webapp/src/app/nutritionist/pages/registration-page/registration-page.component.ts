@@ -5,6 +5,7 @@ import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component';
 import { NutritionistRestService, RegisterNutritionistCommand } from '../../nutritionist-rest.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-page',
@@ -21,12 +22,14 @@ export class RegistrationPageComponent {
   constructor (private dialog: MatDialog,
     private formBuilder: FormBuilder,
     private formErrorHandler: FormErrorHandler,
+    private router: Router,
     private restService: NutritionistRestService) {
     this.form = this.formBuilder.group({
       name: new FormControl('', Validators.required),
       surname: new FormControl('', Validators.required),
       city: new FormControl('', Validators.required),
-      termsAndConditions: [{value: false, disabled: true}, Validators.requiredTrue]
+      email: new FormControl('', [Validators.required, Validators.email]),
+      termsAndConditions: new FormControl(false, Validators.requiredTrue),
     });
   }
 
@@ -101,12 +104,13 @@ export class RegistrationPageComponent {
       name: this.form.value.name,
       surname: this.form.value.surname,
       city: this.form.value.city,
+      email: this.form.value.email,
       termsAndConditionsAccepted: this.form.value.termsAndConditions,
       files: this.files
     };
 
     (await this.restService.registerNutritionist(command)).subscribe(_ => {
-      console.log('Registration successful');
+      this.router.navigate(['profile']);
     });
   }
 
