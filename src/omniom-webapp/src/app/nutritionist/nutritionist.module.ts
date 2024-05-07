@@ -9,13 +9,15 @@ import { TermsAndConditionsDialogComponent } from './pages/registration-page/ter
 import { NutritionistProfilePageComponent } from './pages/nutritionist-profile-page/nutritionist-profile-page.component';
 import { NgxsModule } from '@ngxs/store';
 import { NutritionistStore } from './store/nutritionist.store';
+import { ProfileDetailsComponent } from './components/profile-details/profile-details.component';
 
 
 @NgModule({
   declarations: [
     RegistrationPageComponent,
     TermsAndConditionsDialogComponent,
-    NutritionistProfilePageComponent
+    NutritionistProfilePageComponent,
+    ProfileDetailsComponent
   ],
   imports: [
     NgxsModule.forFeature([

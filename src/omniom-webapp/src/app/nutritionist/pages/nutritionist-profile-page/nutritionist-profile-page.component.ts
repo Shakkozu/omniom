@@ -10,6 +10,7 @@ import { Route, Router } from '@angular/router';
   styleUrl: './nutritionist-profile-page.component.scss'
 })
 export class NutritionistProfilePageComponent {
+  public profile$ = this.store.select(NutritionistStore.profileDetails);
 
   constructor(private store: Store, private route: Router) {
     const userIsRegisteredAsNutritionist = store.selectSnapshot(NutritionistStore.userIsRegisteredAsNutritionist);

@@ -1,4 +1,4 @@
-<div class="registration-page">
+<div class="registration-page w-1/2">
 	<h1>Utwórz profil dietetyka</h1>
 	<h3>
 		Profil dietetyka umożliwia nawiązywanie współprac z użytkownikami aplikacji, monitorowanie ich postępów oraz
@@ -35,22 +35,27 @@
 				<input formControlName="city" matInput placeholder="Miasto">
 				<mat-error>{{getErrorMessage("city")}}</mat-error>
 			</mat-form-field>
-		</div>		<div class="row">
+		</div>
+		<div class="row">
 			<mat-form-field>
 				<mat-label>Email</mat-label>
 				<input formControlName="email" matInput placeholder="Email">
-				<mat-error>{{getErrorMessage("email")}}</mat-error>
+				<mat-error class="w-56">{{getErrorMessage("email")}}</mat-error>
 			</mat-form-field>
 		</div>
 		<div class="row">
-			<mat-checkbox formControlName="termsAndConditions"></mat-checkbox><span class="text-blue-500 underline cursor-pointer" (click)="onTermsClicked()">Zapoznałem/am się z regulaminem i
+			<mat-checkbox formControlName="termsAndConditions"></mat-checkbox><span
+				class="text-blue-500 underline cursor-pointer" (click)="onTermsClicked()">Zapoznałem/am się z
+				regulaminem i
 				akceptuję jego warunki.</span>
 			<mat-error *ngIf="termsAndConditionsNotAccepted">Akceptacja regulaminu jest wymagana</mat-error>
 		</div>
 		<div>
 			<input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" multiple>
-			<button type="button" color="primary" mat-stroked-button (click)="triggerFileInput(fileInput)">Wybierz pliki</button>			
-			<mat-error *ngIf="formFilesSizeExceeded">Maksymalny rozmiar załączników to {{maxAttachemntsTotalSizeInMB}}MB. Aktualny rozmiar: {{totalAttachmentsSizeInMB}}MB</mat-error>
+			<button type="button" color="primary" mat-stroked-button (click)="triggerFileInput(fileInput)">Wybierz
+				pliki</button>
+			<mat-error *ngIf="formFilesSizeExceeded">Maksymalny rozmiar załączników to
+				{{maxAttachemntsTotalSizeInMB}}MB. Aktualny rozmiar: {{totalAttachmentsSizeInMB}}MB</mat-error>
 		</div>
 		<div>
 			<mat-action-list>
