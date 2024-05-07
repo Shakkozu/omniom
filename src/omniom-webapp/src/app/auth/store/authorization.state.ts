@@ -4,6 +4,7 @@ import { Action, State, StateContext, Selector, Store } from "@ngxs/store";
 import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess, AuthorizationComponentOpened } from "./authorization.actions";
 import { AuthService } from "../auth.service";
 import { FetchUserProfileConfiguration } from "../../user-profile/store/user-profile.actions";
+import { jwtDecode } from 'jwt-decode';
 
 
 export interface UserSessionStateModel {
@@ -44,6 +45,17 @@ export class AuthorizationState {
 	static errors(state: UserSessionStateModel) {
 		return state.errors;
 	}
+
+	@Selector()
+	static isAdmin(state: UserSessionStateModel): boolean {
+		const token = state.sessionId;
+		if (!token) {
+			return false;
+		}
+		const decoded: { [key: string]: any } = jwtDecode(token);
+		return decoded['role'] === 'Administrator';
+	}
+	
 
 	@Action(Register)
 	public register(ctx: StateContext<UserSessionStateModel>, { userDto }: Register) {

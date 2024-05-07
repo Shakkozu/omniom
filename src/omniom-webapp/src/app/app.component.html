@@ -4,6 +4,7 @@
   </button>
   <img class="pb-1 h-14 w-14" src="assets/logo.png">
   <span class="text-display-small">Omniom</span>
+  <span *ngIf="isAdmin$ | async" class="ms-8 text-body-medium" >Administrator</span>
   <span class="flex-auto"></span>
   <app-authentication-navbar-component></app-authentication-navbar-component>
 </mat-toolbar>
@@ -15,6 +16,15 @@
       <a mat-list-item routerLink="/diary">Dziennik żywieniowy</a>
       <a mat-list-item routerLink="/account/settings">Profil użytkownika</a>
       <a mat-list-item routerLink="/nutritionist">Profil dietetyka</a>
+      <div *ngIf="isAdmin$ | async">
+        <a mat-list-item [matMenuTriggerFor]="menu">Panel Administratora</a>
+        <mat-menu #menu="matMenu">
+          <a mat-list-item routerLink="/nutritionist/pending-verification-requests">Wnioski do weryfikacji dietetyków</a>
+        </mat-menu>
+
+
+
+      </div>
       
     </mat-nav-list>
   </mat-sidenav>
