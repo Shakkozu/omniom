@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { Attachment } from "./nutritionist-rest.service";
+import { Attachment, VerificationAttachment } from "./nutritionist-rest.service";
 
 @Injectable({
 	providedIn: 'root',
@@ -28,6 +28,14 @@ export class NutritionistAdministrationRestService {
 
 		return this.http.get<VerificationRequestDetails>(url, { params: { userId } });
 	}
+
+	openPdf(requestId: string, attachmentId: number): void {
+		const url = `${ environment.apiUrl }/api/nutritionist/pending-verification-requests/${ requestId }/attachments/${ attachmentId }`;
+		this.http.get(url, { responseType: 'blob' }).subscribe(blob => {
+			const blobUrl = URL.createObjectURL(blob);
+			window.open(blobUrl, '_blank', 'noopener,noreferrer');
+		});
+	}
 }
 
 export interface PendingVerificationListItem {
@@ -47,5 +55,11 @@ export interface VerificationRequestDetails {
 	userId: string;
 	guid: string;
 	createdAt: string;
-	attachments: Attachment[];
+	attachments: RequestAttachment[];
+}
+
+export interface RequestAttachment {
+	attachment: VerificationAttachment;
+	id: number;
+	requestGuid: string;
 }

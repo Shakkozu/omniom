@@ -141,7 +141,6 @@ export class NutritionistStore {
     fetchNutritionistProfile(ctx: StateContext<NutritionistStateModel>, action: FetchNutritionistProfile) {
         this.nutritionistService.fetchNutritionistProfile().subscribe({
             next: _profile => {
-                console.log(_profile);
                     ctx.patchState({
                     profile: _profile,
                     profileExists: true,

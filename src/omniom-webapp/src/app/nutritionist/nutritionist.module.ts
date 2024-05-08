@@ -12,6 +12,7 @@ import { NutritionistStore } from './store/nutritionist.store';
 import { ProfileDetailsComponent } from './components/profile-details/profile-details.component';
 import { PendingVerificationRequestsComponent } from './components/pending-verification-requests/pending-verification-requests.component';
 import { AdminVerificationPage } from './pages/admin-verification-page/admin-verification-page.component';
+import { VerificationRequestDetailsComponent } from './components/verification-request-details/verification-request-details.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { AdminVerificationPage } from './pages/admin-verification-page/admin-ver
     NutritionistProfilePageComponent,
     ProfileDetailsComponent,
     PendingVerificationRequestsComponent,
-    AdminVerificationPage
+    AdminVerificationPage,
+    VerificationRequestDetailsComponent
   ],
   imports: [
     NgxsModule.forFeature([

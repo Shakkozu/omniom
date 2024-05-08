@@ -67,3 +67,7 @@ export interface Attachment {
 	fileName: string;
 	fileContentBase64Encoded: string;
 }
+
+export interface VerificationAttachment extends Attachment {
+	id: number;
+}

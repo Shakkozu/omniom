@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore;
 namespace Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 public record UserVerificationRequestDetails
 {
-
-
     public Guid UserId { get; init; }
     public string Name { get; init; }
     public string Surname { get; init; }
     public string City { get; init; }
     public string Email { get; init; }
+    public Guid Guid { get; init; }
 
-    public List<Attachment> Attachments { get; init; } = [];
+    public DateTime CreatedAt { get; init; }
+    public List<NutritionistVerificationAttachment> Attachments { get; init; } = [];
 }
 
 public static class Route
@@ -67,10 +67,12 @@ internal class GetUserVerificationRequestDetailsQueryHandler : IQueryHandler<Get
                 {
                     Email = nutritionist.Email,
                     City = nutritionist.City,
+                    Guid = verificationRequest.Guid,
                     UserId = verificationRequest.UserId,
                     Name = nutritionist.FirstName,
+                    CreatedAt = verificationRequest.CreatedAt,
                     Surname = nutritionist.LastName,
-                    Attachments = verificationRequest.Attachments.Select(request => request.Attachment).ToList()
+                    Attachments = verificationRequest.Attachments.ToList()
                 })
             .AsNoTracking()
             .FirstOrDefaultAsync(ct);
