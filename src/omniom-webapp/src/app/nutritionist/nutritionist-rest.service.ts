@@ -13,24 +13,27 @@ export class NutritionistRestService {
 
 	async registerNutritionist(command: RegisterNutritionistCommand): Promise<Observable<void>> {
 		const url = `${ environment.apiUrl }/api/nutritionist/register`;
-		const filesBase64Encoded = await Promise.all(command.files.map(file => this.convertFileToBase64(file)));
+		const attachments = await Promise.all(command.files.map(file => this.convertFileToAttachment(file)));
 		const nutritionist: RegisterNutritionistRequest = {
 			name: command.name,
 			surname: command.surname,
 			city: command.city,
 			email: command.email,
 			termsAndConditionsAccepted: command.termsAndConditionsAccepted,
-			attachments: []
+			attachments: attachments
 		};
 
 		return this.http.post<void>(url, nutritionist);
 	}
 
-	convertFileToBase64(file: File): Promise<string> {
+	convertFileToAttachment(file: File): Promise<Attachment> {
 		return new Promise((resolve, reject) => {
 			const reader = new FileReader();
 			reader.readAsDataURL(file);
-			reader.onload = () => resolve(reader.result as string);
+			reader.onload = () => resolve({
+				fileName: file.name,
+				fileContentBase64Encoded: reader.result as string
+			});
 			reader.onerror = error => reject(error);
 		});
 	}
