@@ -11,6 +11,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NutritionistStore } from './store/nutritionist.store';
 import { ProfileDetailsComponent } from './components/profile-details/profile-details.component';
 import { PendingVerificationRequestsComponent } from './components/pending-verification-requests/pending-verification-requests.component';
+import { AdminVerificationPage } from './pages/admin-verification-page/admin-verification-page.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { PendingVerificationRequestsComponent } from './components/pending-verif
     TermsAndConditionsDialogComponent,
     NutritionistProfilePageComponent,
     ProfileDetailsComponent,
-    PendingVerificationRequestsComponent
+    PendingVerificationRequestsComponent,
+    AdminVerificationPage
   ],
   imports: [
     NgxsModule.forFeature([

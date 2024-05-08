@@ -20,6 +20,8 @@ public record PendingVerificationListItem
     public string Name { get; init; }
     public string Surname { get; init; }
     public string Email { get; init; }
+    public Guid Guid { get; init; }
+    public DateTime CreatedAt { get; init; }
 }
 
 public static class Route
@@ -65,7 +67,9 @@ internal record GetPendingVerificationRequestsQueryHandler : IQueryHandler<GetPe
                     Email = nutritionist.Email,
                     UserId = verificationRequest.UserId,
                     Name = nutritionist.FirstName,
-                    Surname = nutritionist.LastName
+                    Surname = nutritionist.LastName,
+                    Guid = verificationRequest.Guid,
+                    CreatedAt = verificationRequest.CreatedAt
                 })
             .ToListAsync(ct);
     }

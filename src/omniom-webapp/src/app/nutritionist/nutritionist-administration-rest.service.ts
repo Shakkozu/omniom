@@ -1,0 +1,51 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
+import { environment } from "../../environments/environment";
+import { Attachment } from "./nutritionist-rest.service";
+
+@Injectable({
+	providedIn: 'root',
+})
+export class NutritionistAdministrationRestService {
+	constructor (private http: HttpClient,
+	) { }
+
+	fetchPendingVerificationRequests(): Observable<PendingVerificationListItem[]> {
+		const url = `${ environment.apiUrl }/api/nutritionist/pending-verification-requests`;
+
+		return this.http.get<PendingVerificationListItem[]>(url);
+	}
+
+	processVerificationRequest(requestId: string): Observable<void> {
+		const url = `${ environment.apiUrl }/api/nutritionist/process-verification-request`;
+
+		return this.http.post<void>(url, { requestId });
+	}
+
+	fetchVerificationRequestDetails(userId: string): Observable<VerificationRequestDetails> {
+		const url = `${ environment.apiUrl }/api/nutritionist/${userId}/verification-requests`;
+
+		return this.http.get<VerificationRequestDetails>(url, { params: { userId } });
+	}
+}
+
+export interface PendingVerificationListItem {
+	name: string;
+	surname: string;
+	email: string;
+	userId: string;
+	createdAt: string;
+	guid: string;
+}
+
+export interface VerificationRequestDetails {
+	name: string;
+	surname: string;
+	email: string;
+	city: string;
+	userId: string;
+	guid: string;
+	createdAt: string;
+	attachments: Attachment[];
+}

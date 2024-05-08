@@ -8,12 +8,7 @@ using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Microsoft.EntityFrameworkCore;
-
-using Microsoft.Extensions.Logging;
-
 using Omniom.Domain.Shared.Exceptions;
-using Microsoft.IdentityModel.Tokens;
-using System.Net;
 
 namespace Omniom.Domain.Nutritionist.FetchingProfileDetails;
 
