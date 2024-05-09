@@ -15,6 +15,9 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v4
 
+      - name: Copy appsettings.json
+        run: cp ./src/Omniom/Omniom.WebAPI/appsettings.Tests.json ./src/Omniom/Omniom.WebAPI/appsettings.json
+
       - name: Start containers
         run: docker-compose -f "docker-compose.ci.yml" up -d
 
