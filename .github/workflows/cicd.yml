@@ -23,13 +23,13 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: Restore NuGet packages
-        run: dotnet restore
+        run: dotnet restore ./src/Omniom/Omniom.sln
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build ./src/Omniom/Omniom.sln --configuration Release --no-restore
 
       - name: Run tests
-        run: dotnet test --configuration Release --no-build --logger:"GitHubActions;report-warnings=false" --logger:"console;verbosity=normal"
+        run: dotnet test ./src/Omniom/Omniom.sln --configuration Release --no-build --logger:"console;verbosity=normal"
 
       - name: Stop containers
         if: always()
