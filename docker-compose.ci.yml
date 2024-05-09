@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  products-catalogue-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: omniom-products-catalogue
+  
+  omniom-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: omniom
