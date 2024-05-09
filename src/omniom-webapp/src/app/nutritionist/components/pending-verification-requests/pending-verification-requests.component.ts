@@ -8,7 +8,10 @@ import { PendingVerificationListItem } from '../../nutritionist-administration-r
 
 @Component({
   selector: 'app-pending-verification-requests',
-  template: `<div class="mat-elevation-z8">
+  template: `<div class="mat-elevation-z8 bg-white">
+  <button class="m-4 rounded-2xl" mat-raised-button (click)="refreshData()">Odśwież</button>
+
+
   <table mat-table fixedLayout="true" [dataSource]="dataSource">
 
     <ng-container matColumnDef="name">
@@ -51,12 +54,16 @@ export class PendingVerificationRequestsComponent implements AfterViewInit {
   public dataSource: MatTableDataSource<PendingVerificationListItem> = new MatTableDataSource<PendingVerificationListItem>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   selectedRequestId: string | undefined;
-  
+
   ngAfterViewInit(): void {
     this.store.select(state => state.nutritionist.pendingVerificationRequests).subscribe(data => {
       this.dataSource = new MatTableDataSource<PendingVerificationListItem>(data);
       this.dataSource.paginator = this.paginator;
     });
+    this.refreshData();
+  }
+
+  refreshData() {
     this.store.dispatch(new FetchPendingVerificationRequests());
   }
 
