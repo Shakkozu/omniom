@@ -152,19 +152,18 @@ export class NutritionistStore {
             selectedVerificationRequestDetails: undefined
         });
         console.error('Failed to fetch verification request details');
-
     }
-
-
-
-
-
-
 
     @Action(RegisterNutritionist)
     async registerNutritionist(ctx: StateContext<NutritionistStateModel>, action: RegisterNutritionist) {
-        (await this.nutritionistService.registerNutritionist(action.command)).subscribe(_ => {
-          });
+        (await this.nutritionistService.registerNutritionist(action.command)).subscribe({
+            next: _ => {
+                ctx.dispatch(new RegisterNutritionistSuccess());
+            },
+            error: err => {
+                console.error(err);
+            }
+        });
     }
 
     @Action(RegisterNutritionistSuccess)
@@ -173,7 +172,6 @@ export class NutritionistStore {
             profileExists: true
         });
         ctx.dispatch(new FetchNutritionistProfile());
-        this.router.navigate(['profile']);
     }
 
     @Action(FetchNutritionistProfile)

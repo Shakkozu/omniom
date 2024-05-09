@@ -23,22 +23,14 @@ import { AuthorizationState } from "../store/authorization.state";
       <div class="row my-4">
         <mat-form-field appearance="fill">
           <mat-label>Wprowadź hasło</mat-label>
-          <input formControlName="password" autocomplete="new-password" matInput [type]="hide ? 'password' : 'text'">
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-						  [attr.aria-pressed]="hide" type="button">
-						  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-					</button>
+          <input formControlName="password" autocomplete="new-password" matInput type="password">
           <mat-error>{{getErrorMessage("password")}}</mat-error>
         </mat-form-field>
       </div>
       <div class="row my-4">
         <mat-form-field appearance="fill">
           <mat-label>Potwierdź hasło</mat-label>
-          <input formControlName="confirmPassword" autocomplete="new-password" matInput [type]="hide ? 'password' : 'text'">
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-						  [attr.aria-pressed]="hide" type="button">
-						  <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
+          <input formControlName="confirmPassword" autocomplete="new-password" matInput type="password">
           <mat-error>{{getErrorMessage("confirmPassword")}}</mat-error>
         </mat-form-field>
       </div>
@@ -51,7 +43,6 @@ import { AuthorizationState } from "../store/authorization.state";
   `
 })
 export class RegisterComponent {
-  public hide: boolean = true;
   registrationForm: FormGroup;
   errors$!: Observable<string[]>;
 

@@ -11,12 +11,10 @@ import { Route, Router } from '@angular/router';
 })
 export class NutritionistProfilePageComponent {
   public profile$ = this.store.select(NutritionistStore.profileDetails);
+  public userIsRegisteredAsNutritionist$ = this.store.select(NutritionistStore.userIsRegisteredAsNutritionist);
 
   constructor(private store: Store, private route: Router) {
-    const userIsRegisteredAsNutritionist = store.selectSnapshot(NutritionistStore.userIsRegisteredAsNutritionist);
-    if(!userIsRegisteredAsNutritionist) {
-      this.route.navigate(['register']);
-    }
+    
   }
 
 }

@@ -1,7 +1,8 @@
 
 
-<div class="flex">
+<div class="flex" >
 	<div style="flex: 0.5; height: 90vh;">
-		<app-profile-details></app-profile-details>
+		<app-profile-details *ngIf="userIsRegisteredAsNutritionist$ | async"></app-profile-details>
+		<app-registration-page *ngIf="!(userIsRegisteredAsNutritionist$ | async)"></app-registration-page>
 	</div>
 </div>

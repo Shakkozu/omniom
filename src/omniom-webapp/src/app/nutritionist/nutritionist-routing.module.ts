@@ -9,7 +9,6 @@ import { AdminVerificationPage } from './pages/admin-verification-page/admin-ver
 const routes: Routes = [
   { path: '', component:  NutritionistProfilePageComponent },
   { path: 'profile', component:  NutritionistProfilePageComponent, pathMatch: 'full'},
-  { path: 'register', component: RegistrationPageComponent, pathMatch: 'full'},
   { path: 'pending-verification-requests', component: AdminVerificationPage, pathMatch: 'full', canActivate: [AdminGuard]},
 ];
 

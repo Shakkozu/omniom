@@ -6,6 +6,8 @@ import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component';
 import { NutritionistRestService, RegisterNutritionistCommand } from '../../nutritionist-rest.service';
 import { Router } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { RegisterNutritionist } from '../../store/nutritionist.actions';
 
 @Component({
   selector: 'app-registration-page',
@@ -23,6 +25,7 @@ export class RegistrationPageComponent {
     private formBuilder: FormBuilder,
     private formErrorHandler: FormErrorHandler,
     private router: Router,
+    private store: Store,
     private restService: NutritionistRestService) {
     this.form = this.formBuilder.group({
       name: new FormControl('', Validators.required),
@@ -109,9 +112,7 @@ export class RegistrationPageComponent {
       files: this.files
     };
 
-    (await this.restService.registerNutritionist(command)).subscribe(_ => {
-      this.router.navigate(['profile']);
-    });
+    this.store.dispatch(new RegisterNutritionist(command));
   }
 
   triggerFileInput(fileInput: HTMLInputElement) {
