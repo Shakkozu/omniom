@@ -13,8 +13,7 @@ import { Component } from '@angular/core';
     <app-verification-request-details></app-verification-request-details>
     </div>
 </div>
-
-  `
+`
 })
 export class AdminVerificationPage {
 

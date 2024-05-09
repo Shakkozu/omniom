@@ -19,16 +19,16 @@ public static class NutritionistRestClient
 
     public static async Task<HttpResponseMessage> RejectVerificationRequestAsync(this HttpClient httpClient, Guid userId, string rejectionReason)
     {
-        var request = new VerifyRequest(userId, VerificationStatus.Rejected.ToString(), rejectionReason);
+        var request = new VerifyRequest(VerificationStatus.Rejected.ToString(), rejectionReason);
         var content = JsonContent.Create(request);
-        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest, content);
+        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest.Replace("{userId}", userId.ToString()), content);
     }
 
     public static async Task<HttpResponseMessage> ApproveVerificationRequestAsync(this HttpClient httpClient, Guid userId, string? message = null)
     {
-        var request = new VerifyRequest(userId, VerificationStatus.Approved.ToString(), message);
+        var request = new VerifyRequest(VerificationStatus.Approved.ToString(), message);
         var content = JsonContent.Create(request);
-        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest, content);
+        return await httpClient.PostAsync(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest.Replace("{userId}", userId.ToString()), content);
     }
 
     public static async Task<HttpResponseMessage> GetPendingVerificationRequestsHttpResponseAsync(this HttpClient httpClient)

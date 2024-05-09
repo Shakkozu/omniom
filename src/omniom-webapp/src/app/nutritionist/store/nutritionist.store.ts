@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { NutritionistRestService } from "../nutritionist-rest.service";
-import { FetchNutritionistProfile, RegisterNutritionist, RegisterNutritionistSuccess, FetchVerificationRequestDetails, FetchVerificationRequestDetailsFailure, FetchVerificationRequestDetailsSuccess, FetchPendingVerificationRequests, FetchPendingVerificationRequestsFailure, FetchPendingVerificationRequestsSuccess } from "./nutritionist.actions";
+import { FetchNutritionistProfile, RegisterNutritionist, RegisterNutritionistSuccess, FetchVerificationRequestDetails, FetchVerificationRequestDetailsFailure, FetchVerificationRequestDetailsSuccess, FetchPendingVerificationRequests, FetchPendingVerificationRequestsFailure, FetchPendingVerificationRequestsSuccess, RejectVerificationRequest } from "./nutritionist.actions";
 import { _countGroupLabelsBeforeOption } from "@angular/material/core";
 import { Router } from "@angular/router";
-import { NutritionistAdministrationRestService, PendingVerificationListItem, VerificationRequestDetails } from "../nutritionist-administration-rest.service";
+import { NutritionistAdministrationRestService, NutritionistVerificationStatus, PendingVerificationListItem, ProcessVerificationRequestCommand, VerificationRequestDetails } from "../nutritionist-administration-rest.service";
 
 export interface NutritionistStateModel {
     profile: NutritionistProfile | undefined;
@@ -84,6 +84,27 @@ export class NutritionistStore {
             pendingVerificationRequests: []
         });
         console.error('Failed to fetch pending verification requests');
+    }
+
+    @Action(RejectVerificationRequest)
+    rejectVerificationRequest(ctx: StateContext<NutritionistStateModel>, action: RejectVerificationRequest) {
+        const command: ProcessVerificationRequestCommand = {
+            responseStatus: NutritionistVerificationStatus.Rejected,
+            message: action.rejectionReason
+        }
+        console.log('handling reject verification request');
+        console.log(command);
+        this.adminService.processVerificationRequest(action.userId, command).subscribe({
+            next: _ => {
+                ctx.patchState({
+                    selectedVerificationRequestDetails: undefined,
+                    pendingVerificationRequests: ctx.getState().pendingVerificationRequests.filter(request => request.userId !== action.userId)
+                });
+            },
+            error: _ => {
+                console.error('Failed to reject verification request');
+            }
+        });
     }
         
 

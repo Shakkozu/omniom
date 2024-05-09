@@ -17,14 +17,14 @@ export class NutritionistAdministrationRestService {
 		return this.http.get<PendingVerificationListItem[]>(url);
 	}
 
-	processVerificationRequest(requestId: string): Observable<void> {
-		const url = `${ environment.apiUrl }/api/nutritionist/process-verification-request`;
+	processVerificationRequest(userId: string, command: ProcessVerificationRequestCommand): Observable<void> {
+		const url = `${ environment.apiUrl }/api/nutritionist/${ userId }/verify-qualifications`;
 
-		return this.http.post<void>(url, { requestId });
+		return this.http.post<void>(url, command);
 	}
 
 	fetchVerificationRequestDetails(userId: string): Observable<VerificationRequestDetails> {
-		const url = `${ environment.apiUrl }/api/nutritionist/${userId}/verification-requests`;
+		const url = `${ environment.apiUrl }/api/nutritionist/${ userId }/verification-requests`;
 
 		return this.http.get<VerificationRequestDetails>(url, { params: { userId } });
 	}
@@ -37,6 +37,17 @@ export class NutritionistAdministrationRestService {
 		});
 	}
 }
+
+export interface ProcessVerificationRequestCommand {
+	responseStatus: NutritionistVerificationStatus;
+	message: string;
+}
+
+export enum NutritionistVerificationStatus {
+	Approved = 'Approved',
+	Rejected = 'Rejected'
+}
+
 
 export interface PendingVerificationListItem {
 	name: string;

@@ -70,7 +70,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
             Assert.That(registerNutritionistRequest.City, Is.EqualTo(response.City));
             Assert.That(userId, Is.EqualTo(response.UserId));
             Assert.That(registerNutritionistRequest.Email, Is.EqualTo(response.Email));
-            Assert.That(registerNutritionistRequest.Attachments, Is.EqualTo(response.Attachments));
+            Assert.That(registerNutritionistRequest.Attachments.First(), Is.EqualTo(response.Attachments.First().Attachment));
             Assert.That(registerNutritionistRequest.Name, Is.EqualTo(response.Name));
         });
     }

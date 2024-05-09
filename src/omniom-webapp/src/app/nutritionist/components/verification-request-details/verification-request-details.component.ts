@@ -1,7 +1,9 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { NutritionistAdministrationRestService, RequestAttachment, VerificationRequestDetails } from '../../nutritionist-administration-rest.service';
+import { MatDialog } from '@angular/material/dialog';
+import { RejectVerificationRequestDialogComponent } from '../reject-verification-request-dialog/reject-verification-request-dialog.component';
 
 @Component({
   selector: 'app-verification-request-details',
@@ -21,25 +23,47 @@ import { NutritionistAdministrationRestService, RequestAttachment, VerificationR
           </mat-list-item>
       </mat-list>
 
-      <button mat-raised-button class="m-2" color="primary">Zatwierdź</button>
-      <button mat-raised-button class="m-2" color="warn">Odrzuć</button>
+      <button mat-raised-button class="m-2" (click)="confirmRequest()" color="primary">Zatwierdź</button>
+      <button mat-raised-button class="m-2" (click)="rejectRequest()" color="warn">Odrzuć</button>
     </div>
     
   `
 })
-export class VerificationRequestDetailsComponent implements AfterViewInit {
-processVerificationRequest(arg0: string) {
-throw new Error('Method not implemented.');
-}
+export class VerificationRequestDetailsComponent implements AfterViewInit, OnDestroy {
+
   public details$: Observable<VerificationRequestDetails> | undefined;
+  private dialogRef: any;
   constructor (private store: Store,
+    private dialog: MatDialog,
     private adminService: NutritionistAdministrationRestService
   ) {
 
   }
 
+  confirmRequest() {
+    
+  }
+
+  rejectRequest() {
+    const details = this.store.selectSnapshot(state => state.nutritionist.selectedVerificationRequestDetails);
+    console.log(details);
+    this.dialog.open(RejectVerificationRequestDialogComponent, {
+      width: '500px',
+      height: '300px',
+      data: {
+        requestId: details.guid,
+        userId: details.userId
+      }
+    });
+    
+  }
+
   ngAfterViewInit(): void {
     this.details$ = this.store.select(state => state.nutritionist.selectedVerificationRequestDetails);
+  }
+
+  ngOnDestroy(): void {
+    this.dialogRef?.close();
   }
 
   showAttachment(attachment: RequestAttachment) {

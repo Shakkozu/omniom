@@ -37,6 +37,13 @@ export class FetchPendingVerificationRequestsFailure {
 }
 
 
+export class RejectVerificationRequest {
+    static readonly type = '[Nutritionist] Reject verification request'
+
+    constructor(public requestId: string, public rejectionReason: string, public userId: string) {
+    }
+}
+
 export class ProcessVerificationRequest {
     static readonly type = '[Nutritionist] Process verification request'
 

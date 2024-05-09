@@ -26,7 +26,7 @@ public enum VerificationStatus
     Rejected
 }
 
-public record VerifyRequest(Guid UserId, string ResponseStatus, string? Message);
+public record VerifyRequest(string ResponseStatus, string? Message);
 public record VerifyQualificationsCommand
 {
     public VerifyQualificationsCommand(Guid userId, VerificationStatus verificationStatus, string message)
@@ -51,12 +51,13 @@ internal static class Route
         endpoints.MapPost(NutritionistRoutes.VerifyPendingQualificationsConfirmationRequest, async (
             HttpContext context,
             [FromServices] ICommandHandler<VerifyQualificationsCommand> handler,
+            [FromRoute] Guid userId,
+            [FromBody] VerifyRequest request,
             CancellationToken ct,
             ILogger<VerifyQualificationsCommand> logger,
             IFetchUserIdentifierFromContext userIdProvider) =>
         {
-            var request = await context.Request.ReadFromJsonAsync<VerifyRequest>();
-            var command = new VerifyQualificationsCommand(request.UserId, Enum.Parse<VerificationStatus>(request.ResponseStatus, true), request.Message);
+            var command = new VerifyQualificationsCommand(userId, Enum.Parse<VerificationStatus>(request.ResponseStatus, true), request.Message);
             try
             {
                 await handler.HandleAsync(command, ct);
@@ -64,7 +65,7 @@ internal static class Route
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Failed to verify request for user {UserId}", request.UserId);
+                logger.LogError(e, "Failed to verify request for user {UserId}", userId);
                 return Results.Problem("Failed to verify request", statusCode: StatusCodes.Status500InternalServerError);
             }
         }).RequireAdministratorRole();
