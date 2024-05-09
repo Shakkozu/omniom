@@ -5,6 +5,7 @@ import { OnLoginSuccess, Login, Register, Logout, OnLogoutSuccess, Authorization
 import { AuthService } from "../auth.service";
 import { FetchUserProfileConfiguration } from "../../user-profile/store/user-profile.actions";
 import { jwtDecode } from 'jwt-decode';
+import { FetchNutritionistProfile } from "../../nutritionist/store/nutritionist.actions";
 
 
 export interface UserSessionStateModel {
@@ -33,7 +34,7 @@ const defaultState: UserSessionStateModel = {
 	defaults: defaultState
 })
 
-export class AuthorizationState {
+export class AuthorizationState  {
 	private static sessionLifetimeInMinutes = 45;
 
 	constructor (private authorizationService: AuthService,
@@ -104,6 +105,7 @@ export class AuthorizationState {
 			timestamp: Date.now(),
 		});
 		this.store.dispatch(new FetchUserProfileConfiguration());
+		this.store.dispatch(new FetchNutritionistProfile());
 		this.router.navigate(['/']);
 	}
 

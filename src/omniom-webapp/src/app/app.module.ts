@@ -11,7 +11,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from './products/products.module';
 import { RouterModule } from '@angular/router';
 import { AuthModule } from './auth/auth.module';
-import { NgxsModule } from '@ngxs/store';
+import { NGXS_PLUGINS, NgxsModule } from '@ngxs/store';
 import { AuthenticationNavbarComponentComponent } from './shared/authentication-navbar-component.component';
 import localePl from '@angular/common/locales/pl';
 import { LOCALE_ID } from '@angular/core';
@@ -19,6 +19,7 @@ import { JwtInterceptor } from './auth/auth.interceptor';
 import { UserProfileModule } from './user-profile/user-profile.module';
 import { NutritionistModule } from './nutritionist/nutritionist.module';
 import { ErrorDialogComponent } from './shared/error-dialog/error-dialog.component';
+import { logoutPlugin } from './shared/ngxs-plugins/logout-plugin';
 
 registerLocaleData(localePl);
 
@@ -49,7 +50,8 @@ registerLocaleData(localePl);
   providers: [
     DatePipe,
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: LOCALE_ID, useValue: 'pl'},
+    { provide: LOCALE_ID, useValue: 'pl' },
+    { provide: NGXS_PLUGINS, useValue: logoutPlugin, multi: true},
     provideAnimationsAsync(),
   ],
   bootstrap: [AppComponent]
