@@ -44,19 +44,12 @@ export class RejectVerificationRequest {
     }
 }
 
-export class ProcessVerificationRequest {
-    static readonly type = '[Nutritionist] Process verification request'
+export class ConfirmVerificationRequest {
+    static readonly type = '[Nutritionist] Confirm verification request'
 
-    constructor(public requestId: string) {
+    constructor(public userId: string) {
     }
-}
 
-export class ProcessVerificationRequestSuccess {
-    static readonly type = '[Nutritionist] Process verification request success'
-}
-
-export class ProcessVerificationRequestFailure {
-    static readonly type = '[Nutritionist] Process verification request failure'
 }
 
 export class FetchVerificationRequestDetails {

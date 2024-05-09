@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
-import { Attachment, VerificationAttachment } from "./nutritionist-rest.service";
+import { VerificationAttachment } from "./nutritionist-rest.service";
 
 @Injectable({
 	providedIn: 'root',
@@ -40,7 +40,7 @@ export class NutritionistAdministrationRestService {
 
 export interface ProcessVerificationRequestCommand {
 	responseStatus: NutritionistVerificationStatus;
-	message: string;
+	message?: string;
 }
 
 export enum NutritionistVerificationStatus {

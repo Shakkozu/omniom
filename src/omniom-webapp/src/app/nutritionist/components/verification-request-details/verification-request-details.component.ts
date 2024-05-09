@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { NutritionistAdministrationRestService, RequestAttachment, VerificationRequestDetails } from '../../nutritionist-administration-rest.service';
 import { MatDialog } from '@angular/material/dialog';
 import { RejectVerificationRequestDialogComponent } from '../reject-verification-request-dialog/reject-verification-request-dialog.component';
+import { ConfirmVerificationRequest } from '../../store/nutritionist.actions';
 
 @Component({
   selector: 'app-verification-request-details',
@@ -41,6 +42,9 @@ export class VerificationRequestDetailsComponent implements AfterViewInit, OnDes
   }
 
   confirmRequest() {
+    const details = this.store.selectSnapshot(state => state.nutritionist.selectedVerificationRequestDetails);
+
+    this.store.dispatch(new ConfirmVerificationRequest(details.userId));
     
   }
 
