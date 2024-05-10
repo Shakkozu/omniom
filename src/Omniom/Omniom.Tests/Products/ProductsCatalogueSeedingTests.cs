@@ -15,7 +15,7 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
     [Test]
     public async Task ShouldSeedDatabaseWithProductsDataImportFile()
     {
-        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
+        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products/products_data.csv");
         Importer.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
 
         var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty, 10000), CancellationToken.None);
@@ -216,8 +216,6 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
                 };
     }
 
-
-
     [TestCase("320 g (450 ml)", 320)]
     [TestCase("168 g (3 x 56 g) (przed odsączeniem 240 g (3 x 80 g)", 168)]
     [TestCase("480 g + 30 g sos", 480)]
@@ -228,7 +226,6 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
         Assert.That(QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(input).Value, Is.EqualTo(expectedValueInGrams));
     }
 
-
     [TestCase("2", 2)]
     [TestCase("10", 10)]
     [TestCase("350,2", 350)]
@@ -237,7 +234,6 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
     {
         Assert.That(QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(input).Value, Is.EqualTo(expectedValueInGrams));
     }
-
 
     [TestCase("10 szt.")]
     [TestCase("25 sztuk")]
