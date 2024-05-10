@@ -1,0 +1,40 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+      - configure-cicd
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v4
+
+      - name: Copy appsettings.json
+        run: cp ./src/Omniom/Omniom.WebAPI/appsettings.Tests.json ./src/Omniom/Omniom.WebAPI/appsettings.json
+
+      - name: Start containers
+        run: docker-compose -f "docker-compose.ci.yml" up -d
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Restore NuGet packages
+        run: dotnet restore ./src/Omniom/Omniom.sln
+
+      - name: Build
+        run: dotnet build ./src/Omniom/Omniom.sln --configuration Release --no-restore
+
+      - name: Run tests
+        run: dotnet test ./src/Omniom/Omniom.sln --configuration Release --no-build --logger:"console;verbosity=normal"
+
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down

@@ -3,6 +3,7 @@ using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Domain.ProductsCatalogue.Storage;
 using Omniom.Tests.Shared;
+using System.Globalization;
 
 namespace Omniom.Tests.Products;
 
@@ -15,7 +16,7 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
     [Test]
     public async Task ShouldSeedDatabaseWithProductsDataImportFile()
     {
-        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
+        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products/products_data.csv");
         Importer.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
 
         var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty, 10000), CancellationToken.None);
@@ -29,9 +30,9 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
                 Assert.That(resultItem.Code, Is.Not.Null.Or.Empty, "The Code property is not filled for a result item.");
                 Assert.That(resultItem.Name, Is.Not.Null.Or.Empty, "The Name property is not filled for a result item.");
                 Assert.That(resultItem.Brands, Is.Not.Null.Or.Empty, "The Brands property is not filled for a result item.");
-                Assert.That(resultItem.SuggestedPortionSizeG, Is.Not.Zero, "The SuggestedPortionSizeG property is not filled for a result item.");
+                Assert.That(resultItem.SuggestedPortionSizeG, Is.Not.Zero, "The SuggestedPortionSizeG property is not filled for a result item. {0}", resultItem);
                 Assert.That(resultItem.CategoriesTags, Is.Not.Null.Or.Empty, "The CategoriesTags property is not filled for a result item.");
-                Assert.That(resultItem.KcalPer100G, Is.Not.Zero, "The KcalPer100G property is not filled for a result item.");
+                Assert.That(resultItem.KcalPer100G, Is.Not.Zero, "The KcalPer100G property is not filled for a result item {0}.", resultItem);
             }
         });
     }
@@ -216,18 +217,16 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
                 };
     }
 
-
-
     [TestCase("320 g (450 ml)", 320)]
     [TestCase("168 g (3 x 56 g) (przed odsączeniem 240 g (3 x 80 g)", 168)]
     [TestCase("480 g + 30 g sos", 480)]
+    [TestCase("4,16g", 4)]
     [TestCase("275 ml", 275)]
     [TestCase("0,7 l", 700)]
     public void ShouldConvertProductQuantityAndServingSizeFromAnotherUnitToGrams(string input, int expectedValueInGrams)
     {
         Assert.That(QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(input).Value, Is.EqualTo(expectedValueInGrams));
     }
-
 
     [TestCase("2", 2)]
     [TestCase("10", 10)]
@@ -237,7 +236,6 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
     {
         Assert.That(QuantityCorrector.ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(input).Value, Is.EqualTo(expectedValueInGrams));
     }
-
 
     [TestCase("10 szt.")]
     [TestCase("25 sztuk")]

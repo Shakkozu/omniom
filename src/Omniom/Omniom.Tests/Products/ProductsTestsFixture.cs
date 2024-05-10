@@ -1,5 +1,4 @@
-﻿
-using Bogus;
+﻿using Bogus;
 using Omniom.Domain.ProductsCatalogue.AddProducts;
 using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.ProductsCatalogue.SeedDatabase;
@@ -17,9 +16,10 @@ internal class ProductsTestsFixture
         _importProductsToCatalogue = importProductsToCatalogue;
         _searchProductsQueryHandler = searchProductsQueryHandler;
     }
+
     internal void SeedProductsCatalogue()
     {
-        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products\\products_data.csv");
+        var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos("Products/products_data.csv");
         _importProductsToCatalogue.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
     }
 

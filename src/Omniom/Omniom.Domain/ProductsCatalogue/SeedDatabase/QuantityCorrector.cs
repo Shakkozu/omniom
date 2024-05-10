@@ -1,6 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Omniom.Domain.ProductsCatalogue.SeedDatabase;
+
 public static class QuantityCorrector
 {
     private sealed record UnitTranslation(string Unit, decimal ConversionRatio);
@@ -8,11 +10,11 @@ public static class QuantityCorrector
     private static Regex _regex = new Regex("([\\d,\\.]*)\\s?(g|ml|l|kg)?", RegexOptions.Compiled);
 
     private static List<UnitTranslation> _unitTranslations = [
-        new ("ml", 1),
-        new ("l", 1000),
+        new("ml", 1),
+        new("l", 1000),
     ];
 
-    public record QuantityCorrectionResults 
+    public record QuantityCorrectionResults
     {
         public static QuantityCorrectionResults CorrectResultFrom(decimal value) => new QuantityCorrectionResults((int)value, string.Empty);
         public static QuantityCorrectionResults IncorrectResult(string error) => new QuantityCorrectionResults(default, error);
@@ -29,9 +31,9 @@ public static class QuantityCorrector
 
     public static QuantityCorrectionResults ConvertQuantitySizeTextToNumericValueSpecifiedInGrams(string entry)
     {
-        var corrected = entry.Trim().ToLower().Replace(".", ",");
+        var corrected = entry.Trim().ToLower().Replace(",", ".");
         decimal numericValue;
-        if (decimal.TryParse(corrected, out numericValue))
+        if (decimal.TryParse(corrected, CultureInfo.InvariantCulture, out numericValue))
         {
             return QuantityCorrectionResults.CorrectResultFrom(numericValue);
         }
@@ -44,13 +46,13 @@ public static class QuantityCorrector
         if (match.Groups.Count < 3 && corrected.All(ch => char.IsDigit(ch)))
         {
             valueGroup = match.Groups[1].Value;
-            decimal.TryParse(valueGroup.Replace(".", ","), out numericValue);
+            decimal.TryParse(valueGroup.Replace(",", "."), CultureInfo.InvariantCulture, out numericValue);
             return QuantityCorrectionResults.CorrectResultFrom(numericValue);
         }
 
         valueGroup = match.Groups[1].Value;
         var unit = match.Groups[2].Value;
-        decimal.TryParse(valueGroup.Replace(".", ","), out numericValue);
+        decimal.TryParse(valueGroup.Replace(",", "."), CultureInfo.InvariantCulture, out numericValue);
         if (unit.Trim() == "g")
         {
             return QuantityCorrectionResults.CorrectResultFrom(numericValue);
