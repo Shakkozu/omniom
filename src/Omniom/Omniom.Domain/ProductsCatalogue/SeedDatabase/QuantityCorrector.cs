@@ -46,13 +46,13 @@ public static class QuantityCorrector
         if (match.Groups.Count < 3 && corrected.All(ch => char.IsDigit(ch)))
         {
             valueGroup = match.Groups[1].Value;
-            decimal.TryParse(valueGroup.Replace(".", ","), out numericValue);
+            decimal.TryParse(valueGroup.Replace(",", "."), CultureInfo.InvariantCulture, out numericValue);
             return QuantityCorrectionResults.CorrectResultFrom(numericValue);
         }
 
         valueGroup = match.Groups[1].Value;
         var unit = match.Groups[2].Value;
-        decimal.TryParse(valueGroup.Replace(".", ","), out numericValue);
+        decimal.TryParse(valueGroup.Replace(",", "."), CultureInfo.InvariantCulture, out numericValue);
         if (unit.Trim() == "g")
         {
             return QuantityCorrectionResults.CorrectResultFrom(numericValue);
