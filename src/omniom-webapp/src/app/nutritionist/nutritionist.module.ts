@@ -13,6 +13,7 @@ import { PendingVerificationRequestsComponent } from './components/pending-verif
 import { AdminVerificationPage } from './pages/admin-verification-page/admin-verification-page.component';
 import { VerificationRequestDetailsComponent } from './components/verification-request-details/verification-request-details.component';
 import { RejectVerificationRequestDialogComponent } from './components/reject-verification-request-dialog/reject-verification-request-dialog.component';
+import { CreateVerificationRequestComponent } from './components/create-verification-request/create-verification-request.component';
 
 
 @NgModule({
@@ -24,7 +25,8 @@ import { RejectVerificationRequestDialogComponent } from './components/reject-ve
     PendingVerificationRequestsComponent,
     AdminVerificationPage,
     VerificationRequestDetailsComponent,
-    RejectVerificationRequestDialogComponent
+    RejectVerificationRequestDialogComponent,
+    CreateVerificationRequestComponent
   ],
   imports: [
     NgxsModule.forFeature([

@@ -14,7 +14,7 @@ import { Logout } from '../auth/store/authorization.actions';
   </div>
   <div *ngIf='(authenticated$ | async)'>
     <span class="text-sm me-4">Witaj, {{username$ | async}}</span>
-    <button (click)="logout()" mat-button>Logout</button>
+    <button (click)="logout()" mat-button>Wyloguj</button>
   </div>
   `,
 })

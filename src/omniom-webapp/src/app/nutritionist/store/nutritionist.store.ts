@@ -44,9 +44,15 @@ export class NutritionistStore {
     static userIsRegisteredAsNutritionist(state: NutritionistStateModel) {
         return state.profile !== undefined;
     }
+    
     @Selector()
     static profileDetails(state: NutritionistStateModel) {
         return state.profile;
+    }
+    
+    @Selector()
+    static isVerified(state: NutritionistStateModel) {
+        return state.profile?.verificationStatus === 'Approved';
     }
 
     @Selector()
