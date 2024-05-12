@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { NutritionistRestService } from "../nutritionist-rest.service";
-import { FetchNutritionistProfile, RegisterNutritionist, RegisterNutritionistSuccess, FetchVerificationRequestDetails, FetchVerificationRequestDetailsFailure, FetchVerificationRequestDetailsSuccess, FetchPendingVerificationRequests, FetchPendingVerificationRequestsFailure, FetchPendingVerificationRequestsSuccess, RejectVerificationRequest, ConfirmVerificationRequest } from "./nutritionist.actions";
+import { FetchNutritionistProfile, RegisterNutritionist, RegisterNutritionistSuccess, FetchVerificationRequestDetails, FetchVerificationRequestDetailsFailure, FetchVerificationRequestDetailsSuccess, FetchPendingVerificationRequests, FetchPendingVerificationRequestsFailure, FetchPendingVerificationRequestsSuccess, RejectVerificationRequest, ConfirmVerificationRequest, CreateVerificationRequest } from "./nutritionist.actions";
 import { _countGroupLabelsBeforeOption } from "@angular/material/core";
 import { Router } from "@angular/router";
 import { NutritionistAdministrationRestService, NutritionistVerificationStatus, PendingVerificationListItem, ProcessVerificationRequestCommand, VerificationRequestDetails } from "../nutritionist-administration-rest.service";
@@ -170,6 +170,17 @@ export class NutritionistStore {
                 console.error(err);
             }
         });
+    }
+
+    @Action(CreateVerificationRequest)
+    async createVerificationRequest(ctx: StateContext<NutritionistStateModel>, action: CreateVerificationRequest) {
+        (await this.nutritionistService.createVerificationRequest(action.files)).subscribe({
+            next: _ => {
+            },
+            error: err => {
+                console.error(err);
+            }
+        })
     }
 
     @Action(RegisterNutritionistSuccess)

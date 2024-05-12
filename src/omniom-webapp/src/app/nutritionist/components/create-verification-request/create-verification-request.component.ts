@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.component';
+import { Store } from '@ngxs/store';
+import { CreateVerificationRequest } from '../../store/nutritionist.actions';
 
 @Component({
   selector: 'app-create-verification-request',
@@ -51,7 +53,8 @@ export class CreateVerificationRequestComponent {
   constructor(
     private formBuilder: FormBuilder,
     private formErrorHandler: FormErrorHandler,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private store: Store
   ) {
 
   }
@@ -97,7 +100,10 @@ export class CreateVerificationRequestComponent {
   }
 
   onSubmit() {
-    throw new Error('Method not implemented.');
+    if(this.formFilesSizeExceeded || this.files.length < 1)
+      return;
+
+    this.store.dispatch(new CreateVerificationRequest(this.files))
   }
 
 

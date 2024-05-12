@@ -3,6 +3,8 @@ import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
 import { Observable, forkJoin, from, map, of, switchMap } from "rxjs";
 import { NutritionistProfile } from "./store/nutritionist.store";
+import { CreateVerificationRequest } from "./store/nutritionist.actions";
+import { CreateVerificationRequestComponent } from "./components/create-verification-request/create-verification-request.component";
 
 @Injectable({
 	providedIn: 'root',
@@ -24,6 +26,13 @@ export class NutritionistRestService {
 		};
 
 		return this.http.post<void>(url, nutritionist);
+	}
+
+	async createVerificationRequest(command: CreateVerificationRequest) : Promise<Observable<void>> {
+		const url = `${ environment.apiUrl }/api/nutritionist/verification-request`;
+		const attachments = await Promise.all(command.files.map(file => this.convertFileToAttachment(file)));
+
+		return this.http.post<void>(url, attachments);
 	}
 
 	convertFileToAttachment(file: File): Promise<Attachment> {

@@ -21,6 +21,11 @@ export class FetchNutritionistProfileSuccess {
 
 }
 
+export class CreateVerificationRequest {
+    static readonly type = '[Nutritionist] Create verification request'
+    constructor(public files: File[]) {}
+}
+
 export class FetchPendingVerificationRequests {
     static readonly type = '[Nutritionist] Fetch pending verification requests'
 }
