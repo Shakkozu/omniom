@@ -7,6 +7,7 @@ import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.
 @Component({
   selector: 'app-create-verification-request',
   template: `
+  <div class="p-4">
   <h1>Weryfikacja kwalifikacji dietetycznych</h1>
   <p>Wybierz pliki poświadczające kwalifikacje dietetyczne, które zostaną zweryfikowane przez nasz zespół.</p>
   <form mat-form [formGroup]="form" (submit)="onSubmit()">
@@ -19,10 +20,12 @@ import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.
 		</div>
 		<div>
 			<mat-action-list>
-				<mat-list-item *ngFor="let file of files; index as i">
+				<mat-list-item #tooltip="matTooltip" [matTooltip]="file.name" *ngFor="let file of files; index as i">
 					<mat-icon matListItemIcon>description</mat-icon>
-					{{ file.name }} {{convertSizeInBytesToNearestAppropriateUnit(file.size)}}
-					<button type="button" mat-icon-button (click)="removeFile(i)">
+          <div matListItemTitle>
+            {{ file.name }} {{convertSizeInBytesToNearestAppropriateUnit(file.size)}}
+          </div>
+					<button matListItemMeta type="button" mat-icon-button (click)="removeFile(i)">
 						<mat-icon>delete</mat-icon>
 					</button>
 				</mat-list-item>
@@ -31,10 +34,11 @@ import { ErrorDialogComponent } from '../../../shared/error-dialog/error-dialog.
     <mat-error *ngIf="files.length === 0" class="text-red-500">
     Co najmniej jeden plik jest wymagany do weryfikacji
     </mat-error>
-    <div>
-      <button [disabled]="files.length > 0" type="submit" mat-raised-button color="primary">Utwórz konto</button>
+    <div class="absolute bottom-4 right-4">
+      <button [disabled]="files.length < 1" type="submit" mat-raised-button color="primary">Złóż wniosek</button>
     </div>
 	</form>
+</div>
   `,
   styleUrl: './create-verification-request.component.scss'
 })

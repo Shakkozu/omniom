@@ -24,8 +24,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const MaterialComponents = [
+	MatTooltipModule,
 	MatToolbarModule,
 	MatProgressBarModule,
 	MatCheckboxModule,

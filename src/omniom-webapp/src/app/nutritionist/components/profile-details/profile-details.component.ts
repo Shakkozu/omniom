@@ -35,8 +35,8 @@ export class ProfileDetailsComponent {
 	
 	verifyProfile() {
 		this.matDialog.open(CreateVerificationRequestComponent, {
-			width: '960px',
-			height: '600px'
+			width: '600px',
+			height: '500px'
 		});
 	}
 }
