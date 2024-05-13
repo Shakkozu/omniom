@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Omniom.Domain.Shared.Extensions;
 using Omniom.Domain.Auth;
 
-namespace Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
+namespace Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
 
 public record PendingVerificationListItem
 {

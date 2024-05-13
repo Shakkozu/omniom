@@ -56,6 +56,7 @@ export class CreateVerificationRequestComponent {
     private dialog: MatDialog,
     private store: Store
   ) {
+    this.form = this.formBuilder.group({});
 
   }
 
@@ -104,6 +105,7 @@ export class CreateVerificationRequestComponent {
       return;
 
     this.store.dispatch(new CreateVerificationRequest(this.files))
+    this.dialog.closeAll();
   }
 
 

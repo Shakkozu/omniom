@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Nutritionist.CleaningModule;
-using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Nutritionist.Storage;
+using Omniom.Domain.Nutritionist.Verification.CreatingVerificationRequests;
+using Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Shared.Exceptions;
 using Omniom.Tests.Shared;
@@ -76,6 +77,22 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
     }
 
     [Test]
+    public async Task NutritionistShouldBeAbleToVerifyProfileAfterRegistration()
+    {
+        var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        var adminClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
+        var registerNutritionistRequest = ARegisterNutritionistRequestWithoutAttachment();
+        await userClient.RegisterNutritionistAsync(registerNutritionistRequest);
+        await userClient.CreateVerificationRequestAsync(AVerificationRequest());
+        var userId = await _omniomApp.AuthFixture.GetUserIdAsync();
+        await adminClient.ApproveVerificationRequestAsync(userId);
+
+        var response = await userClient.GetProfileInformation();
+
+        Assert.That(response.VerificationStatus, Is.EqualTo(NutritionistVerificationStatus.Approved.ToString()));
+    }
+
+    [Test]
     public async Task ShouldReturnInformationThatNutritionistVerificationIsInProgressAfterRegisteringWithDocumentsConfirmingQualifications()
     {
         var userClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
@@ -101,7 +118,7 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
         var registrationCommand = new RegisterNutritionistCommand(userId, ARegisterNutritionistRequestWithoutAttachment());
         await RegisterNutritionistCommandHandler.HandleAsync(registrationCommand, CancellationToken.None);
 
-        Assert.That(async() => await RegisterNutritionistCommandHandler.HandleAsync(registrationCommand, CancellationToken.None), Throws.TypeOf<InvalidOperationException>());
+        Assert.That(async () => await RegisterNutritionistCommandHandler.HandleAsync(registrationCommand, CancellationToken.None), Throws.TypeOf<InvalidOperationException>());
     }
 
     [Test]
@@ -199,5 +216,15 @@ public class RegistrationProcessTests : BaseIntegrationTestsFixture
                 new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
             ]
         };
+    }
+
+    private static CreateVerificationRequest AVerificationRequest()
+    {
+        return new CreateVerificationRequest
+        (
+            [
+                new Attachment("file1.pdf", "data:application/pdf;base64," + new String('A', 3 * 1024 * 1024))
+            ]
+        );
     }
 }

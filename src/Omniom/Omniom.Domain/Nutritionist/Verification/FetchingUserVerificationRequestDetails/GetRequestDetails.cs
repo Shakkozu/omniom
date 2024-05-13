@@ -9,7 +9,7 @@ using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
+namespace Omniom.Domain.Nutritionist.Verification.FetchingUserVerificationRequestDetails;
 public record UserVerificationRequestDetails
 {
     public Guid UserId { get; init; }

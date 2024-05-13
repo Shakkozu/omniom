@@ -29,10 +29,10 @@ export class NutritionistRestService {
 	}
 
 	async createVerificationRequest(command: CreateVerificationRequest) : Promise<Observable<void>> {
-		const url = `${ environment.apiUrl }/api/nutritionist/verification-request`;
+		const url = `${ environment.apiUrl }/api/nutritionist/verification-requests`;
 		const attachments = await Promise.all(command.files.map(file => this.convertFileToAttachment(file)));
 
-		return this.http.post<void>(url, attachments);
+		return this.http.post<void>(url, {attachments: attachments});
 	}
 
 	convertFileToAttachment(file: File): Promise<Attachment> {

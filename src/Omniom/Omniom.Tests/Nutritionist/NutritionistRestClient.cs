@@ -1,10 +1,10 @@
-﻿using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
-using Omniom.Domain.Nutritionist.FetchingProfileDetails;
-using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
+﻿using Omniom.Domain.Nutritionist.FetchingProfileDetails;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
-using Omniom.Domain.Nutritionist.RespondingToVerificationRequest;
+using Omniom.Domain.Nutritionist.Verification.CreatingVerificationRequests;
+using Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
+using Omniom.Domain.Nutritionist.Verification.FetchingUserVerificationRequestDetails;
+using Omniom.Domain.Nutritionist.Verification.VerifyingPendingRequests;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
 
 namespace Omniom.Tests.Nutritionist;
 
@@ -14,6 +14,13 @@ public static class NutritionistRestClient
     {
         var content = JsonContent.Create(request);
         var response = await httpClient.PostAsync(NutritionistRoutes.RegisterNutritionist, content);
+        response.EnsureSuccessStatusCode();
+    }
+
+    public static async Task CreateVerificationRequestAsync(this HttpClient httpClient, CreateVerificationRequest request)
+    {
+        var content = JsonContent.Create(request);
+        var response = await httpClient.PostAsync(NutritionistRoutes.CreateVerificationRequest, content);
         response.EnsureSuccessStatusCode();
     }
 

@@ -5,13 +5,14 @@ using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Microsoft.Extensions.Configuration;
 using Omniom.Domain.Nutritionist.Storage;
 using Microsoft.EntityFrameworkCore;
-using Omniom.Domain.Nutritionist.FetchingPendingVerificationRequests;
 using Omniom.Domain.Shared.Repositories;
 using Omniom.Domain.Nutritionist.CleaningModule;
-using Omniom.Domain.Nutritionist.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.FetchingProfileDetails;
-using Omniom.Domain.Nutritionist.RespondingToVerificationRequest;
-using Omniom.Domain.Nutritionist.GettingAttachmentDetails;
+using Omniom.Domain.Nutritionist.Verification.VerifyingPendingRequests;
+using Omniom.Domain.Nutritionist.Verification.GettingAttachmentDetails;
+using Omniom.Domain.Nutritionist.Verification.FetchingUserVerificationRequestDetails;
+using Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
+using Omniom.Domain.Nutritionist.Verification.CreatingVerificationRequests;
 
 namespace Omniom.Domain.Nutritionist;
 
@@ -21,6 +22,7 @@ public static class NutritionistModuleConfiguration
     {
         services.AddScoped<RegisterNutritionistCommandHandler>();
         services.AddScoped<ICommandHandler<RegisterNutritionistCommand>, TransactionalRegisterNutritionistCommandHandler>();
+        services.AddScoped<ICommandHandler<CreateVerificationRequestCommand>, CreateVerificationRequestCommandHandler>();
         services.AddScoped<ICommandHandler<CleanupNutritionistModuleCommand>, CleanupNutritionistModuleCommandHandler>();
         services.AddScoped<ICommandHandler<VerifyQualificationsCommand>, VerifyQualificationsCommandHandler>();
         services.AddScoped<IQueryHandler<GetPendingVerificationRequestsQuery, List<PendingVerificationListItem>>, GetPendingVerificationRequestsQueryHandler>();
@@ -38,6 +40,7 @@ public static class NutritionistModuleConfiguration
     public static void MapNutritionistEndpoints(this IEndpointRouteBuilder endpoints)
     {
         endpoints.MapRegisterNutritionistEndpoint();
+        endpoints.MapCreateVerificationRequestEndpoint();
         endpoints.MapGetPendingVerificationRequestsEndpoint();
         endpoints.MapGetUserVerificationRequestDetailsEndpoint();
         endpoints.MapGetProfileInformationEndpoint();

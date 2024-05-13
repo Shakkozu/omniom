@@ -5,6 +5,7 @@ import { FetchNutritionistProfile, RegisterNutritionist, RegisterNutritionistSuc
 import { _countGroupLabelsBeforeOption } from "@angular/material/core";
 import { Router } from "@angular/router";
 import { NutritionistAdministrationRestService, NutritionistVerificationStatus, PendingVerificationListItem, ProcessVerificationRequestCommand, VerificationRequestDetails } from "../nutritionist-administration-rest.service";
+import { produce } from "immer";
 
 export interface NutritionistStateModel {
     profile: NutritionistProfile | undefined;
@@ -53,6 +54,11 @@ export class NutritionistStore {
     @Selector()
     static isVerified(state: NutritionistStateModel) {
         return state.profile?.verificationStatus === 'Approved';
+    }
+
+    @Selector()
+    static hasActiveVerificationRequest(state: NutritionistStateModel) {
+        return state.profile?.verificationStatus !== 'VerificationNotRequested';
     }
 
     @Selector()
@@ -174,8 +180,15 @@ export class NutritionistStore {
 
     @Action(CreateVerificationRequest)
     async createVerificationRequest(ctx: StateContext<NutritionistStateModel>, action: CreateVerificationRequest) {
-        (await this.nutritionistService.createVerificationRequest(action.files)).subscribe({
+        (await this.nutritionistService.createVerificationRequest({ files: action.files})).subscribe({
             next: _ => {
+                const nextState = produce(ctx.getState(), draft => {
+                    if (draft.profile) {
+                        draft.profile.verificationMessage = 'Weryfikacja w toku';
+                        draft.profile.verificationStatus = 'Pending';
+                    }
+                });
+                ctx.setState(nextState);
             },
             error: err => {
                 console.error(err);

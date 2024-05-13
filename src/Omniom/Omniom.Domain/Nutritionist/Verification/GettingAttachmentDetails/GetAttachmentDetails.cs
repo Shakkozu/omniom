@@ -8,7 +8,7 @@ using Omniom.Domain.Nutritionist.Storage;
 using Omniom.Domain.Shared.Extensions;
 using System.Text.RegularExpressions;
 
-namespace Omniom.Domain.Nutritionist.GettingAttachmentDetails;
+namespace Omniom.Domain.Nutritionist.Verification.GettingAttachmentDetails;
 internal static class Route
 {
     internal static IEndpointRouteBuilder MapGetAttachmentDetailsEndpoint(this IEndpointRouteBuilder endpoints)

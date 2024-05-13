@@ -10,6 +10,8 @@ public static class NutritionistRoutes
 
     public const string UserVerificationRequestDetails = "/api/nutritionist/{userId}/verification-requests";
 
+    public const string CreateVerificationRequest = "/api/nutritionist/verification-requests";
+
     public const string ProfileInformationDetails = "/api/nutritionist/profile-details";
 
     public const string VerifyPendingQualificationsConfirmationRequest = "/api/nutritionist/{userId}/verify-qualifications";

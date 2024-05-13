@@ -19,7 +19,7 @@ import { CreateVerificationRequestComponent } from '../create-verification-reque
 		<p class="text-body-medium">Miasto: <span class="text-body-medium">{{ profile.city }}</span></p>
 	</mat-card-content>
 	</mat-card>
-	<div class="mt-4" *ngIf="!(profileVerified$ | async)">
+	<div class="mt-4" *ngIf="!(hasActiveVerificationRequest$ | async)">
 		<button mat-raised-button color="primary" (click)="verifyProfile()">Złóż wniosek o weryfikację</button>
 	  
 	</div>
@@ -28,7 +28,8 @@ import { CreateVerificationRequestComponent } from '../create-verification-reque
 export class ProfileDetailsComponent {
 	public profile$ = this.store.select(NutritionistStore.profileDetails);
 	public profileVerified$ = this.store.select(NutritionistStore.isVerified);
-	
+	public hasActiveVerificationRequest$ = this.store.select(NutritionistStore.hasActiveVerificationRequest);
+
 	constructor(private store: Store,
 		private matDialog: MatDialog
 	) { }
