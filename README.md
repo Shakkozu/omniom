@@ -1,6 +1,8 @@
 ![Logo](assets/logo_small.png)
 # Omniom
 
+[![Build and Test](https://github.com/Shakkozu/omniom/actions/workflows/cicd.yml/badge.svg)](https://github.com/Shakkozu/omniom/actions/workflows/cicd.yml)
+
 System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego stanu zdrowia (wagi, pomiarów), rozszerzony o funkcjonalność koordynowania współpracy pomiędzy dietetykami oraz użytkownikami aplikacji, którzy monitorują swoje posiłki i sylwetkę
 
 ---
