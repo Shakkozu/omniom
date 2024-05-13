@@ -60,6 +60,24 @@ export class NutritionistStore {
     static hasActiveVerificationRequest(state: NutritionistStateModel) {
         return state.profile?.verificationStatus !== 'VerificationNotRequested';
     }
+    
+    @Selector()
+    static hasPendingVerificationRequest(state: NutritionistStateModel) {
+        return state.profile?.verificationStatus === 'Pending';
+    }
+    
+    @Selector()
+    static hasRejectedVerificationRequest(state: NutritionistStateModel) {
+        return state.profile?.verificationStatus === 'Rejected';
+    }
+    
+    @Selector()
+    static verificationState(state: NutritionistStateModel): { status: string, message: string } {
+        return {
+            status: state.profile?.verificationStatus || 'VerificationNotRequested',
+            message: state.profile?.verificationMessage || ''
+        }
+    }
 
     @Selector()
     static pendingVerificationRequests(state: NutritionistStateModel) {
