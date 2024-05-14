@@ -23,10 +23,7 @@ import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } fro
         </app-products-catalogue>
       </div>
       <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit"  >
-          <div *ngFor="let product of products" class="">
-          <app-product-list-item [product]="product" [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)" ></app-product-list-item>
-          <mat-divider class=""></mat-divider>
-        </div>
+        <app-product-list (productRemovedFromList)="this.deselectProduct($event)" [products]="products" [loading$]="loading$"></app-product-list>
       </div>
     </div>
   </mat-dialog-content>
@@ -57,10 +54,6 @@ export class ModifyMealNutritionEntriesComponent {
     }
   }
 
-  removeProductFromSelection(product: MealEntry) {
-    this.store.dispatch(new ProductDeselected(product.guid));
-    this.onProductListModified({ type: 'deselected', productId: product.guid })
-  }
 
   onProductsConfirmed() {
     const entries = this.products.map(p => ({ productId: p.guid, portionSize: p.portionInGrams }));
@@ -73,6 +66,10 @@ export class ModifyMealNutritionEntriesComponent {
     this.store.dispatch(new AddNutritionEntries(entries, this.data.mealType, selectedDay)).subscribe(_ => {
       this.store.dispatch(new ClearProductsSelection());
     });
+  }
+  removeProductFromSelection(product: MealEntry) {
+    this.store.dispatch(new ProductDeselected(product.guid));
+    this.onProductListModified({ type: 'deselected', productId: product.guid })
   }
 
   onProductListModified(event: ProductListChangedEvent) {
@@ -97,6 +94,10 @@ export class ModifyMealNutritionEntriesComponent {
     if (productIndex === -1)
       return;
     this.products.splice(productIndex, 1);
+  }
+
+  deselectProduct(product: MealEntry) {
+    this.store.dispatch(new ProductDeselected(product.guid));
   }
 }
 
@@ -131,7 +132,6 @@ export class MealEntry {
   get carbohydrates(): number {
     return +(this.carbohydratesPer100g * this.portionInGrams / 100).toFixed(2);
   }
-
 
 }
 

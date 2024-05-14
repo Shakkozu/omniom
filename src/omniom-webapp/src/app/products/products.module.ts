@@ -11,6 +11,7 @@ import { NgxsModule } from '@ngxs/store';
 import { MealsConfigurationModule } from '../meals-configuration/meals-configuration.module';
 import { ProductListItemComponent } from './components/product-list-item/product-list-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ProductListComponent } from './components/product-list/product-list.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ProductsListPageComponent,
     SearchBarComponent,
     ProductsCatalogueComponent,
-    ProductListItemComponent
+    ProductListItemComponent,
+    ProductListComponent
   ],
   imports: [
     NgxsModule.forFeature([
@@ -37,7 +39,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ProductsListPageComponent,
     SearchBarComponent,
     ProductsCatalogueComponent,
-    ProductListItemComponent
+    ProductListItemComponent,
+    ProductListComponent
   ]
 })
 export class ProductsModule { }
