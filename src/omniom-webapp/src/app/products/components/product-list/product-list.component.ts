@@ -1,17 +1,15 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MealEntry } from '../../../nutrition-diary/components/modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { Store } from '@ngxs/store';
-import { ProductDeselected } from '../../store/products-catalogue.actions';
 import { ProductsCatalogueStore } from '../../store/products-catalogue.store';
 import { ProductListChangedEvent } from '../products-list/products-list.component';
+import { MealEntry } from '../../model';
 
 @Component({
-  selector: 'app-product-list',
+  selector: 'app-presentation-product-list',
   template: `
-    
-          <div *ngFor="let product of products" class="">
-          <app-product-list-item [product]="product" [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)"></app-product-list-item>
+          <div *ngFor="let product of products" >
+          <app-presentation-product-list-item [product]="product" [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)"></app-presentation-product-list-item>
           <mat-divider class=""></mat-divider>
         </div>
   `,

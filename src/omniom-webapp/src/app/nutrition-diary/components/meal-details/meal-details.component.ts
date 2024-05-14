@@ -1,14 +1,16 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy } from '@angular/core';
 import { MealType, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../../model';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
+import {  ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileStore } from '../../../user-profile/store/user-profile.store';
+import { NewMealDialogComponent } from '../../../meals-configuration/components/new-meal-dialog/new-meal-dialog.component';
+import { MealEntry } from '../../../products/model';
 
 @Component({
   selector: 'app-meal-details',
@@ -22,10 +24,10 @@ import { UserProfileStore } from '../../../user-profile/store/user-profile.store
     ]),
   ],
 })
-export class MealDetailsComponent implements OnDestroy {
+export class MealDetailsComponent implements OnDestroy, AfterViewInit {
   public dataSource = new MatTableDataSource<MealViewModel>();
   public displayedColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats', 'actions'];
-  public footerColumns: string[] = ['mealName','totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats'];
+  public footerColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats'];
   public detailsRowColumns: string[] = ['productName', 'calories', 'proteins', 'carbohydrates', 'fats', 'actions'];
   public data: MealViewModel[] = [];
   public expandedElements: MealViewModel[] = [];
@@ -40,7 +42,9 @@ export class MealDetailsComponent implements OnDestroy {
       this.actions$.pipe(
         ofActionDispatched(ModifyNutritionEntriesSuccess),
         takeUntil(this.destroy$)
-      ).subscribe(() => this.addNutritionDialog?.close());
+      ).subscribe(() => {
+        this.addNutritionDialog?.close();
+      });
     });
   }
 
@@ -54,7 +58,7 @@ export class MealDetailsComponent implements OnDestroy {
     this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
       width: '70vw',
       height: '80vh',
-      data: { mealType: mealType, initialSelection: productOfSelectedMeal}
+      data: { mealType: mealType, initialSelection: productOfSelectedMeal }
     });
   }
 
@@ -139,7 +143,7 @@ export class MealDetailsComponent implements OnDestroy {
     return new MatTableDataSource<NutritionDiaryEntry>(vm.entries);
   }
 
-  public getTotals(): MealSummary { 
+  public getTotals(): MealSummary {
     return this.data.reduce((acc, curr) => {
       acc.kcal += curr.summary.kcal;
       acc.proteins += curr.summary.proteins;
@@ -147,6 +151,23 @@ export class MealDetailsComponent implements OnDestroy {
       acc.fats += curr.summary.fats;
       return acc;
     }, { kcal: 0, proteins: 0, carbohydrates: 0, fats: 0 });
+  }
+
+  public createNewDish(mealEntries: NutritionDiaryEntry[]) {
+    this.matDialog.open(NewMealDialogComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: {
+        products: mealEntries.map(entry => new MealEntry(
+          entry.productName,
+          entry.productId,
+          entry.portionInGrams,
+          entry.calories,
+          entry.proteins,
+          entry.fats,
+          entry.carbohydrates
+      )) }
+    });
   }
 }
 

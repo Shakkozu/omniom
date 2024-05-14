@@ -7,6 +7,7 @@ import { MealType, NutritionDiaryEntry } from '../../model';
 import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
+import { MealEntry } from '../../../products/model';
 
 
 @Component({
@@ -23,7 +24,7 @@ import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } fro
         </app-products-catalogue>
       </div>
       <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit"  >
-        <app-product-list (productRemovedFromList)="this.deselectProduct($event)" [products]="products" [loading$]="loading$"></app-product-list>
+        <app-presentation-product-list (productRemovedFromList)="this.deselectProduct($event)" [products]="products" [loading$]="loading$"></app-presentation-product-list>
       </div>
     </div>
   </mat-dialog-content>
@@ -67,10 +68,6 @@ export class ModifyMealNutritionEntriesComponent {
       this.store.dispatch(new ClearProductsSelection());
     });
   }
-  removeProductFromSelection(product: MealEntry) {
-    this.store.dispatch(new ProductDeselected(product.guid));
-    this.onProductListModified({ type: 'deselected', productId: product.guid })
-  }
 
   onProductListModified(event: ProductListChangedEvent) {
     if (event.type === 'selected') {
@@ -101,39 +98,6 @@ export class ModifyMealNutritionEntriesComponent {
   }
 }
 
-export class MealEntry {
-  constructor (public name: string, public guid: string,
-    public portionInGrams: number,
-    private kcalPer100g: number,
-    private proteinsPer100g: number,
-    private fatsPer100g: number,
-    private carbohydratesPer100g: number) {
-    this.name = name;
-    this.portionInGrams = portionInGrams;
-    this.guid = guid;
-    this.kcalPer100g = kcalPer100g;
-    this.proteinsPer100g = proteinsPer100g;
-    this.fatsPer100g = fatsPer100g;
-    this.carbohydratesPer100g = carbohydratesPer100g;
-  }
-
-  get kcal(): number {
-    return +(this.kcalPer100g * this.portionInGrams / 100).toFixed(2);
-  }
-
-  get proteins(): number {
-    return +(this.proteinsPer100g * this.portionInGrams / 100).toFixed(2);
-  }
-
-  get fats(): number {
-    return +(this.fatsPer100g * this.portionInGrams / 100).toFixed(2);
-  }
-
-  get carbohydrates(): number {
-    return +(this.carbohydratesPer100g * this.portionInGrams / 100).toFixed(2);
-  }
-
-}
 
 export interface AdjustProductPortionViewModel {
   name: string;

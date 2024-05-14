@@ -8,10 +8,9 @@ import { SearchBarComponent } from './components/search-bar/search-bar.component
 import { ProductsCatalogueComponent } from './components/products-catalogue/products-catalogue.component';
 import { ProductsCatalogueStore } from './store/products-catalogue.store';
 import { NgxsModule } from '@ngxs/store';
-import { MealsConfigurationModule } from '../meals-configuration/meals-configuration.module';
-import { ProductListItemComponent } from './components/product-list-item/product-list-item.component';
+import { ProductListItemComponent as ProductPresentationListItemComponent } from './components/product-list-item/product-list-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ProductListComponent } from './components/product-list/product-list.component';
+import { ProductListComponent as ProductPresentationListComponent } from './components/product-list/product-list.component';
 
 
 @NgModule({
@@ -20,15 +19,14 @@ import { ProductListComponent } from './components/product-list/product-list.com
     ProductsListPageComponent,
     SearchBarComponent,
     ProductsCatalogueComponent,
-    ProductListItemComponent,
-    ProductListComponent
+    ProductPresentationListItemComponent,
+    ProductPresentationListComponent
   ],
   imports: [
     NgxsModule.forFeature([
       ProductsCatalogueStore
     ]),
     MaterialModule,
-    MealsConfigurationModule,
     CommonModule,
     ProductsRoutingModule,
     ReactiveFormsModule,
@@ -39,8 +37,8 @@ import { ProductListComponent } from './components/product-list/product-list.com
     ProductsListPageComponent,
     SearchBarComponent,
     ProductsCatalogueComponent,
-    ProductListItemComponent,
-    ProductListComponent
+    ProductPresentationListItemComponent,
+    ProductPresentationListComponent
   ]
 })
 export class ProductsModule { }

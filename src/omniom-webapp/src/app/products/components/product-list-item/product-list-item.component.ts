@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MealEntry } from '../../../nutrition-diary/components/modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { Observable } from 'rxjs';
+import { MealEntry } from '../../model';
 
 @Component({
-  selector: 'app-product-list-item',
+  selector: 'app-presentation-product-list-item',
   template: `
     <div class="flex flex-row content-evenly">
             <div class="w-4/6">
