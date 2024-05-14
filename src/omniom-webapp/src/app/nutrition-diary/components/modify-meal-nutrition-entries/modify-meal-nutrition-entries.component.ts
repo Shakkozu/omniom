@@ -22,24 +22,9 @@ import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } fro
           (productListChanged)="onProductListModified($event)">
         </app-products-catalogue>
       </div>
-      <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit">
+      <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit"  >
           <div *ngFor="let product of products" class="">
-          <div class="flex flex-row content-evenly">
-            <div class="w-4/6">
-              <mat-list-item class="">
-                <span matListItemTitle>{{ product.name }}</span>
-                <span matListItemLine>{{product.kcal }}kcal  B: {{product.proteins}}g T: {{product.fats}}g W:{{product.carbohydrates}}g</span>
-              </mat-list-item>
-            </div>
-            <div class="w-2/6">
-              <mat-form-field class="mt-2">
-                <mat-label>Gramatura</mat-label>
-                <input matInput min="0" [readonly]="loading$ | async" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams">
-                <span matTextSuffix>g</span>
-              </mat-form-field>
-            </div>
-            <button class="mx-2" style="align-self: center;" mat-icon-button (click)="removeProductFromSelection(product)"><mat-icon>delete</mat-icon></button>
-          </div>
+          <app-product-list-item [product]="product" [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)" ></app-product-list-item>
           <mat-divider class=""></mat-divider>
         </div>
       </div>
