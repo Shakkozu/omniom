@@ -24,6 +24,14 @@ export class FormErrorHandler {
 			return `Maksymalna długość to ${ formControl?.errors?.['maxlength'].requiredLength }`;
 		}
 
+		if (formControl.hasError('min')) {
+			return `Minimalna wartość to ${ formControl?.errors?.['min'].min }`;
+		}
+
+		if (formControl.hasError('max')) {
+			return `Maksymalna wartość to ${ formControl?.errors?.['max'].max }`;
+		}
+
 		if (formControl.hasError('email')) {
 			return `Wprowadź poprawny adres email`;
 		}

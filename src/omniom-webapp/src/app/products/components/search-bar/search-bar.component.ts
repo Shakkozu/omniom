@@ -19,7 +19,7 @@ export class SearchBarComponent {
     this.searchPhraseUpdated.emit(phrase);
   }
 
-  clearSearchPhrase() {
+  public clearSearchPhrase() {
     this.inputField.nativeElement.value = '';
     this.searchPhraseUpdated.emit('');
   }

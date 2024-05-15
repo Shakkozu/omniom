@@ -1,12 +1,12 @@
 export interface ProductDetailsDescription {
 	guid: string;
-	code: string;
 	name: string;
 	kcalPer100G: number;
 	fatPer100G: number;
 	carbsPer100G: number;
 	proteinsPer100G: number;
 	suggestedPortionSizeG: number;
+	code?: string;
 	quantityG?: number;
 	sugarsPer100G?: number;
 	fiberPer100G?: number;

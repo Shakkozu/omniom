@@ -2,16 +2,18 @@ import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { ProductDetailsDescription } from "../model";
 import { Injectable } from "@angular/core";
 import { ProductsRestService, SearchProductsResponse } from "../products-rest.service";
-import { ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductDeselected, ProductSelected, SelectMultipleProducts } from "./products-catalogue.actions";
+import { CleanupExcludedList, ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductAddedToExcludedList, ProductDeselected, ProductRemovedFromExcludedList, ProductSelected, SelectMultipleProducts } from "./products-catalogue.actions";
 
 export interface ProductsCatalogueStateModel {
 	selectedProducts: ProductDetailsDescription[];
 	products: ProductDetailsDescription[];
+	excludedProducts: ProductDetailsDescription[];
 	loading: boolean;
 }
 
 export const initialProductsCatalogueState: ProductsCatalogueStateModel = {
 	selectedProducts: [],
+	excludedProducts: [],
 	products: [],
 	loading: false,
 };
@@ -38,9 +40,34 @@ export class ProductsCatalogueStore {
 
 	@Selector()
 	static products(state: ProductsCatalogueStateModel) {
-		return state.products;
+		const excludedProductsIds = state.excludedProducts.map(p => p.guid);
+		return state.products.filter(p => !excludedProductsIds.includes(p.guid));
 	}
 
+	@Action(ProductAddedToExcludedList)
+	productAddedToExcludedList(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductAddedToExcludedList) {
+		const excludedProductsIds = ctx.getState().excludedProducts.map(p => p.guid);
+		const productsToAdd = action.product.filter(p => !excludedProductsIds.includes(p.guid));
+
+		ctx.patchState({
+			excludedProducts: [...ctx.getState().excludedProducts, ...productsToAdd]
+		});
+	}
+
+	@Action(ProductRemovedFromExcludedList)
+	productRemovedFromExcludedList(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductRemovedFromExcludedList) {
+		const excludedProducts = ctx.getState().excludedProducts.filter(p => p.guid !== action.productId);
+		ctx.patchState({
+			excludedProducts: excludedProducts
+		});
+	}
+	
+	@Action(CleanupExcludedList)
+	cleanupExcludedList(ctx: StateContext<ProductsCatalogueStateModel>) {
+		ctx.patchState({
+			excludedProducts: []
+		});
+	}
 
 	@Action(ProductSelected)
 	productSelected(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductSelected) {

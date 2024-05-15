@@ -1,15 +1,16 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, of, debounceTime, Subject } from 'rxjs';
 import { ProductDetailsDescription } from '../../model';
 import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
-import { ProductListChangedEvent } from '../products-list/products-list.component';
+import { ProductListChangedEvent, ProductsListComponent } from '../products-list/products-list.component';
+import { SearchBarComponent } from '../search-bar/search-bar.component';
 
 @Component({
   selector: 'app-products-catalogue',
   template: `
-	<app-search-bar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
-	<app-products-list
+	<app-search-bar #searchBar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
+	<app-products-list 
    [addButtonEnabled]="addButtonEnabled"
    (addProductButtonClicked)="addProductButtonClicked.emit($event)"
    (productListChanged)="productListChanged.emit($event)"
@@ -17,10 +18,8 @@ import { ProductListChangedEvent } from '../products-list/products-list.componen
    ></app-products-list>`,
 })
 export class ProductsCatalogueComponent implements OnInit {
-  public productsList$: Observable<ProductDetailsDescription[]> = of([]);
-  public filteredProducts$: Observable<ProductDetailsDescription[]> = of([]);
-
   private searchUpdated: Subject<string> = new Subject<string>();
+  @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @Input() addButtonEnabled: boolean = false;
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
@@ -33,7 +32,12 @@ export class ProductsCatalogueComponent implements OnInit {
     ).subscribe((phrase) => {
       this.store.dispatch(new FetchProducts(phrase));
     });
-   }
+  }
+
+  public clearSearchPhrase() {
+    this.searchBar.clearSearchPhrase();
+    
+  }
 
   onSearchPhraseUpdated(searchPhrase: string) {
     this.searchUpdated.next(searchPhrase);

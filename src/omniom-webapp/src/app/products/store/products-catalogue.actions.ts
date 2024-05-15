@@ -8,6 +8,9 @@ export enum ProductsCatalogueActionTypes {
 	SelectMultipleProducts = '[Products Catalogue] Product Select multiple products',
 	ClearProductsSelection = '[Products Catalogue] Product selection cleared',
 	ProductDeselected = '[Products Catalogue] Product deselected',
+	ProductAddedToExcludedList = '[Products Catalogue] Product added to excluded list',
+	ProductRemovedFromExcludedList = '[Products Catalogue] Product removed from excluded list',
+	CleanupExcludedList = '[Products Catalogue] Cleanup excluded list',
 }
 
 export class ProductSelected {
@@ -49,4 +52,22 @@ export class FetchProductsFailure {
 	static readonly type = ProductsCatalogueActionTypes.FetchProductsFailure;
 
 	constructor (public error: string) { }
+}
+
+export class ProductAddedToExcludedList {
+	static readonly type = ProductsCatalogueActionTypes.ProductAddedToExcludedList;
+
+	constructor (public product: ProductDetailsDescription[]) { }
+}
+
+export class ProductRemovedFromExcludedList {
+	static readonly type = ProductsCatalogueActionTypes.ProductRemovedFromExcludedList;
+
+	constructor (public productId: string) { }
+}
+
+export class CleanupExcludedList {
+	static readonly type = ProductsCatalogueActionTypes.CleanupExcludedList;
+
+	constructor () { }
 }

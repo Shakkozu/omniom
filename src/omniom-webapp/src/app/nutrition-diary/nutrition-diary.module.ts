@@ -12,7 +12,7 @@ import { ModifyMealNutritionEntriesComponent } from "./components/modify-meal-nu
 import { ProductsModule } from "../products/products.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DailyNutritionGoalComponent } from "./components/daily-nutrition-goal/daily-nutrition-goal.component";
-import { MealsConfigurationModule } from "../meals-configuration/meals-configuration.module";
+import { DishesConfigurationModule } from "../dish-configuration/dish-configuration.module";
 
 @NgModule({
 	declarations: [
@@ -33,7 +33,10 @@ import { MealsConfigurationModule } from "../meals-configuration/meals-configura
 		ReactiveFormsModule,
 		NutritionDiaryRoutingModule,
 		ProductsModule,
-		MealsConfigurationModule
+		DishesConfigurationModule
 	],
+	exports: [
+		ModifyMealNutritionEntriesComponent
+	]
 })
 export class NutritionDiaryModule { }
