@@ -6,6 +6,7 @@ using Omniom.Domain.ProductsCatalogue;
 using Omniom.Domain.UserProfile;
 using Omniom.Domain.Shared;
 using Omniom.Domain.Nutritionist;
+using Omniom.Domain.Meals;
 
 namespace Omniom.WebAPI;
 
@@ -30,6 +31,7 @@ public class Program
         builder.Services.AddNutritionDiary(config);
         builder.Services.AddUserProfileModule(config);
         builder.Services.AddNutritionistModule(config);
+        builder.Services.AddMealsModule(config);
 
         var app = builder.Build();
         var productsDbConnectionString = config.GetConnectionString("ProductsDatabase");
@@ -73,6 +75,7 @@ public class Program
         app.MapNutritionDiaryEndpoints();
         app.MapUserProfileModuleEndpoints();
         app.MapNutritionistEndpoints();
+        app.MapMealsEndpoints();
 
         app.Run();
     }

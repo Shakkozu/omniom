@@ -9,7 +9,7 @@ import {  ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-e
 import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileStore } from '../../../user-profile/store/user-profile.store';
-import { NewMealDialogComponent } from '../../../meals-configuration/components/new-meal-dialog/new-meal-dialog.component';
+import { NewDishDialogComponent } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { MealEntry } from '../../../products/model';
 
 @Component({
@@ -24,7 +24,7 @@ import { MealEntry } from '../../../products/model';
     ]),
   ],
 })
-export class MealDetailsComponent implements OnDestroy, AfterViewInit {
+export class MealDetailsComponent implements OnDestroy {
   public dataSource = new MatTableDataSource<MealViewModel>();
   public displayedColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats', 'actions'];
   public footerColumns: string[] = ['mealName', 'totalCalories', 'totalProteins', 'totalCarbohydrates', 'totalFats'];
@@ -154,7 +154,7 @@ export class MealDetailsComponent implements OnDestroy, AfterViewInit {
   }
 
   public createNewDish(mealEntries: NutritionDiaryEntry[]) {
-    this.matDialog.open(NewMealDialogComponent, {
+    this.matDialog.open(NewDishDialogComponent, {
       width: '70vw',
       height: '80vh',
       data: {
