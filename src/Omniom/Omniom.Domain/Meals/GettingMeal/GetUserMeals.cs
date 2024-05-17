@@ -12,7 +12,7 @@ public static class Route
 {
     public static IEndpointRouteBuilder MapGetUserMeals(this IEndpointRouteBuilder routeBuilder)
     {
-        routeBuilder.MapGet("/api/meals", async (HttpContext context,
+        routeBuilder.MapGet("/api/dishes", async (HttpContext context,
                         [FromServices] IQueryable<UserMealDao> userMeals,
                         IFetchUserIdentifierFromContext userIdProvider,
                         CancellationToken cancellationToken) =>

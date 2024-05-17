@@ -11,7 +11,7 @@ internal static class Route
 {
     internal static IEndpointRouteBuilder MapCreateMeal(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/api/meals", async (HttpContext context,
+        endpoints.MapPost("/api/dishes", async (HttpContext context,
             [FromServices] MealsDbContext dbContext,
             IFetchUserIdentifierFromContext userIdProvider,
             CancellationToken cancellationToken,

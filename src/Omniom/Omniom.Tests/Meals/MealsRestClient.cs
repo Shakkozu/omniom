@@ -13,11 +13,11 @@ internal class MealsRestClient
 
     internal async Task<HttpResponseMessage> CreateMealAsync(Meal meal)
     {
-        return await _httpClient.PostAsJsonAsync<Meal>($"/api/meals", meal);
+        return await _httpClient.PostAsJsonAsync<Meal>($"/api/dishes", meal);
     }
 
     internal async Task<IEnumerable<Meal>> GetMeals()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Meal>>($"/api/meals") ?? throw new InvalidDataException("should return meals and returned null");
+        return await _httpClient.GetFromJsonAsync<IEnumerable<Meal>>($"/api/dishes") ?? throw new InvalidDataException("should return meals and returned null");
     }
 }
