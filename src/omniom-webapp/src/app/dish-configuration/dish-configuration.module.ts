@@ -5,8 +5,6 @@ import { NewDishDialogComponent } from './components/new-dish-dialog/new-dish-di
 import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from '../products/products.module';
-import { NgxsModule } from '@ngxs/store';
-import { DishConfigurationStore } from './store/dish-configuration.state';
 
 
 @NgModule({
@@ -14,9 +12,6 @@ import { DishConfigurationStore } from './store/dish-configuration.state';
     NewDishDialogComponent
   ],
   imports: [
-    NgxsModule.forFeature([
-      DishConfigurationStore
-    ]),
     CommonModule,
     MaterialModule,
     DishesConfigurationRoutingModule,

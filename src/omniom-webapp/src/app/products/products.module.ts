@@ -11,6 +11,7 @@ import { NgxsModule } from '@ngxs/store';
 import { ProductListItemComponent as ProductPresentationListItemComponent } from './components/product-list-item/product-list-item.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductListComponent as ProductPresentationListComponent } from './components/product-list/product-list.component';
+import { DishesListComponent } from '../dish-configuration/components/dishes-list/dishes-list.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { ProductListComponent as ProductPresentationListComponent } from './comp
     CommonModule,
     ProductsRoutingModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    DishesListComponent
   ],
   exports: [
     ProductsListComponent,

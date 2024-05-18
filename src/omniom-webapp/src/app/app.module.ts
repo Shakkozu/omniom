@@ -20,6 +20,7 @@ import { UserProfileModule } from './user-profile/user-profile.module';
 import { NutritionistModule } from './nutritionist/nutritionist.module';
 import { ErrorDialogComponent } from './shared/error-dialog/error-dialog.component';
 import { logoutPlugin } from './shared/ngxs-plugins/logout-plugin';
+import { DishConfigurationStore } from './dish-configuration/store/dish-configuration.state';
 
 registerLocaleData(localePl);
 
@@ -31,6 +32,9 @@ registerLocaleData(localePl);
   ],
   imports: [
     NgxsModule.forRoot([]),
+    NgxsModule.forFeature([
+      DishConfigurationStore
+    ]),
     MaterialModule,
     AuthModule,
     BrowserModule,

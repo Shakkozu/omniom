@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Dish } from "../model";
-import { Action, State, StateContext } from "@ngxs/store";
-import { CreateDish } from "./dish-configuration.actions";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
+import { CreateDish, FetchDishes } from "./dish-configuration.actions";
 import { DishConfigurationRestService } from "../dish-configuration-rest-service";
 
 export interface DishConfigurationState {
@@ -22,6 +22,11 @@ export const initialState: DishConfigurationState = {
 export class DishConfigurationStore {
 	constructor (private restService: DishConfigurationRestService) { }
 
+	@Selector()
+	static dishes(state: DishConfigurationState) {
+		return state.dishes;
+	}
+
 
 	@Action(CreateDish)
 	createDish(ctx: StateContext<DishConfigurationState>, action: CreateDish) {
@@ -30,6 +35,19 @@ export class DishConfigurationStore {
 			next: _ => {
 				ctx.patchState({
 					dishes: [...state.dishes, action.dish]
+				});
+			},
+			error: (_error) => console.error(_error)
+		});
+	}
+
+	@Action(FetchDishes)
+	fetchDishes(ctx: StateContext<DishConfigurationState>) {
+		console.log('fetching');
+		this.restService.fetchDishes().subscribe({
+			next: (dishes) => {
+				ctx.patchState({
+					dishes: dishes
 				});
 			},
 			error: (_error) => console.error(_error)

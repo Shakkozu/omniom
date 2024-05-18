@@ -5,17 +5,25 @@ import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
 import { ProductListChangedEvent, ProductsListComponent } from '../products-list/products-list.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { FetchDishes } from '../../../dish-configuration/store/dish-configuration.actions';
 
 @Component({
   selector: 'app-products-catalogue',
   template: `
 	<app-search-bar #searchBar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
-	<app-products-list 
+  <mat-button-toggle-group name="searchType" aria-label="search type" (change)="selectedProductType = $event.value">
+        <mat-button-toggle checked value="Product">Produkty</mat-button-toggle>
+        <mat-button-toggle value="Dish">Dania</mat-button-toggle>
+      </mat-button-toggle-group>
+	<app-products-list *ngIf="selectedProductType === 'Product'"
    [addButtonEnabled]="addButtonEnabled"
    (addProductButtonClicked)="addProductButtonClicked.emit($event)"
    (productListChanged)="productListChanged.emit($event)"
-   [selectionList]="selectionList"
-   ></app-products-list>`,
+   [selectionList]="selectionList">
+  </app-products-list>
+  <app-dishes-list *ngIf="selectedProductType === 'Dish'">
+</app-dishes-list>
+   `,
 })
 export class ProductsCatalogueComponent implements OnInit {
   private searchUpdated: Subject<string> = new Subject<string>();
@@ -24,14 +32,21 @@ export class ProductsCatalogueComponent implements OnInit {
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
   @Output() productListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
+  public selectedProductType: SelectedProductType = SelectedProductType.Product;
+
 
   constructor (private store: Store) {
     this.store.dispatch(new FetchProducts(''));
+    this.store.dispatch(new FetchDishes(''));
     this.searchUpdated.pipe(
       debounceTime(200),
     ).subscribe((phrase) => {
       this.store.dispatch(new FetchProducts(phrase));
     });
+  }
+
+  onSearchTypeUpdated(event: any) {
+    console.log(event);
   }
 
   public clearSearchPhrase() {
@@ -45,4 +60,10 @@ export class ProductsCatalogueComponent implements OnInit {
 
   ngOnInit(): void {
   }
+}
+
+
+export enum SelectedProductType {
+  Product = 'Product',
+  Dish = 'Dish'
 }
