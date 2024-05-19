@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
+using Omniom.Domain.Meals.GettingMeal;
 using Omniom.Domain.Meals.Storage;
 using Omniom.Tests.Shared;
 
@@ -20,13 +21,22 @@ internal class CreatingMealsIntegrationTests : BaseIntegrationTestsFixture
     public async Task ShouldDefineNewMeal()
     {
         var meal = AMeal();
-        var asJson = JsonConvert.SerializeObject(meal, Formatting.None);
         await _client.CreateMealAsync(meal);
 
         var userMeals = await _client.GetMeals();
 
-        var responseJson = JsonConvert.SerializeObject(userMeals.FirstOrDefault(), Formatting.None);
-        responseJson.Should().Be(asJson);
+        Assert.Multiple(() =>
+        {
+            var createdMeal = userMeals.Single();
+            createdMeal.Name.Should().Be(meal.Name);
+            createdMeal.Description.Should().Be(meal.Description);
+            createdMeal.PortionSize.Should().Be(meal.Portions);
+            //createdMeal.Ingredients.Should().BeEquivalentTo(meal.Ingredients);
+            createdMeal.KcalPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Kcal) / meal.Portions);
+            createdMeal.ProteinsGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Proteins) / meal.Portions);
+            createdMeal.CarbohydratesGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Carbohydrates) / meal.Portions);
+            createdMeal.FatsGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Fats) / meal.Portions);
+        });
     }
 
     private Meal AMeal()

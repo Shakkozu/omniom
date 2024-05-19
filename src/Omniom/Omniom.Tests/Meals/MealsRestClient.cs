@@ -1,4 +1,5 @@
-﻿using Omniom.Domain.Meals.Storage;
+﻿using Omniom.Domain.Meals.GettingMeal;
+using Omniom.Domain.Meals.Storage;
 using System.Net.Http.Json;
 
 namespace Omniom.Tests.DishConfiguration;
@@ -16,8 +17,8 @@ internal class MealsRestClient
         return await _httpClient.PostAsJsonAsync<Meal>($"/api/dishes", meal);
     }
 
-    internal async Task<IEnumerable<Meal>> GetMeals()
+    internal async Task<List<UserMealListViewModel>> GetMeals()
     {
-        return await _httpClient.GetFromJsonAsync<IEnumerable<Meal>>($"/api/dishes") ?? throw new InvalidDataException("should return meals and returned null");
+        return await _httpClient.GetFromJsonAsync<List<UserMealListViewModel>>($"/api/dishes") ?? throw new InvalidDataException("should return meals and returned null");
     }
 }
