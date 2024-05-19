@@ -66,6 +66,7 @@ import { FormErrorHandler } from '../../../shared/form-error-handler';
         <app-presentation-product-list (productRemovedFromList)="onProductRemoved($event)" [products]="products"></app-presentation-product-list>
         <app-products-catalogue #productsCatalogue
           [addButtonEnabled]="true"
+          [onlyProducts]= "true"
           (addProductButtonClicked)="productAddedToMealDiary($event)">
         </app-products-catalogue>
       </div>

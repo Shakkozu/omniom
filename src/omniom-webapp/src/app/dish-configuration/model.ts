@@ -8,3 +8,10 @@ export interface Dish {
 	portions: number;
 	ingredients: MealEntry[];
 }
+
+export interface DishViewModel extends Dish {
+	kcalPerPortion: number;
+	fatsGramsPerPortion: number;
+	carbsGramsPerPortion: number;
+	proteinsGramsPerPortion: number;
+}

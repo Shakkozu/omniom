@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Dish } from '../../model';
+import { Component, Input } from '@angular/core';
+import { Dish, DishViewModel } from '../../model';
 import { Observable, map, of } from 'rxjs';
 import { MaterialModule } from '../../../material.module';
 import { MatSelectionListChange } from '@angular/material/list';
@@ -19,18 +19,13 @@ import { DishConfigurationStore } from '../../store/dish-configuration.state';
   styleUrl: './dishes-list.component.scss'
 })
 export class DishesListComponent {
-addButtonEnabled: any;
-public selectedDishes$: Observable<ViewModel[]> = of([]);
-  public notSelectedDishes$: Observable<ViewModel[]> = of([]);
+  addButtonEnabled: any;
+  public dishes$: Observable<DishViewModel[]> = this.store.select(DishConfigurationStore.dishes);
+  public selectedDishes$: Observable<DishViewModel[]> = of([]);
+  public notSelectedDishes$: Observable<DishViewModel[]> = of([]);
+  @Input() selectionList: boolean = false;
   public displayedColumns: string[] = ['name', 'kcalPer100g', 'fats', 'carbs', 'proteins'];
-  public selectionList: boolean = false;
-  public dishes$: Observable<ViewModel[]> = this.store.select(DishConfigurationStore.dishes)
-    .pipe(
-      map(
-        dishes => dishes.map(dish => new ViewModel(dish))
-      ));
   constructor (private store: Store) {
-    console.log('dispatching')
     this.store.dispatch(new FetchDishes(''));
   }
 
@@ -47,30 +42,4 @@ public selectedDishes$: Observable<ViewModel[]> = of([]);
   addDish(_t7: any) {
     throw new Error('Method not implemented.');
   }
-
-
-}
-
-
-export class ViewModel {
-  name: string;
-  guid: string;
-  portion: number;
-  kcalPerPortion: number;
-  fatsPerPortion: number;
-  carbsPerPortion: number;
-  proteinsPerPortion: number;
-
-  constructor (dish: Dish) {
-    this.name = dish.name;
-    this.guid = dish.guid;
-    this.kcalPerPortion = 0; // todo
-    this.fatsPerPortion = dish.ingredients.reduce((acc, ingredient) => acc + ingredient.fats, 0);
-    this.carbsPerPortion = dish.ingredients.reduce((acc, ingredient) => acc + ingredient.carbohydrates, 0);
-    this.proteinsPerPortion = dish.ingredients.reduce((acc, ingredient) => acc + ingredient.proteins, 0);
-    this.portion = dish.portions;
-  }
-
-  
-
 }

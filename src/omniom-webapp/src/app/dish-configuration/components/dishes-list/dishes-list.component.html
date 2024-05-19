@@ -4,7 +4,6 @@
       <div class="item-container py-2">
         <mat-list-item class="bg-white rounded-lg">
           <span matListItemTitle>{{dish.name}}</span>
-          <span matListItemLine>{{dish.portion}}g</span>
           <div matListItemMeta>
             <span class="text-label-large">{{dish.kcalPerPortion}} kcal</span>
             <button *ngIf="addButtonEnabled" matIconPrefix (click)="addDish(dish)" class="pt-4" mat-icon-button

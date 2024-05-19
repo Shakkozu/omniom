@@ -11,7 +11,7 @@ import { FetchDishes } from '../../../dish-configuration/store/dish-configuratio
   selector: 'app-products-catalogue',
   template: `
 	<app-search-bar #searchBar (searchPhraseUpdated)="onSearchPhraseUpdated($event)"></app-search-bar>
-  <mat-button-toggle-group name="searchType" aria-label="search type" (change)="selectedProductType = $event.value">
+  <mat-button-toggle-group *ngIf="!onlyProducts" name="searchType" aria-label="search type" (change)="selectedProductType = $event.value">
         <mat-button-toggle checked value="Product">Produkty</mat-button-toggle>
         <mat-button-toggle value="Dish">Dania</mat-button-toggle>
       </mat-button-toggle-group>
@@ -21,7 +21,8 @@ import { FetchDishes } from '../../../dish-configuration/store/dish-configuratio
    (productListChanged)="productListChanged.emit($event)"
    [selectionList]="selectionList">
   </app-products-list>
-  <app-dishes-list *ngIf="selectedProductType === 'Dish'">
+  <app-dishes-list *ngIf="!onlyProducts && selectedProductType === 'Dish'"
+  [selectionList]="selectionList">
 </app-dishes-list>
    `,
 })
@@ -29,6 +30,7 @@ export class ProductsCatalogueComponent implements OnInit {
   private searchUpdated: Subject<string> = new Subject<string>();
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @Input() addButtonEnabled: boolean = false;
+  @Input() onlyProducts: boolean = false;
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
   @Output() productListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
@@ -36,17 +38,9 @@ export class ProductsCatalogueComponent implements OnInit {
 
 
   constructor (private store: Store) {
-    this.store.dispatch(new FetchProducts(''));
-    this.store.dispatch(new FetchDishes(''));
-    this.searchUpdated.pipe(
-      debounceTime(200),
-    ).subscribe((phrase) => {
-      this.store.dispatch(new FetchProducts(phrase));
-    });
   }
 
   onSearchTypeUpdated(event: any) {
-    console.log(event);
   }
 
   public clearSearchPhrase() {
@@ -59,6 +53,13 @@ export class ProductsCatalogueComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.store.dispatch(new FetchProducts(''));
+    this.store.dispatch(new FetchDishes(''));
+    this.searchUpdated.pipe(
+      debounceTime(200),
+    ).subscribe((phrase) => {
+      this.store.dispatch(new FetchProducts(phrase));
+    });
   }
 }
 
