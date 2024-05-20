@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;

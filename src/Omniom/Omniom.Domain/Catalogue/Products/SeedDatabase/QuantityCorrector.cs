@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Omniom.Domain.ProductsCatalogue.SeedDatabase;
+namespace Omniom.Domain.Catalogue.Products.SeedDatabase;
 
 public static class QuantityCorrector
 {

@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using Newtonsoft.Json;
-using Omniom.Domain.Meals.GettingMeal;
-using Omniom.Domain.Meals.Storage;
+using Omniom.Domain.Catalogue.Meals.Storage;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.DishConfiguration;
@@ -30,12 +28,13 @@ internal class CreatingMealsIntegrationTests : BaseIntegrationTestsFixture
             var createdMeal = userMeals.Single();
             createdMeal.Name.Should().Be(meal.Name);
             createdMeal.Description.Should().Be(meal.Description);
-            createdMeal.PortionSize.Should().Be(meal.Portions);
-            //createdMeal.Ingredients.Should().BeEquivalentTo(meal.Ingredients);
-            createdMeal.KcalPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Kcal) / meal.Portions);
-            createdMeal.ProteinsGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Proteins) / meal.Portions);
-            createdMeal.CarbohydratesGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Carbohydrates) / meal.Portions);
-            createdMeal.FatsGramsPerPortion.Should().Be(meal.Ingredients.Sum(x => x.Fats) / meal.Portions);
+            createdMeal.Portions.Should().Be(meal.Portions);
+            createdMeal.PortionInGrams.Should().Be(meal.Ingredients.Sum(i => i.PortionInGrams) / meal.Portions);
+            createdMeal.Ingredients.Should().BeEquivalentTo(meal.Ingredients);
+            createdMeal.KcalPer100G.Should().Be(meal.Ingredients.Sum(x => x.KcalPer100g));
+            createdMeal.ProteinsPer100G.Should().Be(meal.Ingredients.Sum(x => x.ProteinsPer100g));
+            createdMeal.CarbohydratesPer100G.Should().Be(meal.Ingredients.Sum(x => x.CarbohydratesPer100g));
+            createdMeal.FatsPer100G.Should().Be(meal.Ingredients.Sum(x => x.FatsPer100g));
         });
     }
 
@@ -45,7 +44,13 @@ internal class CreatingMealsIntegrationTests : BaseIntegrationTestsFixture
         var ingredients = products
             .OrderBy(x => Guid.NewGuid()) // Shuffle the products list
             .Take(1)
-            .Select(p => new MealIngredient(p.Name, p.Guid, 100, p.KcalPer100G, p.ProteinsPer100G, p.CarbsPer100G, p.FatPer100G))
+            .Select(p => new MealIngredient(p.Name,
+                                            p.Guid,
+                                            100,
+                                            p.KcalPer100G,
+                                            p.ProteinsPer100G,
+                                            p.CarbohydratesPer100G,
+                                            p.FatsPer100G))
             .ToList();
         return new Meal(Guid.NewGuid(), "Name", "Description", "Recipe", 1, ingredients);
     }

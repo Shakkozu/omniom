@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 
-namespace Omniom.Domain.ProductsCatalogue.SearchProducts;
+namespace Omniom.Domain.Catalogue.Products.SearchProducts;
 internal static class Route
 {
     internal static IEndpointRouteBuilder MapSearchProductEndpoint(this IEndpointRouteBuilder endpoints)

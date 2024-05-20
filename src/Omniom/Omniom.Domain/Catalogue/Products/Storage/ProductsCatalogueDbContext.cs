@@ -1,17 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Configuration;
-using Omniom.Domain.ProductsCatalogue.AddProducts;
-using System.Runtime.CompilerServices;
 
 
-namespace Omniom.Domain.ProductsCatalogue.Storage;
+namespace Omniom.Domain.Catalogue.Products.Storage;
 public class ProductsCatalogueDbContext : DbContext
 {
     public ProductsCatalogueDbContext(DbContextOptions<ProductsCatalogueDbContext> options)
         : base(options)
     {
-        
+
     }
 
     internal DbSet<ProductData> Products { get; set; }
@@ -19,7 +15,7 @@ public class ProductsCatalogueDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var environmentName = Environment.GetEnvironmentVariable("EnvironmentName") ?? "Development";
-        if(environmentName == "Development")
+        if (environmentName == "Development")
         {
             optionsBuilder.LogTo(Console.WriteLine)
                 .EnableSensitiveDataLogging()

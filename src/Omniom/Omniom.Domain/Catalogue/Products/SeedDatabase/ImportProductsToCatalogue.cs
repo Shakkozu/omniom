@@ -1,6 +1,6 @@
-﻿using Omniom.Domain.ProductsCatalogue.Storage;
+﻿using Omniom.Domain.Catalogue.Products.Storage;
 
-namespace Omniom.Domain.ProductsCatalogue.SeedDatabase;
+namespace Omniom.Domain.Catalogue.Products.SeedDatabase;
 
 public record ImportProductsToCatalogueCommand(IEnumerable<ProductImportDto> InputData);
 public class ImportProductsToCatalogue
@@ -14,7 +14,7 @@ public class ImportProductsToCatalogue
 
     public void SeedDatabase(ImportProductsToCatalogueCommand command)
     {
-        if(_productsCatalogueDbContext.Products.Any())
+        if (_productsCatalogueDbContext.Products.Any())
             return;
 
         int batchSize = 100;

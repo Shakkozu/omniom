@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.ProductsCatalogue.SeedDatabase;
-using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Products.SeedDatabase;
+using Omniom.Domain.Catalogue.Products.Storage;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Tests.Shared;
 using System.Globalization;
 
@@ -21,17 +22,18 @@ public class ProductsCatalogueSeedingTests : BaseIntegrationTestsFixture
 
         var result = await SearchProductsHandler.HandleAsync(new SearchProductsQuery(string.Empty, 10000), CancellationToken.None);
 
-        var resultList = result.Products.ToList();
+        var resultList = result.Products.ToList().Select(x => x as ProductCatalogItem).ToList();
         Assert.That(importData.Count(), Is.EqualTo(resultList.Count));
         Assert.Multiple(() =>
         {
             foreach (var resultItem in resultList)
             {
-                Assert.That(resultItem.Code, Is.Not.Null.Or.Empty, "The Code property is not filled for a result item.");
+
                 Assert.That(resultItem.Name, Is.Not.Null.Or.Empty, "The Name property is not filled for a result item.");
+                Assert.That(resultItem.Code, Is.Not.Null.Or.Empty, "The Code property is not filled for a result item.");
                 Assert.That(resultItem.Brands, Is.Not.Null.Or.Empty, "The Brands property is not filled for a result item.");
-                Assert.That(resultItem.SuggestedPortionSizeG, Is.Not.Zero, "The SuggestedPortionSizeG property is not filled for a result item. {0}", resultItem);
                 Assert.That(resultItem.CategoriesTags, Is.Not.Null.Or.Empty, "The CategoriesTags property is not filled for a result item.");
+                Assert.That(resultItem.PortionInGrams, Is.Not.Zero, "The SuggestedPortionSizeG property is not filled for a result item. {0}", resultItem);
                 Assert.That(resultItem.KcalPer100G, Is.Not.Zero, "The KcalPer100G property is not filled for a result item {0}.", resultItem);
             }
         });

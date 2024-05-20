@@ -1,7 +1,8 @@
 ﻿using Bogus;
-using Omniom.Domain.ProductsCatalogue.AddProducts;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.ProductsCatalogue.SeedDatabase;
+using Omniom.Domain.Catalogue.Products.AddProducts;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Products.SeedDatabase;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Tests.Shared;
 
 namespace Omniom.Tests.Products;
@@ -23,9 +24,9 @@ internal class ProductsTestsFixture
         _importProductsToCatalogue.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
     }
 
-    internal async Task<IEnumerable<ProductDetailsDescription>> AProductsFromCatalogue()
+    internal async Task<IEnumerable<ProductCatalogItem>> AProductsFromCatalogue()
     {
-        return (await _searchProductsQueryHandler.HandleAsync(new SearchProductsQuery("", 10), CancellationToken.None)).Products;
+        return (await _searchProductsQueryHandler.HandleAsync(new SearchProductsQuery("", 10), CancellationToken.None)).Products as IEnumerable<ProductCatalogItem>;
     }
 
     internal static CreateProductCommand ACreateProductCommand()

@@ -1,4 +1,4 @@
-﻿namespace Omniom.Domain.ProductsCatalogue.Storage;
+﻿namespace Omniom.Domain.Catalogue.Products.Storage;
 
 public record ProductData
 {

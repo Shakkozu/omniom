@@ -1,6 +1,6 @@
-﻿using Omniom.Domain.ProductsCatalogue.Storage;
+﻿using Omniom.Domain.Catalogue.Products.Storage;
 
-namespace Omniom.Domain.ProductsCatalogue.AddProducts;
+namespace Omniom.Domain.Catalogue.Products.AddProducts;
 
 public record CreateProductCommand(Guid Guid,
     string Name,

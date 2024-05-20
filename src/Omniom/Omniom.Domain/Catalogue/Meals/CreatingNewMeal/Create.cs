@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
-using Omniom.Domain.Meals.Storage;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
+using Omniom.Domain.Catalogue.Meals.Storage;
 
-namespace Omniom.Domain.Meals.CreatingNewMeal;
+namespace Omniom.Domain.Catalogue.Meals.CreatingNewMeal;
 internal static class Route
 {
     internal static IEndpointRouteBuilder MapCreateMeal(this IEndpointRouteBuilder endpoints)
@@ -17,7 +17,7 @@ internal static class Route
             CancellationToken cancellationToken,
             [FromBody] Meal meal) =>
         {
-            if(meal == null)
+            if (meal == null)
             {
                 context.Response.StatusCode = 400;
                 return;

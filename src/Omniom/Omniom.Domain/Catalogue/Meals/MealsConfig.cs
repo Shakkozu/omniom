@@ -2,11 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Omniom.Domain.Meals.CreatingNewMeal;
-using Omniom.Domain.Meals.GettingMeal;
-using Omniom.Domain.Meals.Storage;
+using Omniom.Domain.Catalogue.Meals.CreatingNewMeal;
+using Omniom.Domain.Catalogue.Meals.GettingMeal;
+using Omniom.Domain.Catalogue.Meals.Storage;
 
-namespace Omniom.Domain.Meals;
+namespace Omniom.Domain.Catalogue.Meals;
 public static class MealsConfig
 {
     public static void AddMealsModule(this IServiceCollection services, IConfiguration configuration)

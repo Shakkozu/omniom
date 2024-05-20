@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Auth.GetUserIdByEmail;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetNutritionDay;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Domain.NutritionDiary.RemovingNutritionEntries;
 using Omniom.Domain.NutritionDiary.Storage;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Shared.Repositories;
 

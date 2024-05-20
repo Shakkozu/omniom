@@ -3,14 +3,14 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Omniom.Domain.ProductsCatalogue.AddProducts;
-using Omniom.Domain.ProductsCatalogue.FindById;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.ProductsCatalogue.SeedDatabase;
-using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Catalogue.Products.AddProducts;
+using Omniom.Domain.Catalogue.Products.FindById;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Products.SeedDatabase;
+using Omniom.Domain.Catalogue.Products.Storage;
 using System.Reflection;
 
-namespace Omniom.Domain.ProductsCatalogue;
+namespace Omniom.Domain.Catalogue.Products;
 
 public static class ProductsCatalogueConfig
 {

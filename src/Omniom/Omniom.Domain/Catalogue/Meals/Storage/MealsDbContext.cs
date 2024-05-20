@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
-namespace Omniom.Domain.Meals.Storage;
+namespace Omniom.Domain.Catalogue.Meals.Storage;
 internal class MealsDbContext : DbContext
 {
     public MealsDbContext(DbContextOptions<MealsDbContext> options)

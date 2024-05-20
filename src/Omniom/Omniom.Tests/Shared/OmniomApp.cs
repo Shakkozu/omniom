@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Omniom.WebAPI;
-using Omniom.Domain.ProductsCatalogue.AddProducts;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.ProductsCatalogue.SeedDatabase;
 using Omniom.Tests.Products;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
@@ -14,6 +11,9 @@ using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Nutritionist.CleaningModule;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
+using Omniom.Domain.Catalogue.Products.SeedDatabase;
+using Omniom.Domain.Catalogue.Products.AddProducts;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
 
 namespace Omniom.Tests.Shared;
 

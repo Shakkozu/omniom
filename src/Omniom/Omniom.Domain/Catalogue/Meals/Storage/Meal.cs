@@ -1,4 +1,4 @@
-﻿namespace Omniom.Domain.Meals.Storage;
+﻿namespace Omniom.Domain.Catalogue.Meals.Storage;
 public record MealIngredient(
     string Name,
     Guid Guid,

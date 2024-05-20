@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Catalogue.Products.Storage;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.Shared.Repositories;
 
-namespace Omniom.Domain.ProductsCatalogue.SearchProducts;
+namespace Omniom.Domain.Catalogue.Products.SearchProducts;
 
 public record SearchProductsQuery(string Name, int PageSize = 40, int Page = 1);
 
@@ -23,7 +24,7 @@ public record ProductDetailsDescription(Guid Guid,
     string? CategoriesTags
     );
 
-public record SearchProductsResponse(IEnumerable<ProductDetailsDescription> Products, int Page, int PageSize, int TotalCount);
+public record SearchProductsResponse(IEnumerable<ProductCatalogItem> Products, int Page, int PageSize, int TotalCount);
 public class SearchProductsQueryHandler
 {
     private readonly ProductsCatalogueDbContext _dbContext;
@@ -43,23 +44,8 @@ public class SearchProductsQueryHandler
             .GetPage(query.Page, query.PageSize)
             .OrderBy(x => x.ProductNamePl)
             .ThenBy(x => x.GenericNamePl)
-            .Select(p => new ProductDetailsDescription(
-                p.Guid,
-                p.Code,
-                p.ProductNamePl,
-                p.EnergyKcal,
-                p.FatValueG,
-                p.CarbohydratesValueG,
-                p.ProteinsValueG,
-                p.ServingSizeG,
-                p.QuantityG,
-                p.SugarsValueG,
-                p.FiberValueG,
-                p.SaltValueG,
-                p.SaturatedFatValueG,
-                p.Brands,
-                p.CategoriesTags
-            ))
+            .Select(p => new ProductCatalogItem(p)
+            )
             .ToListAsync(ct);
 
         var totalCount = await searchResults.CountAsync(ct);

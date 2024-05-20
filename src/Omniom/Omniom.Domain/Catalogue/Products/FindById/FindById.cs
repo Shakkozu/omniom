@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Omniom.Domain.ProductsCatalogue.SearchProducts;
-using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Products.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 
-namespace Omniom.Domain.ProductsCatalogue.FindById;
+namespace Omniom.Domain.Catalogue.Products.FindById;
 public record FindByIdQuery(Guid Guid);
 public record FindMultipleByIdQuery(IEnumerable<Guid> Guids);
 

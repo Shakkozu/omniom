@@ -1,4 +1,4 @@
-﻿using Omniom.Domain.ProductsCatalogue.SearchProducts;
+﻿using Omniom.Domain.Catalogue.Products.SearchProducts;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Omniom.Domain.NutritionDiary.Storage;

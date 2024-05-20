@@ -48,11 +48,11 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 250,
                         Meal = MealType.Breakfast.ToString(),
-                        ProductName = secondProduct.Name,
+                        ProductName = secondProduct.ProductName,
                         Calories = secondProduct.KcalPer100G * 2.5m,
                         Proteins = secondProduct.ProteinsPer100G * 2.5m,
-                        Carbohydrates = secondProduct.CarbsPer100G * 2.5m,
-                        Fats = secondProduct.FatPer100G * 2.5m
+                        Carbohydrates = secondProduct.CarbohydratesPer100G * 2.5m,
+                        Fats = secondProduct.FatsPer100G * 2.5m
                     }
                 }
             }
@@ -92,11 +92,11 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 100,
                         Meal = MealType.Breakfast.ToString(),
-                        ProductName = firstProduct.Name,
+                        ProductName = firstProduct.ProductName,
                         Calories = firstProduct.KcalPer100G,
                         Proteins = firstProduct.ProteinsPer100G,
-                        Carbohydrates = firstProduct.CarbsPer100G,
-                        Fats = firstProduct.FatPer100G
+                        Carbohydrates = firstProduct.CarbohydratesPer100G,
+                        Fats = firstProduct.FatsPer100G
                     },
                     new DiaryEntryData
                     {
@@ -104,11 +104,11 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 250,
                         Meal = MealType.Breakfast.ToString(),
-                        ProductName = secondProduct.Name,
+                        ProductName = secondProduct.ProductName,
                         Calories = secondProduct.KcalPer100G * 2.5m,
                         Proteins = secondProduct.ProteinsPer100G * 2.5m,
-                        Carbohydrates = secondProduct.CarbsPer100G * 2.5m,
-                        Fats = secondProduct.FatPer100G * 2.5m
+                        Carbohydrates = secondProduct.CarbohydratesPer100G * 2.5m,
+                        Fats = secondProduct.FatsPer100G * 2.5m
                     }
                 }
             }
@@ -135,11 +135,11 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         UserId = await AuthFixture.GetUserIdAsync(),
                         PortionInGrams = 50,
                         Meal = MealType.Breakfast.ToString(),
-                        ProductName = anotherProduct.Name,
+                        ProductName = anotherProduct.ProductName,
                         Calories = anotherProduct.KcalPer100G * .5m,
                         Proteins = anotherProduct.ProteinsPer100G * .5m,
-                        Carbohydrates = anotherProduct.CarbsPer100G * .5m,
-                        Fats = anotherProduct.FatPer100G * .5m
+                        Carbohydrates = anotherProduct.CarbohydratesPer100G * .5m,
+                        Fats = anotherProduct.FatsPer100G * .5m
                     },
                 }
             }
@@ -180,16 +180,16 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
         {
             NutritionDay = dateOfModifiedEntry.Date,
             TotalCalories = firstProduct.KcalPer100G + secondProduct.KcalPer100G,
-            TotalFats = firstProduct.FatPer100G + secondProduct.FatPer100G,
-            TotalCarbohydrates = firstProduct.CarbsPer100G + secondProduct.CarbsPer100G,
+            TotalFats = firstProduct.FatsPer100G + secondProduct.FatsPer100G,
+            TotalCarbohydrates = firstProduct.CarbohydratesPer100G + secondProduct.CarbohydratesPer100G,
             TotalProteins = firstProduct.ProteinsPer100G + secondProduct.ProteinsPer100G
         });
         summary.Single(entry => entry.NutritionDay.Date == dateOfModifiedEntry.AddDays(-1).Date).Should().BeEquivalentTo(new ShortSummary
         {
             NutritionDay = dateOfModifiedEntry.AddDays(-1).Date,
             TotalCalories = secondProduct.KcalPer100G * 2.5m,
-            TotalFats = secondProduct.FatPer100G * 2.5m,
-            TotalCarbohydrates = secondProduct.CarbsPer100G * 2.5m,
+            TotalFats = secondProduct.FatsPer100G * 2.5m,
+            TotalCarbohydrates = secondProduct.CarbohydratesPer100G * 2.5m,
             TotalProteins = secondProduct.ProteinsPer100G * 2.5m
         });
     }

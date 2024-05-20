@@ -1,10 +1,10 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using Omniom.Domain.ProductsCatalogue.Storage;
+using Omniom.Domain.Catalogue.Products.Storage;
 using System.Globalization;
 
 
-namespace Omniom.Domain.ProductsCatalogue.SeedDatabase
+namespace Omniom.Domain.Catalogue.Products.SeedDatabase
 {
     public static class ProductsDataCsvToObjectsMapper
     {

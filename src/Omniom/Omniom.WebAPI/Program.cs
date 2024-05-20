@@ -2,11 +2,11 @@ using Omniom.DatabaseMigrator;
 using Omniom.Domain;
 using Omniom.Domain.Auth;
 using Omniom.Domain.NutritionDiary;
-using Omniom.Domain.ProductsCatalogue;
 using Omniom.Domain.UserProfile;
 using Omniom.Domain.Shared;
 using Omniom.Domain.Nutritionist;
-using Omniom.Domain.Meals;
+using Omniom.Domain.Catalogue.Meals;
+using Omniom.Domain.Catalogue.Products;
 
 namespace Omniom.WebAPI;
 

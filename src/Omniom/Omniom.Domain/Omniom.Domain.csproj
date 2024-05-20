@@ -27,13 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ProductsCatalogue\SeedDatabase\products_data.csv">
+    <None Update="Catalogue\Products\SeedDatabase\products_data.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ProductsCatalogue\SeedDatabase\NewFolder\" />
+    <Folder Include="Meals\" />
   </ItemGroup>
 
 </Project>

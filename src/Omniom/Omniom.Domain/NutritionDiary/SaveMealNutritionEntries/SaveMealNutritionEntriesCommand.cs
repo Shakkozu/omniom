@@ -1,5 +1,5 @@
-﻿using Omniom.Domain.NutritionDiary.Storage;
-using Omniom.Domain.ProductsCatalogue.FindById;
+﻿using Omniom.Domain.Catalogue.Products.FindById;
+using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Shared.Repositories;
 

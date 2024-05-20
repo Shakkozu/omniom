@@ -1,4 +1,5 @@
-﻿using Omniom.Domain.ProductsCatalogue.SearchProducts;
+﻿using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Shared;
 
 namespace Omniom.Tests.Shared;
 
@@ -6,7 +7,7 @@ namespace Omniom.Tests.Shared;
 public abstract class BaseIntegrationTestsFixture
 {
     protected static OmniomApp _omniomApp;
-    protected static List<ProductDetailsDescription> _productsSet;
+    protected static List<ProductCatalogItem> _productsSet;
 
     [OneTimeSetUp]
     public async Task OneTimeSetup()
