@@ -38,7 +38,7 @@ public static class ProductsCatalogueConfig
         {
             var importService = scope.ServiceProvider.GetRequiredService<ImportProductsToCatalogue>();
 
-            var csvFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "ProductsCatalogue", "SeedDatabase", "products_data.csv");
+            var csvFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Catalogue", "Products", "SeedDatabase", "products_data.csv");
             var importData = ProductsDataCsvToObjectsMapper.MapCsvContentToProductsImportDtos(csvFilePath);
             importService.SeedDatabase(new ImportProductsToCatalogueCommand(importData));
         }

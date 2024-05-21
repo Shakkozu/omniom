@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { ProductsCatalogueStore } from '../../store/products-catalogue.store';
 import { ProductListChangedEvent } from '../products-list/products-list.component';
-import { MealEntry } from '../../model';
+import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
 
 @Component({
   selector: 'app-presentation-product-list',
@@ -16,37 +16,29 @@ import { MealEntry } from '../../model';
   styleUrl: './product-list.component.scss'
 })
 export class ProductListComponent {
-  @Input() products: MealEntry[] = [];
+  @Input() products: CatalogueItem[] = [];
   @Input() loading$: Observable<boolean> = new Observable<boolean>();
-  @Output() productRemovedFromList = new EventEmitter<MealEntry>();
+  @Output() productRemovedFromList = new EventEmitter<CatalogueItem>();
   constructor (private store: Store) { 
     
   }
   
-  removeProductFromSelection(product: MealEntry) {
-    this.onProductListModified({ type: 'deselected', productId: product.guid })
+  removeProductFromSelection(product: CatalogueItem) {
+    this.onProductListModified({ type: 'deselected', catalogueItemId: product.guid, itemType: CatalogueItemType.Product})
     this.productRemovedFromList.emit(product);
   }
 
   onProductListModified(event: ProductListChangedEvent) {
     if (event.type === 'selected') {
-      const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.productId);
+      const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
       if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
         return;
 
-      this.products.push(new MealEntry(
-        productInfo.name,
-        productInfo.guid,
-        productInfo.suggestedPortionSizeG,
-        productInfo.kcalPer100G,
-        productInfo.proteinsPer100G,
-        productInfo.fatPer100G,
-        productInfo.carbsPer100G));
-
+      this.products.push(productInfo);
       return;
     }
 
-    const productIndex = this.products.findIndex((product) => product.guid === event.productId);
+    const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
     if (productIndex === -1)
       return;
     this.products.splice(productIndex, 1);

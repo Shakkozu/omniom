@@ -1,13 +1,13 @@
 import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { ProductDetailsDescription } from "../model";
+import { CatalogueItem } from "../model";
 import { Injectable } from "@angular/core";
 import { ProductsRestService, SearchProductsResponse } from "../products-rest.service";
 import { CleanupExcludedList, ClearProductsSelection, FetchProducts, FetchProductsFailure, FetchProductsSuccess, ProductAddedToExcludedList, ProductDeselected, ProductRemovedFromExcludedList, ProductSelected, SelectMultipleProducts } from "./products-catalogue.actions";
 
 export interface ProductsCatalogueStateModel {
-	selectedProducts: ProductDetailsDescription[];
-	products: ProductDetailsDescription[];
-	excludedProducts: ProductDetailsDescription[];
+	selectedProducts: CatalogueItem[];
+	products: CatalogueItem[];
+	excludedProducts: CatalogueItem[];
 	loading: boolean;
 }
 
@@ -28,12 +28,12 @@ export class ProductsCatalogueStore {
 
 	
 	@Selector()
-	static selectedProducts(state: ProductsCatalogueStateModel): ProductDetailsDescription[] {
+	static selectedProducts(state: ProductsCatalogueStateModel): CatalogueItem[] {
 		return state.selectedProducts;
 	}
 
 	@Selector()
-	static productsWithoutSelectedProducts(state: ProductsCatalogueStateModel): ProductDetailsDescription[] {
+	static productsWithoutSelectedProducts(state: ProductsCatalogueStateModel): CatalogueItem[] {
 		const selectedProductsIds = state.selectedProducts.map(p => p.guid);
 		return state.products.filter(p => !selectedProductsIds.includes(p.guid));
 	}
@@ -47,7 +47,8 @@ export class ProductsCatalogueStore {
 	@Action(ProductAddedToExcludedList)
 	productAddedToExcludedList(ctx: StateContext<ProductsCatalogueStateModel>, action: ProductAddedToExcludedList) {
 		const excludedProductsIds = ctx.getState().excludedProducts.map(p => p.guid);
-		const productsToAdd = action.product.filter(p => !excludedProductsIds.includes(p.guid));
+		const productsToAddIds = action.productGuids.filter(productGuid => !excludedProductsIds.includes(productGuid));
+		const productsToAdd = ctx.getState().products.filter(p => productsToAddIds.includes(p.guid));
 
 		ctx.patchState({
 			excludedProducts: [...ctx.getState().excludedProducts, ...productsToAdd]
@@ -81,6 +82,7 @@ export class ProductsCatalogueStore {
 
 	@Action(SelectMultipleProducts)
 	selectMultipleProductsproductSelected(ctx: StateContext<ProductsCatalogueStateModel>, action: SelectMultipleProducts) {
+		console.log(action);
 		const selectedProducts = ctx.getState().products.filter(p => action.productIds.find(pid => pid === p.guid)) ?? [];
 		ctx.patchState({
 			selectedProducts: selectedProducts
@@ -120,9 +122,10 @@ export class ProductsCatalogueStore {
 
 	@Action(FetchProductsSuccess)
 	fetchProductsSuccess(ctx: StateContext<ProductsCatalogueStateModel>, action: FetchProductsSuccess) {
+		const catalogueItems = action.products.map(p => CatalogueItem.fromDto(p));
 		ctx.patchState({
 			loading: false,
-			products: action.products,
+			products: catalogueItems,
 		});
 	}
 

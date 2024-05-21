@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Dish, DishViewModel } from "../model";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { CreateDish, FetchDishes } from "./dish-configuration.actions";
+import { ClearSelection, CreateDish, DishDeselected, DishSelected, FetchDishes } from "./dish-configuration.actions";
 import { DishConfigurationRestService } from "../dish-configuration-rest-service";
+import { CatalogueItem, MealCatalogueItem } from "../../products/model";
 
 export interface DishConfigurationState {
-	dishes: DishViewModel[];
+	dishes: CatalogueItem[];
 	selectedDishesIds: string[];
 	excludedDishesIds: string[];
 }
@@ -29,18 +30,19 @@ export class DishConfigurationStore {
 	@Selector()
 	static dishes(state: DishConfigurationState) {
 		const excludedDishesIds = state.excludedDishesIds;
-		return state.dishes.filter(p => !excludedDishesIds.includes(p.guid));
+		return state.dishes.filter(dish => !excludedDishesIds.includes(dish.guid));
 	}
 
 	@Selector()
 	static selectedDishes(state: DishConfigurationState) {
-		return state.dishes;
+		const selectedDishesIds = state.selectedDishesIds;
+		return state.dishes.filter(dish => selectedDishesIds.includes(dish.guid));
 	}
 
 	@Selector()
 	static dishesWithoutSelection(state: DishConfigurationState) {
 		const selectedDishesIds = state.selectedDishesIds;
-		return state.dishes.filter(p => !selectedDishesIds.includes(p.guid));
+		return state.dishes.filter(dish => !selectedDishesIds.includes(dish.guid));
 	}
 
 
@@ -50,7 +52,7 @@ export class DishConfigurationStore {
 		this.restService.createDish(action.dish).subscribe({
 			next: _ => {
 				ctx.patchState({
-					dishes: [...state.dishes, this.convertDishToViewModel(action.dish)]
+					dishes: [...state.dishes, MealCatalogueItem.fromDish(action.dish)]
 				});
 			},
 			error: (_error) => console.error(_error)
@@ -62,10 +64,37 @@ export class DishConfigurationStore {
 		this.restService.fetchDishes().subscribe({
 			next: (dishes) => {
 				ctx.patchState({
-					dishes: dishes
+					dishes: dishes.map(dish => CatalogueItem.fromDto(dish))
 				});
 			},
 			error: (_error) => console.error(_error)
+		});
+	}
+
+	@Action(DishSelected)
+	dishSelected(ctx: StateContext<DishConfigurationState>, action: DishSelected) {
+		const state = ctx.getState();
+		ctx.patchState({
+			selectedDishesIds: [...state.selectedDishesIds, action.dishId],
+			excludedDishesIds: state.excludedDishesIds.filter(id => id !== action.dishId)
+		});
+	}
+
+	@Action(ClearSelection)
+	clearSelection(ctx: StateContext<DishConfigurationState>) {
+		ctx.patchState({
+			selectedDishesIds: [],
+			excludedDishesIds: []
+		});
+	}
+	
+
+	@Action(DishDeselected)
+	dishDeselected(ctx: StateContext<DishConfigurationState>, action: DishDeselected) {
+		const state = ctx.getState();
+		ctx.patchState({
+			selectedDishesIds: state.selectedDishesIds.filter(id => id !== action.dishId),
+			excludedDishesIds: [...state.excludedDishesIds, action.dishId]
 		});
 	}
 

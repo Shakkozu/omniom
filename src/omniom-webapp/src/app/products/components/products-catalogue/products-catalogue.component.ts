@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { Observable, of, debounceTime, Subject } from 'rxjs';
-import { ProductDetailsDescription } from '../../model';
 import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
 import { ProductListChangedEvent, ProductsListComponent } from '../products-list/products-list.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { FetchDishes } from '../../../dish-configuration/store/dish-configuration.actions';
+import { CatalogueItem } from '../../model';
 
 @Component({
   selector: 'app-products-catalogue',
@@ -22,7 +22,9 @@ import { FetchDishes } from '../../../dish-configuration/store/dish-configuratio
    [selectionList]="selectionList">
   </app-products-list>
   <app-dishes-list *ngIf="!onlyProducts && selectedProductType === 'Dish'"
-  [selectionList]="selectionList">
+  [selectionList]="selectionList"
+  (dishListChanged)="dishListChanged.emit($event)"
+  >
 </app-dishes-list>
    `,
 })
@@ -32,8 +34,9 @@ export class ProductsCatalogueComponent implements OnInit {
   @Input() addButtonEnabled: boolean = false;
   @Input() onlyProducts: boolean = false;
   @Input() selectionList: boolean = false;  
-  @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
+  @Output() addProductButtonClicked: EventEmitter<CatalogueItem> = new EventEmitter<CatalogueItem>();
   @Output() productListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
+  @Output() dishListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
   public selectedProductType: SelectedProductType = SelectedProductType.Product;
 
 

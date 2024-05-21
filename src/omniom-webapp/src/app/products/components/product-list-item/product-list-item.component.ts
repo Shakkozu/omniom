@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
-import { MealEntry } from '../../model';
+import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
 
 @Component({
   selector: 'app-presentation-product-list-item',
@@ -8,6 +8,7 @@ import { MealEntry } from '../../model';
     <div class="flex flex-row content-evenly">
             <div class="w-4/6">
               <mat-list-item class="">
+                <button matListItemAvatar mat-icon-button><mat-icon>{{catalogueItemIcon}}</mat-icon></button>
                 <span matListItemTitle>{{ product.name }}</span>
                 <span matListItemLine>{{product.kcal }}kcal  B: {{product.proteins}}g T: {{product.fats}}g W:{{product.carbohydrates}}g</span>
               </mat-list-item>
@@ -27,13 +28,17 @@ import { MealEntry } from '../../model';
 export class ProductListItemComponent {
 
 
-  @Input() product!: MealEntry;
+  @Input() product!: CatalogueItem;
   @Input() loading$!: Observable<boolean>;
-  @Output() removeProductFromSelection = new EventEmitter<MealEntry>();
+  @Output() removeProductFromSelection = new EventEmitter<CatalogueItem>();
 
 
-  removeProductFromSelectionClicked(selectedProduct: MealEntry) {
+  removeProductFromSelectionClicked(selectedProduct: CatalogueItem) {
     this.removeProductFromSelection.emit(selectedProduct);
+  }
+
+  public get catalogueItemIcon(): string {
+    return this.product.type === CatalogueItemType.Product ? 'icecream' : 'dinner_dining';
   }
 
 }

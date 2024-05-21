@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ProductDetailsDescription } from '../../model';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { Store } from '@ngxs/store';
 import { ProductDeselected, ProductSelected } from '../../store/products-catalogue.actions';
 import { ProductsCatalogueStore } from '../../store/products-catalogue.store';
+import { CatalogueItem, CatalogueItemType } from '../../model';
 
 @Component({
   selector: 'app-products-list',
@@ -15,16 +15,16 @@ export class ProductsListComponent {
   @Input() selectionList: boolean = false;
   @ViewChild(MatSelectionList) selectedProductsList!: MatSelectionList;
   @ViewChild(MatSelectionList) notSelectedProductsList!: MatSelectionList;
-  public products$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.products);
-  public selectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.selectedProducts);
-  public notSelectedProducts$: Observable<ProductDetailsDescription[]> = this.store.select(ProductsCatalogueStore.productsWithoutSelectedProducts);
+  public products$: Observable<CatalogueItem[]> = this.store.select(ProductsCatalogueStore.products);
+  public selectedProducts$: Observable<CatalogueItem[]> = this.store.select(ProductsCatalogueStore.selectedProducts);
+  public notSelectedProducts$: Observable<CatalogueItem[]> = this.store.select(ProductsCatalogueStore.productsWithoutSelectedProducts);
   
-  @Output() addProductButtonClicked: EventEmitter<ProductDetailsDescription> = new EventEmitter<ProductDetailsDescription>();
+  @Output() addProductButtonClicked: EventEmitter<CatalogueItem> = new EventEmitter<CatalogueItem>();
   @Output() productListChanged: EventEmitter<ProductListChangedEvent> = new EventEmitter<ProductListChangedEvent>();
 
   constructor (private store: Store) {}
   
-  addProduct(product: ProductDetailsDescription) {
+  addProduct(product: CatalogueItem) {
     this.addProductButtonClicked.emit(product);
   }
 
@@ -35,7 +35,7 @@ export class ProductsListComponent {
       return;
 
     this.store.dispatch(new ProductDeselected(productId));
-    this.productListChanged.emit({ type: 'deselected', productId });
+    this.productListChanged.emit({ type: 'deselected', catalogueItemId: productId, itemType: CatalogueItemType.Product});
   }
 
   productSelected($event: MatSelectionListChange) {
@@ -45,14 +45,15 @@ export class ProductsListComponent {
       return;
 
     this.store.dispatch(new ProductSelected(productId));
-    this.productListChanged.emit({ type: 'selected', productId });
+    this.productListChanged.emit({ type: 'selected', catalogueItemId: productId, itemType: CatalogueItemType.Product});
   }
 }
 
 export type ListChangeType = 'selected' | 'deselected';
 export interface ProductListChangedEvent {
   type: ListChangeType;
-  productId: string;
+  catalogueItemId: string;
+  itemType: CatalogueItemType;
 }
 
 

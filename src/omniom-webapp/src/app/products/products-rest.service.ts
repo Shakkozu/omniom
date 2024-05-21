@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ProductDetailsDescription } from './model';
+import { CatalogueItemDto } from './model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -18,7 +18,7 @@ export class ProductsRestService {
 }
 
 export interface SearchProductsResponse {
-	products: ProductDetailsDescription[];
+	products: CatalogueItemDto[];
 	page: number;
 	pageSize: number;
 	totalCount: number;

@@ -1,4 +1,4 @@
-import { ProductDetailsDescription } from "../model";
+import { CatalogueItemDto } from "../model";
 
 export enum ProductsCatalogueActionTypes {
 	FetchProducts = '[Products Catalogue] Fetch products',
@@ -19,7 +19,7 @@ export class ProductSelected {
 	constructor(public productId: string) {}
 }
 export class SelectMultipleProducts {
-	static readonly type = ProductsCatalogueActionTypes.ProductSelected;
+	static readonly type = ProductsCatalogueActionTypes.SelectMultipleProducts;
 
 	constructor(public productIds: string[]) {}
 }
@@ -45,7 +45,7 @@ export class FetchProducts {
 export class FetchProductsSuccess {
 	static readonly type = ProductsCatalogueActionTypes.FetchProductsSuccess;
 
-	constructor (public products: ProductDetailsDescription[]) { }
+	constructor (public products: CatalogueItemDto[]) { }
 }
 
 export class FetchProductsFailure {
@@ -57,7 +57,7 @@ export class FetchProductsFailure {
 export class ProductAddedToExcludedList {
 	static readonly type = ProductsCatalogueActionTypes.ProductAddedToExcludedList;
 
-	constructor (public product: ProductDetailsDescription[]) { }
+	constructor (public productGuids: string[]) { }
 }
 
 export class ProductRemovedFromExcludedList {

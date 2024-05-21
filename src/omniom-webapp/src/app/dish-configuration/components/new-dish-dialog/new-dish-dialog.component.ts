@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MealEntry, ProductDetailsDescription } from '../../../products/model';
+import { CatalogueItem, MealEntry } from '../../../products/model';
 import { Store } from '@ngxs/store';
 import { CleanupExcludedList, ProductAddedToExcludedList, ProductRemovedFromExcludedList } from '../../../products/store/products-catalogue.actions';
 import { ProductsCatalogueComponent } from '../../../products/components/products-catalogue/products-catalogue.component';
@@ -76,7 +76,7 @@ import { FormErrorHandler } from '../../../shared/form-error-handler';
   `,
 })
 export class NewDishDialogComponent implements OnDestroy {
-  public products: MealEntry[] = [];
+  public products: CatalogueItem[] = [];
   @ViewChild(ProductsCatalogueComponent) productsCatalogue?: ProductsCatalogueComponent;
   form: FormGroup;
 
@@ -86,7 +86,7 @@ export class NewDishDialogComponent implements OnDestroy {
     private store: Store,
     private formErrorHandler: FormErrorHandler,
     @Inject(MAT_DIALOG_DATA) public data: {
-      products: MealEntry[]
+      products: CatalogueItem[]
     }) {
       this.form = this.fb.group({
         name: ['', [Validators.required, Validators.minLength(3)]],
@@ -95,23 +95,18 @@ export class NewDishDialogComponent implements OnDestroy {
         description: [''],
       });
     this.products = data.products;
-
-    
-    let productDescriptions: ProductDetailsDescription[] = this.getProductDescriptions(this.products);
-    this.store.dispatch(new ProductAddedToExcludedList(productDescriptions));
   }
 
-  public productAddedToMealDiary(selectedProduct: ProductDetailsDescription) {
+  public productAddedToMealDiary(selectedProduct: CatalogueItem) {
     if (!selectedProduct)
       return;
 
-    const mealEntry = new MealEntry(selectedProduct.name, selectedProduct.guid, selectedProduct.suggestedPortionSizeG, selectedProduct.kcalPer100G, selectedProduct.proteinsPer100G, selectedProduct.fatPer100G, selectedProduct.carbsPer100G);
-    this.products.push(mealEntry);
-    this.store.dispatch(new ProductAddedToExcludedList([selectedProduct]));
+    this.products.push(selectedProduct);
+    this.store.dispatch(new ProductAddedToExcludedList([selectedProduct.guid]));
     this.productsCatalogue?.clearSearchPhrase();
   }
 
-  public onProductRemoved(removedMealEntry: MealEntry) {
+  public onProductRemoved(removedMealEntry: CatalogueItem) {
     this.store.dispatch(new ProductRemovedFromExcludedList(removedMealEntry.guid));
   }
 
@@ -129,7 +124,7 @@ export class NewDishDialogComponent implements OnDestroy {
       description: this.form.value.description,
       portions: this.form.value.portions,
       guid: uuidv4(),
-      ingredients: this.products
+      ingredients: this.products.map(p => p.toProductCatalogueItem())
     };
 
     this.store.dispatch(new CreateDish(dish));
@@ -140,19 +135,6 @@ export class NewDishDialogComponent implements OnDestroy {
     return this.formErrorHandler.handleError(this.form, formControlName);
   }
 
-  getProductDescriptions(products: MealEntry[]): ProductDetailsDescription[] {
-    return products.map((product) => {
-      return {
-        guid: product.guid,
-        name: product.name,
-        kcalPer100G: product.kcal,
-        fatPer100G: product.fats,
-        carbsPer100G: product.carbohydrates,
-        proteinsPer100G: product.proteins,
-        suggestedPortionSizeG: product.portionInGrams,
-      };
-    });
-  }
 
   ngOnDestroy(): void {
     this.store.dispatch(new CleanupExcludedList());

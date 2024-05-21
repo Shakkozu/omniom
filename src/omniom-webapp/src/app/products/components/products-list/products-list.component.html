@@ -3,10 +3,10 @@
 		<ng-container *ngFor="let product of products$ | async; let last = last;">
 			<div class="item-container py-2">
 				<mat-list-item class="bg-white rounded-lg">
-					<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
-					<span matListItemLine>{{product.suggestedPortionSizeG}}g</span>
+					<span matListItemTitle>{{product.name}}</span>
+					<span matListItemLine>{{product.portionInGrams}}g</span>
 					<div matListItemMeta>
-						<span class="text-label-large">{{product.kcalPer100G}} kcal</span>
+						<span class="text-label-large">{{product.kcalPer100g}} kcal</span>
 						<button *ngIf="addButtonEnabled" matIconPrefix (click)="addProduct(product)" class="pt-4" mat-icon-button
 							color="primary" aria-label="Example icon button with a home icon">
 							<mat-icon class="mt-1">add</mat-icon>
@@ -26,8 +26,8 @@
 			<ng-container *ngFor="let product of selectedProducts$ | async; let last = last;">
 				<div class="item-container py-2">
 					<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg" selected>
-						<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
-						<span matListItemLine class="text-label-large">{{product.kcalPer100G}} kcal / 100g</span>
+						<span matListItemTitle>{{product.name}} </span>
+						<span matListItemLine class="text-label-large">{{product.kcalPer100g}} kcal / 100g</span>
 					</mat-list-option>
 					<div class="w-11/12 mx-auto" *ngIf="!last">
 						<mat-divider></mat-divider>
@@ -41,8 +41,8 @@
 			<ng-container *ngFor="let product of notSelectedProducts$ | async; let last = last;">
 				<div class="item-container py-2">
 					<mat-list-option value="{{product.guid}}" class="bg-white rounded-lg">
-						<span matListItemTitle>{{product.name}} [{{product.brands}}]</span>
-						<span matListItemLine class="text-label-large">{{product.kcalPer100G}} kcal / 100g</span>
+						<span matListItemTitle>{{product.name}}</span>
+						<span matListItemLine class="text-label-large">{{product.kcalPer100g}} kcal / 100g</span>
 					</mat-list-option>
 					<div class="w-11/12 mx-auto" *ngIf="!last">
 						<mat-divider></mat-divider>

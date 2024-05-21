@@ -1,4 +1,4 @@
-import { MealEntry } from "../products/model";
+import { CatalogueItem, CatalogueItemDto, CatalogueItemType, MealEntry, ProductCatalogueItem } from "../products/model";
 
 export interface Dish {
 	name: string;
@@ -6,7 +6,7 @@ export interface Dish {
 	description: string;
 	recipe: string;
 	portions: number;
-	ingredients: MealEntry[];
+	ingredients: ProductCatalogueItem[];
 }
 
 export interface DishViewModel extends Dish {
@@ -14,4 +14,11 @@ export interface DishViewModel extends Dish {
 	fatsGramsPerPortion: number;
 	carbsGramsPerPortion: number;
 	proteinsGramsPerPortion: number;
+}
+
+export interface MealCatalogueItemDto extends CatalogueItemDto {
+	description: string;
+	recipe: string;
+	portions: number;
+	ingredients: CatalogueItemDto[];
 }

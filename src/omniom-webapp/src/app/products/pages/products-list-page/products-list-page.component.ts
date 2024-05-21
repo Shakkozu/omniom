@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, debounceTime, map, of, switchMap, tap } from 'rxjs';
 import { ProductsRestService, SearchProductsResponse } from '../../products-rest.service';
-import { ProductDetailsDescription } from '../../model';
+import { CatalogueItem } from '../../model';
 
 @Component({
   selector: 'app-products-list-page',
@@ -11,8 +11,8 @@ import { ProductDetailsDescription } from '../../model';
 </div>`,
 })
 export class ProductsListPageComponent implements OnInit {
-  public productsList$: Observable<ProductDetailsDescription[]> = of([]);
-  public filteredProducts$: Observable<ProductDetailsDescription[]> = of([]);
+  public productsList$: Observable<CatalogueItem[]> = of([]);
+  public filteredProducts$: Observable<CatalogueItem[]> = of([]);
 
   constructor (private productsRestService: ProductsRestService) { }
 
@@ -22,7 +22,7 @@ export class ProductsListPageComponent implements OnInit {
       switchMap(() => this.productsRestService.getProducts(searchPhrase))
     ).pipe(
       map((response: SearchProductsResponse) => {
-        return response.products;
+        return response.products.map(catalogueItemDto => CatalogueItem.fromDto(catalogueItemDto));
       })
     );
   }
@@ -30,7 +30,7 @@ export class ProductsListPageComponent implements OnInit {
   ngOnInit(): void {
     this.filteredProducts$ = this.productsRestService.getProducts('').pipe(
       map((response: SearchProductsResponse) => {
-        return response.products;
+        return response.products.map(catalogueItemDto => CatalogueItem.fromDto(catalogueItemDto));
       })
     );
   }

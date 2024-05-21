@@ -1,12 +1,14 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { Dish, DishViewModel } from '../../model';
 import { Observable, map, of } from 'rxjs';
 import { MaterialModule } from '../../../material.module';
-import { MatSelectionListChange } from '@angular/material/list';
+import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { NgxsModule, Store } from '@ngxs/store';
-import { FetchDishes } from '../../store/dish-configuration.actions';
+import { FetchDishes, DishSelected as DishSelected, DishDeselected } from '../../store/dish-configuration.actions';
 import { DishConfigurationStore } from '../../store/dish-configuration.state';
+import { ListChangeType, ProductListChangedEvent as CatalogueItemListChangedEvent } from '../../../products/components/products-list/products-list.component';
+import { CatalogueItem, CatalogueItemType, MealCatalogueItem } from '../../../products/model';
 
 @Component({
   selector: 'app-dishes-list',
@@ -20,10 +22,15 @@ import { DishConfigurationStore } from '../../store/dish-configuration.state';
 })
 export class DishesListComponent {
   addButtonEnabled: any;
-  public dishes$: Observable<DishViewModel[]> = this.store.select(DishConfigurationStore.dishes);
-  public selectedDishes$: Observable<DishViewModel[]> = of([]);
-  public notSelectedDishes$: Observable<DishViewModel[]> = of([]);
+  public dishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.dishes);
+  public selectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.selectedDishes);
+  public notSelectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.dishesWithoutSelection);
   @Input() selectionList: boolean = false;
+  @ViewChild(MatSelectionList) selectedDishesList!: MatSelectionList;
+  @ViewChild(MatSelectionList) notSelectedDishesList!: MatSelectionList;
+
+  @Output() dishListChanged: EventEmitter<CatalogueItemListChangedEvent> = new EventEmitter<CatalogueItemListChangedEvent>();
+  
   public displayedColumns: string[] = ['name', 'kcalPer100g', 'fats', 'carbs', 'proteins'];
   constructor (private store: Store) {
     this.store.dispatch(new FetchDishes(''));
@@ -34,12 +41,30 @@ export class DishesListComponent {
   }
 
   dishSelected($event: MatSelectionListChange) {
-    throw new Error('Method not implemented.');
+    const dishId = $event.options[0].value;
+    const selected = $event.options[0].selected;
+    if (!selected)
+      return;
+
+    this.store.dispatch(new DishSelected(dishId));
+    this.dishListChanged.emit({ type: 'selected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal});
   }
+
   dishDeselected($event: MatSelectionListChange) {
+    const dishId = $event.options[0].value;
+    const selected = $event.options[0].selected;
+    if (selected)
+      return;
+
+    this.store.dispatch(new DishDeselected(dishId));
+    this.dishListChanged.emit({ type: 'deselected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal});
+  }
+
+  addDish(_t7: any) {
     throw new Error('Method not implemented.');
   }
-  addDish(_t7: any) {
+
+  showDishDetails(id: string ) {
     throw new Error('Method not implemented.');
   }
 }

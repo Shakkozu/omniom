@@ -7,7 +7,8 @@ import { MealType, NutritionDiaryEntry } from '../../model';
 import { AddNutritionEntries } from '../../store/nutrition-diary.actions';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
-import { MealEntry } from '../../../products/model';
+import { CatalogueItem, CatalogueItemType, MealEntry } from '../../../products/model';
+import { DishConfigurationStore } from '../../../dish-configuration/store/dish-configuration.state';
 
 
 @Component({
@@ -20,6 +21,7 @@ import { MealEntry } from '../../../products/model';
         <div class="w-1/2">
           <app-products-catalogue
           [selectionList]="true"
+          (dishListChanged)="onProductListModified($event)"
           (productListChanged)="onProductListModified($event)">
         </app-products-catalogue>
       </div>
@@ -39,19 +41,12 @@ import { MealEntry } from '../../../products/model';
 export class ModifyMealNutritionEntriesComponent {
   public selectedProducts$ = this.store.select(ProductsCatalogueStore.selectedProducts);
   public loading$ = this.store.select(NutritionDiaryStore.loading);
-  public products: MealEntry[] = [];
+  public products: CatalogueItem[] = [];
   constructor (private store: Store,
     @Inject(MAT_DIALOG_DATA) public data: { mealType: MealType, initialSelection: NutritionDiaryEntry[] }) {
     if (this.data.initialSelection) {
       this.store.dispatch(new SelectMultipleProducts(this.data.initialSelection.map(p => p.productId)));
-      this.products = this.data.initialSelection.map((product) =>
-        new MealEntry(product.productName,
-          product.productId,
-          product.portionInGrams,
-          product.calories,
-          product.proteins,
-          product.fats,
-          product.carbohydrates));
+      this.products = this.data.initialSelection.map((product) => CatalogueItem.fromNutritionDiaryEntry(product));
     }
   }
 
@@ -65,35 +60,38 @@ export class ModifyMealNutritionEntriesComponent {
     }
 
     this.store.dispatch(new AddNutritionEntries(entries, this.data.mealType, selectedDay)).subscribe(_ => {
-      this.store.dispatch(new ClearProductsSelection());
+       this.store.dispatch(new ClearProductsSelection());
     });
   }
 
   onProductListModified(event: ProductListChangedEvent) {
     if (event.type === 'selected') {
-      const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.productId);
-      if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
+      if (event.itemType === CatalogueItemType.Product) {
+        const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
+        console.log(productInfo);
+        if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
+          return;
+
+        this.products.push(productInfo);
         return;
+      }
+      else if (event.itemType === CatalogueItemType.Meal) {
+        const productInfo = this.store.selectSnapshot(DishConfigurationStore.selectedDishes).find((product) => product.guid === event.catalogueItemId);
+        if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
+          return;
 
-      this.products.push(new MealEntry(
-        productInfo.name,
-        productInfo.guid,
-        productInfo.suggestedPortionSizeG,
-        productInfo.kcalPer100G,
-        productInfo.proteinsPer100G,
-        productInfo.fatPer100G,
-        productInfo.carbsPer100G));
-
-      return;
+        this.products.push(productInfo);
+        return;
+      }
     }
 
-    const productIndex = this.products.findIndex((product) => product.guid === event.productId);
+    const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
     if (productIndex === -1)
       return;
     this.products.splice(productIndex, 1);
   }
 
-  deselectProduct(product: MealEntry) {
+  deselectProduct(product: CatalogueItem) {
     this.store.dispatch(new ProductDeselected(product.guid));
   }
 }
