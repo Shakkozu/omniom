@@ -35,6 +35,8 @@ public class GetNutritionDayQueryHandler
                 ProductId = entries.ProductId,
                 UserId = entries.UserId,
                 ProductName = entries.ProductName,
+                UserMealName = entries.UserMealName,
+                UserMealId = entries.UserMealId,
                 PortionInGrams = entries.PortionInGrams,
                 Meal = entries.Meal.ToString(),
                 Calories = entries.Calories,
@@ -65,9 +67,11 @@ public class NutritionDayEntryDto
 public record DiaryEntryData
 {
     public Guid Guid { get; set; }
-    public Guid ProductId { get; set; }
+    public Guid? ProductId { get; set; }
+    public Guid? UserMealId { get; set; }
     public Guid UserId { get; set; }
-    public string ProductName { get; set; }
+    public string? ProductName { get; set; }
+    public string? UserMealName { get; set; }
     public int PortionInGrams { get; set; }
     public string Meal { get; set; }
     public decimal Calories { get; set; }

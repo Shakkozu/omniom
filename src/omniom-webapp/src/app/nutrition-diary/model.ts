@@ -18,6 +18,8 @@ export interface NutritionDayDetails {
 export interface NutritionDiaryEntry {
 	guid: string;
 	productId: string;
+	userMealId: string;
+	userMealName: string;
 	userId: string;
 	productName: string;
 	portionInGrams: number;
@@ -43,6 +45,7 @@ export interface NutritionDetailsGroupeByMeal {
 }
 
 export interface MealProductEntry {
-	productId: string;
+	guid: string;
+	type: string;
 	portionSize: number;
 }

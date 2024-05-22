@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Auth.GetUserIdByEmail;
 using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetNutritionDay;
@@ -68,8 +69,8 @@ public static class NutritionDiaryConfig
         var command = new SaveMealNutritionEntriesCommand(
                        new[]
                        {
-                new MealProductEntryDto(products.First().Guid, 100),
-                new MealProductEntryDto(products.Last().Guid, 200)
+                new MealEntry(products.First().Guid, 100, CatalogueItemType.Product),
+                new MealEntry(products.Last().Guid, 200, CatalogueItemType.Product)
             },
             MealType.Breakfast,
             day,
@@ -78,8 +79,8 @@ public static class NutritionDiaryConfig
         var command2 = new SaveMealNutritionEntriesCommand(
                        new[]
                        {
-                new MealProductEntryDto(products.First().Guid, 250),
-                new MealProductEntryDto(products.Last().Guid, 300)
+                new MealEntry(products.First().Guid, 250, CatalogueItemType.Product),
+                new MealEntry(products.Last().Guid, 300, CatalogueItemType.Product)
             },
             MealType.Supper,
             day,

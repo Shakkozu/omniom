@@ -58,7 +58,7 @@
 						<ng-container matColumnDef="productName">
 							<th style="width: 40%;" mat-header-cell *matHeaderCellDef> Product Name</th>
 							<td style="width: 40%;" mat-cell *matCellDef="let nestedElement">
-								<p>{{nestedElement.productName}}</p>
+								<p>{{nestedElement.productName ?? nestedElement.userMealName}}</p>
 								<p>{{nestedElement.portionInGrams}}g</p>
 								 </td>
 						</ng-container>

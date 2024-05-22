@@ -3,7 +3,7 @@
 namespace Omniom.DatabaseMigrator.Migrations.NutritionDiary;
 
 [Tags("Omniom")]
-[Migration(00002)]
+[Migration(2)]
 public class Migration0002_CreateNutritionDiary : Migration
 {
     public override void Up()

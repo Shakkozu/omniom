@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 
@@ -22,7 +23,7 @@ public static class Route
             ) =>
         {
             var command = new SaveMealNutritionEntriesCommand(
-                RequestBody.Products,
+                RequestBody.Products.Select(p => new MealEntry(p.Guid, p.PortionSize, (CatalogueItemType)Enum.Parse(typeof(CatalogueItemType), p.Type))),
                 (MealType)Enum.Parse(typeof(MealType), RequestBody.MealType),
                 RequestBody.SelectedDay,
                 userIdProvider.GetUserId()

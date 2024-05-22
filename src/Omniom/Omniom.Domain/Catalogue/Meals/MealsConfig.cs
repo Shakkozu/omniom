@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Omniom.Domain.Catalogue.Meals.CreatingNewMeal;
 using Omniom.Domain.Catalogue.Meals.GettingMeal;
 using Omniom.Domain.Catalogue.Meals.Storage;
+using Omniom.Domain.Catalogue.Shared;
+using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Domain.Catalogue.Meals;
 public static class MealsConfig
@@ -19,6 +21,7 @@ public static class MealsConfig
         {
             return sp.GetRequiredService<MealsDbContext>().Set<UserMealDao>().AsNoTracking().AsQueryable();
         });
+        services.AddTransient<IQueryHandler<GetUserMealsQuery, IEnumerable<MealCatalogueItem>>, GetUserMealsQueryHandler>();
     }
 
     public static IEndpointRouteBuilder MapMealsEndpoints(this IEndpointRouteBuilder endpoints)

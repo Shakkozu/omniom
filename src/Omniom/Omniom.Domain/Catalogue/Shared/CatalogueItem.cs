@@ -64,7 +64,7 @@ public class MealCatalogueItem : BaseCatalogueItem
     public string Description { get; set; }
     public string Recipe { get; set; }
 
-    public override string Type => "Meal";
+    public override string Type => CatalogueItemType.Meal.ToString();
 
     public IEnumerable<MealIngredient> Ingredients { get; set; }
 }
@@ -76,7 +76,7 @@ public class ProductCatalogItem : BaseCatalogueItem
     public string Code { get; set; }
     public string CategoriesTags { get; set; }
 
-    public override string Type => "Product";
+    public override string Type => CatalogueItemType.Product.ToString();
 
     public ProductCatalogItem()
     {

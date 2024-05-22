@@ -55,6 +55,8 @@ internal static class NutritionDiarySchema
             entity.Property(e => e.DateTime).HasColumnName("date");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.ProductName).HasColumnName("product_name");
+            entity.Property(e => e.UserMealId).HasColumnName("user_meal_id");
+            entity.Property(e => e.UserMealName).HasColumnName("user_meal_name");
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.Meal).HasColumnName("meal_type").HasConversion<string>();
             entity.Property(e => e.PortionInGrams).HasColumnName("portion_in_grams");

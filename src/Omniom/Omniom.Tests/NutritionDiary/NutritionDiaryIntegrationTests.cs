@@ -1,10 +1,14 @@
 ﻿using FluentAssertions;
+using Omniom.Domain.Catalogue.Meals.Storage;
+using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.GetDiary;
 using Omniom.Domain.NutritionDiary.GetShortSummaryForDateRange;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Tests.Auth;
+using Omniom.Tests.DishConfiguration;
 using Omniom.Tests.Shared;
+using System.Collections.Frozen;
 
 namespace Omniom.Tests.NutritionDiary;
 
@@ -22,8 +26,8 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
         var secondProduct = _productsSet.Last();
         var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
-                new MealProductEntryDto(firstProduct.Guid, 100),
-                new MealProductEntryDto(secondProduct.Guid, 250)
+                new MealEntryDto(firstProduct.Guid, 100, CatalogueItemType.Product.ToString()),
+                new MealEntryDto(secondProduct.Guid, 250, CatalogueItemType.Product.ToString())
             ],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
@@ -65,11 +69,13 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
         var dateOfModifiedEntry = DateTime.Now;
         var firstProduct = _productsSet.First();
         var secondProduct = _productsSet.Last();
+        var meal = await AMealCreatedAsync();
         var anotherProduct = _productsSet[_productsSet.Count - 2];
         var saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
-                new MealProductEntryDto(firstProduct.Guid, 100),
-                new MealProductEntryDto(secondProduct.Guid, 250)
+                new MealEntryDto(firstProduct.Guid, 100, CatalogueItemType.Product.ToString()),
+                new MealEntryDto(secondProduct.Guid, 250, CatalogueItemType.Product.ToString()),
+                new MealEntryDto(meal.Guid, 100, CatalogueItemType.Meal.ToString())
             ],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
@@ -109,6 +115,18 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         Proteins = secondProduct.ProteinsPer100G * 2.5m,
                         Carbohydrates = secondProduct.CarbohydratesPer100G * 2.5m,
                         Fats = secondProduct.FatsPer100G * 2.5m
+                    },
+                    new DiaryEntryData
+                    {
+                        UserMealId = meal.Guid,
+                        UserId = await AuthFixture.GetUserIdAsync(),
+                        PortionInGrams = 100,
+                        Meal = MealType.Breakfast.ToString(),
+                        UserMealName = meal.Name,
+                        Calories = meal.Ingredients.Single().KcalPer100g,
+                        Proteins = meal.Ingredients.Single().ProteinsPer100g,
+                        Carbohydrates = meal.Ingredients.Single().CarbohydratesPer100g,
+                        Fats = meal.Ingredients.Single().FatsPer100g
                     }
                 }
             }
@@ -116,7 +134,7 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
 
         saveEntriesRequest = new SaveMealNutritionEntriesRequest(
             [
-                new MealProductEntryDto(anotherProduct.Guid, 50),
+                new MealEntryDto(anotherProduct.Guid, 50, CatalogueItemType.Product.ToString()),
             ],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
@@ -146,6 +164,18 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
         }, options => options.Excluding(x => x.Name.EndsWith("Guid")));
     }
 
+    private async Task<Meal> AMealCreatedAsync()
+    {
+        var product = _productsSet.First();
+        var ingredient = new MealIngredient(product.ProductName, product.Guid, 100, product.KcalPer100G, product.ProteinsPer100G, product.CarbohydratesPer100G, product.FatsPer100G);
+        var meal = new Meal(Guid.NewGuid(), "AMeal", "Desc", "Recipe", 1, new List<MealIngredient> { ingredient });
+        var client = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        var mealClient = new MealsRestClient(client);
+        var response = await mealClient.CreateMealAsync(meal);
+        response.EnsureSuccessStatusCode();
+        return meal;
+    }
+
     [Test]
     public async Task ShouldReturnShortSummaryRangeForDays()
     {
@@ -153,17 +183,17 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
         var firstProduct = _productsSet.First();
         var secondProduct = _productsSet.Last();
         var addNutritionEntryRequest = new SaveMealNutritionEntriesRequest(
-            [new MealProductEntryDto(firstProduct.Guid, 100)],
+            [new MealEntryDto(firstProduct.Guid, 100, CatalogueItemType.Product.ToString())],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry
         );
         var addSecondNutritionEntryRequest = new SaveMealNutritionEntriesRequest(
-            [new MealProductEntryDto(secondProduct.Guid, 100)],
+            [new MealEntryDto(secondProduct.Guid, 100, CatalogueItemType.Product.ToString())],
             MealType.Dinner.ToString(),
             dateOfModifiedEntry
         );
         var addPreviousDayNutritionEntriesRequest = new SaveMealNutritionEntriesRequest(
-            [new MealProductEntryDto(secondProduct.Guid, 250)],
+            [new MealEntryDto(secondProduct.Guid, 250, CatalogueItemType.Product.ToString())],
             MealType.Breakfast.ToString(),
             dateOfModifiedEntry.AddDays(-1)
         );

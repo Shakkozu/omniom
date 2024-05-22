@@ -52,7 +52,7 @@ export class ModifyMealNutritionEntriesComponent {
 
 
   onProductsConfirmed() {
-    const entries = this.products.map(p => ({ productId: p.guid, portionSize: p.portionInGrams }));
+    const entries = this.products.map(p => ({ guid: p.guid, type: p.type, portionSize: p.portionInGrams }));
     const selectedDay = this.store.selectSnapshot(NutritionDiaryStore.selectedNutritionDay);
     if (selectedDay === undefined || selectedDay === null) {
       console.error('Selected day is undefined');
@@ -68,7 +68,6 @@ export class ModifyMealNutritionEntriesComponent {
     if (event.type === 'selected') {
       if (event.itemType === CatalogueItemType.Product) {
         const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
-        console.log(productInfo);
         if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
           return;
 
