@@ -3,7 +3,9 @@ import { NutritionDiaryEntry } from "../nutrition-diary/model";
 
 
 export class MealEntry {
-	constructor (public name: string, public guid: string,
+	constructor (public name: string,
+		public type: CatalogueItemType,
+		public guid: string,
 		public portionInGrams: number,
 		private kcalPer100g: number,
 		private proteinsPer100g: number,
@@ -66,7 +68,7 @@ export class CatalogueItem {
 	}
 
 	toMealEntry(): MealEntry {
-		return new MealEntry(this.name, this.guid, this.portionInGrams, this.kcalPer100g, this.proteinsPer100g, this.fatsPer100g, this.carbohydratesPer100g);
+		return new MealEntry(this.name, this.type, this.guid, this.portionInGrams, this.kcalPer100g, this.proteinsPer100g, this.fatsPer100g, this.carbohydratesPer100g);
 	}
 
 	static fromDish(dish: DishViewModel): CatalogueItem {
