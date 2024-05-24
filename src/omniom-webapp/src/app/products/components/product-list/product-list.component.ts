@@ -19,13 +19,13 @@ export class ProductListComponent {
   @Input() products: CatalogueItem[] = [];
   @Input() loading$: Observable<boolean> = new Observable<boolean>();
   @Output() productRemovedFromList = new EventEmitter<CatalogueItem>();
-  constructor (private store: Store) { 
-    
+  constructor (private store: Store) {
+
   }
-  
-  removeProductFromSelection(product: CatalogueItem) {
-    this.onProductListModified({ type: 'deselected', catalogueItemId: product.guid, itemType: CatalogueItemType.Product})
-    this.productRemovedFromList.emit(product);
+
+  removeProductFromSelection(catalogueItem: CatalogueItem) {
+    this.onProductListModified({ type: 'deselected', catalogueItemId: catalogueItem.guid, itemType: catalogueItem.type })
+    this.productRemovedFromList.emit(catalogueItem);
   }
 
   onProductListModified(event: ProductListChangedEvent) {

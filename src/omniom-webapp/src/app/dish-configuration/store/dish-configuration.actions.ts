@@ -6,6 +6,7 @@ export enum DishConfigurationActionTypes {
 	DeleteDish = '[Dish Configuration] Delete Dish',
 	FetchDishes = '[Dish Configuration] Fetch Dishes',
 	SelectDish = '[Dish Configuration] Select Dish',
+	SelectMultipleDishes = '[Dish Configuration] Select Multiple Dishes',
 	DeselectDish = '[Dish Configuration] Deselect Dish',
 	ClearSelection = '[Dish Configuration] Clear Selection'
 
@@ -27,6 +28,12 @@ export class DishSelected {
 	static readonly type = DishConfigurationActionTypes.SelectDish;
 
 	constructor(public dishId: string) {}
+}
+
+export class SelectMultipleDishes {
+	static readonly type = DishConfigurationActionTypes.SelectMultipleDishes;
+
+	constructor(public dishId: string[]) {}
 }
 
 export class DishDeselected {

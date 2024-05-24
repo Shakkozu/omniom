@@ -60,7 +60,11 @@ export class CatalogueItem {
 	}
 
 	static fromNutritionDiaryEntry(product: NutritionDiaryEntry): CatalogueItem {
-		return new CatalogueItem(product.productName, CatalogueItemType.Product, product.productId, product.portionInGrams, product.calories, product.proteins, product.fats, product.carbohydrates);
+		const isProduct = product.productId !== null && product.productId !== undefined;
+		const type = isProduct ? CatalogueItemType.Product : CatalogueItemType.Meal;
+		const guid = isProduct ? product.productId : product.userMealId;
+		const name = isProduct ? product.productName : product.userMealName;
+		return new CatalogueItem(name, type, guid, product.portionInGrams, product.calories, product.proteins, product.fats, product.carbohydrates);
 	}
 
 	toProductCatalogueItem(): ProductCatalogueItem {

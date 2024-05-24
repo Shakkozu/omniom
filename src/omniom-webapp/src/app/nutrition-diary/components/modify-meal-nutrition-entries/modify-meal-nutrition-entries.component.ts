@@ -9,6 +9,7 @@ import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { ClearProductsSelection, ProductDeselected, SelectMultipleProducts } from '../../../products/store/products-catalogue.actions';
 import { CatalogueItem, CatalogueItemType, MealEntry } from '../../../products/model';
 import { DishConfigurationStore } from '../../../dish-configuration/store/dish-configuration.state';
+import { DishDeselected, SelectMultipleDishes } from '../../../dish-configuration/store/dish-configuration.actions';
 
 
 @Component({
@@ -45,7 +46,10 @@ export class ModifyMealNutritionEntriesComponent {
   constructor (private store: Store,
     @Inject(MAT_DIALOG_DATA) public data: { mealType: MealType, initialSelection: NutritionDiaryEntry[] }) {
     if (this.data.initialSelection) {
-      this.store.dispatch(new SelectMultipleProducts(this.data.initialSelection.map(p => p.productId)));
+      const products = this.data.initialSelection.filter(p => p.productId !== null && p.productId !== undefined);
+      const meals = this.data.initialSelection.filter(p => p.userMealId !== null && p.userMealId !== undefined);
+      this.store.dispatch(new SelectMultipleProducts(products.map(p => p.productId)));
+      this.store.dispatch(new SelectMultipleDishes(meals.map(p => p.userMealId)));
       this.products = this.data.initialSelection.map((product) => CatalogueItem.fromNutritionDiaryEntry(product));
     }
   }
@@ -65,6 +69,7 @@ export class ModifyMealNutritionEntriesComponent {
   }
 
   onProductListModified(event: ProductListChangedEvent) {
+    const productSelected = event.itemType === CatalogueItemType.Product;
     if (event.type === 'selected') {
       if (event.itemType === CatalogueItemType.Product) {
         const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
@@ -83,15 +88,30 @@ export class ModifyMealNutritionEntriesComponent {
         return;
       }
     }
+    if (productSelected) {
+     
+      const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
+      if (productIndex === -1)
+        return;
+      this.products.splice(productIndex, 1);
+    }
+    else {
+      const productInfo = this.store.selectSnapshot(DishConfigurationStore.selectedDishes).find((product) => product.guid === event.catalogueItemId);
+      if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
+        return;
 
-    const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
-    if (productIndex === -1)
+      this.products.push(productInfo);
       return;
-    this.products.splice(productIndex, 1);
+    }
   }
 
-  deselectProduct(product: CatalogueItem) {
-    this.store.dispatch(new ProductDeselected(product.guid));
+  deselectProduct(catalogueItem: CatalogueItem) {
+    if (catalogueItem.type === CatalogueItemType.Product) {
+      this.store.dispatch(new ProductDeselected(catalogueItem.guid));
+      return;
+    }
+
+    this.store.dispatch(new DishDeselected(catalogueItem.guid));
   }
 }
 
