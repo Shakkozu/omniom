@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Dish, DishViewModel } from "../model";
 import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { ClearSelection, CreateDish, DishDeselected, DishSelected, FetchDishes, SelectMultipleDishes } from "./dish-configuration.actions";
+import { ClearSelection, CreateDish, DishDeselected, DishSelected, FetchDishes, SelectMultipleDishes as InitializeSelectionList } from "./dish-configuration.actions";
 import { DishConfigurationRestService } from "../dish-configuration-rest-service";
 import { CatalogueItem, MealCatalogueItem } from "../../products/model";
 
@@ -80,11 +80,11 @@ export class DishConfigurationStore {
 		});
 	}
 
-	@Action(SelectMultipleDishes)
-	selectMultipleDishes (ctx: StateContext<DishConfigurationState>, action: SelectMultipleDishes) {
+	@Action(InitializeSelectionList)
+	selectMultipleDishes (ctx: StateContext<DishConfigurationState>, action: InitializeSelectionList) {
 		const state = ctx.getState();
 		ctx.patchState({
-			selectedDishesIds: [...state.selectedDishesIds, ...action.dishId],
+			selectedDishesIds: [...action.dishId],
 			excludedDishesIds: state.excludedDishesIds.filter(id => !action.dishId.includes(id))
 		});
 	}

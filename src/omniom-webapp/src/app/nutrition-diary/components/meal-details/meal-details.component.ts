@@ -55,6 +55,7 @@ export class MealDetailsComponent implements OnDestroy {
 
   public modifyNutritionEntries(mealType: MealType) {
     const productOfSelectedMeal = this.data.find(meal => meal.mealType === mealType)?.entries ?? [];
+    console.log(productOfSelectedMeal);
     this.addNutritionDialog = this.matDialog.open(ModifyMealNutritionEntriesComponent, {
       width: '70vw',
       height: '80vh',

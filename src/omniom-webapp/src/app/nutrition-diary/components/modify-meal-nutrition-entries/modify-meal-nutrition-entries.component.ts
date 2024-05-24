@@ -40,7 +40,6 @@ import { DishDeselected, SelectMultipleDishes } from '../../../dish-configuratio
   `,
 })
 export class ModifyMealNutritionEntriesComponent {
-  public selectedProducts$ = this.store.select(ProductsCatalogueStore.selectedProducts);
   public loading$ = this.store.select(NutritionDiaryStore.loading);
   public products: CatalogueItem[] = [];
   constructor (private store: Store,
