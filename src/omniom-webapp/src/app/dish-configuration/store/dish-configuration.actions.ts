@@ -8,8 +8,9 @@ export enum DishConfigurationActionTypes {
 	SelectDish = '[Dish Configuration] Select Dish',
 	SelectMultipleDishes = '[Dish Configuration] Select Multiple Dishes',
 	DeselectDish = '[Dish Configuration] Deselect Dish',
-	ClearSelection = '[Dish Configuration] Clear Selection'
-
+	ClearSelection = '[Dish Configuration] Clear Selection',
+	SelectDishToViewDetails = '[Dish Configuration] Select Dish To View Details',
+	DeselectDishToViewDetails = '[Dish Configuration] Deselect Dish To View Details',
 }
 
 export class CreateDish {
@@ -45,4 +46,16 @@ export class DishDeselected {
 export class ClearSelection {
 	static readonly type = DishConfigurationActionTypes.ClearSelection;
 
+}
+
+export class SelectDishToViewDetails {
+	static readonly type = DishConfigurationActionTypes.SelectDishToViewDetails;
+
+	constructor(public dishId: string) {}
+}
+
+export class DeselectDishToViewDetails {
+	static readonly type = DishConfigurationActionTypes.DeselectDishToViewDetails;
+
+	constructor(public dishId: string) {}
 }

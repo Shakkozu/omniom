@@ -5,11 +5,12 @@ import { NewDishDialogComponent } from './components/new-dish-dialog/new-dish-di
 import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from '../products/products.module';
+import { DishDetailsComponent } from './components/dish-details/dish-details.component';
 
 
 @NgModule({
   declarations: [
-    NewDishDialogComponent
+    NewDishDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -20,7 +21,7 @@ import { ProductsModule } from '../products/products.module';
     ProductsModule,
   ],
   exports: [
-    NewDishDialogComponent
+    NewDishDialogComponent,
   ]
 })
 export class DishesConfigurationModule { }

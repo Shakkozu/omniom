@@ -12,6 +12,7 @@ import { ProductListItemComponent as ProductPresentationListItemComponent } from
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductListComponent as ProductPresentationListComponent } from './components/product-list/product-list.component';
 import { DishesListComponent } from '../dish-configuration/components/dishes-list/dishes-list.component';
+import { DishDetailsComponent } from '../dish-configuration/components/dish-details/dish-details.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { DishesListComponent } from '../dish-configuration/components/dishes-lis
     SearchBarComponent,
     ProductsCatalogueComponent,
     ProductPresentationListItemComponent,
-    ProductPresentationListComponent
+    ProductPresentationListComponent,
+    DishDetailsComponent
   ],
   imports: [
     NgxsModule.forFeature([
@@ -32,7 +34,7 @@ import { DishesListComponent } from '../dish-configuration/components/dishes-lis
     ProductsRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    DishesListComponent
+    DishesListComponent,
   ],
   exports: [
     ProductsListComponent,

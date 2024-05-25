@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { Dish, DishViewModel } from '../../model';
 import { Observable, map, of } from 'rxjs';
 import { MaterialModule } from '../../../material.module';
 import { MatSelectionList, MatSelectionListChange } from '@angular/material/list';
@@ -9,6 +8,8 @@ import { FetchDishes, DishSelected as DishSelected, DishDeselected } from '../..
 import { DishConfigurationStore } from '../../store/dish-configuration.state';
 import { ListChangeType, ProductListChangedEvent as CatalogueItemListChangedEvent } from '../../../products/components/products-list/products-list.component';
 import { CatalogueItem, CatalogueItemType, MealCatalogueItem } from '../../../products/model';
+import { MatDialog } from '@angular/material/dialog';
+import { DishDetailsComponent } from '../dish-details/dish-details.component';
 
 @Component({
   selector: 'app-dishes-list',
@@ -32,7 +33,8 @@ export class DishesListComponent {
   @Output() dishListChanged: EventEmitter<CatalogueItemListChangedEvent> = new EventEmitter<CatalogueItemListChangedEvent>();
   
   public displayedColumns: string[] = ['name', 'kcalPer100g', 'fats', 'carbs', 'proteins'];
-  constructor (private store: Store) {
+  constructor (private store: Store,
+    private matDialog: MatDialog) {
     this.store.dispatch(new FetchDishes(''));
   }
 
@@ -64,7 +66,12 @@ export class DishesListComponent {
     throw new Error('Method not implemented.');
   }
 
-  showDishDetails(id: string ) {
-    throw new Error('Method not implemented.');
+  showDishDetails(id: string) {
+    this.matDialog.open(DishDetailsComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: { dishId: id }
+    });
+    
   }
 }

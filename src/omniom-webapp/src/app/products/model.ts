@@ -145,10 +145,7 @@ export class MealCatalogueItem extends CatalogueItem {
 
 	static fromMealDto(dish: MealCatalogueItemDto): MealCatalogueItem {
 		const ingredients = dish.ingredients.map(p => ProductCatalogueItem.fromDto(p));
-		// const ingredients = dish.ingredients.map(i => new ProductCatalogueItem(i.name, i.guid, i.portionInGrams, i.kcalPer100G, i.proteinsPer100G, i.fatsPer100G, i.carbohydratesPer100G));
 		return new MealCatalogueItem(dish.name, dish.guid, dish.portionInGrams, dish.kcalPer100G, dish.proteinsPer100G, dish.fatsPer100G, dish.carbohydratesPer100G, dish.description, dish.recipe, dish.portions, ingredients);
-
-		
 	}
 }
 
