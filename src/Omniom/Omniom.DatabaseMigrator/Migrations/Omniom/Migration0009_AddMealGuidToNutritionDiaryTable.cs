@@ -18,9 +18,6 @@ public class Migration0009_AddMealGuidToNutritionDiaryTable : Migration
 
     public override void Down()
     {
-        Alter.Table(_diaryEntriesTable)
-            .AlterColumn("product_id").AsGuid().NotNullable()
-            .AlterColumn("product_name").AsString().NotNullable();
         Delete.Column("user_meal_name").FromTable(_diaryEntriesTable);
         Delete.Column("user_meal_id").FromTable(_diaryEntriesTable);
     }
