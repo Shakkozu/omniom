@@ -44,10 +44,10 @@ public class MealCatalogueItem : BaseCatalogueItem
     {
         Guid = meal.Guid;
         Name = meal.Name;
-        KcalPer100G = meal.Ingredients.Sum(x => x.KcalPer100g);
-        ProteinsPer100G = meal.Ingredients.Sum(x => x.ProteinsPer100g);
-        FatsPer100G = meal.Ingredients.Sum(x => x.FatsPer100g);
-        CarbohydratesPer100G = meal.Ingredients.Sum(x => x.CarbohydratesPer100g);
+        KcalPer100G = meal.Ingredients.Sum(x => x.KcalPer100G);
+        ProteinsPer100G = meal.Ingredients.Sum(x => x.ProteinsPer100G);
+        FatsPer100G = meal.Ingredients.Sum(x => x.FatsPer100G);
+        CarbohydratesPer100G = meal.Ingredients.Sum(x => x.CarbohydratesPer100G);
         KcalPerPortion = meal.Ingredients.Sum(x => x.Kcal);
         ProteinsPerPortion = meal.Ingredients.Sum(x => x.Proteins);
         FatsPerPortion = meal.Ingredients.Sum(x => x.Fats);

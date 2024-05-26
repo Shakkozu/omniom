@@ -1,4 +1,4 @@
-import { CatalogueItem, CatalogueItemDto, CatalogueItemType, MealEntry, ProductCatalogueItem } from "../products/model";
+import { CatalogueItemDto, ProductCatalogueItem } from "../products/model";
 
 export interface Dish {
 	name: string;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
 
@@ -16,22 +16,29 @@ import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
             <div class="w-2/6">
               <mat-form-field class="mt-2">
                 <mat-label>Gramatura</mat-label>
-                <input matInput min="0" [readonly]="loading$ | async" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams">
+                <input matInput min="0" [readonly]="readonly || (loading$ | async)" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams" (input)="roundValue()">
                 <span matTextSuffix>g</span>
               </mat-form-field>
             </div>
-            <button class="mx-2" style="align-self: center;" mat-icon-button (click)="removeProductFromSelectionClicked(product)"><mat-icon>delete</mat-icon></button>
+            <button *ngIf="!readonly" class="mx-2" style="align-self: center;" mat-icon-button (click)="removeProductFromSelectionClicked(product)"><mat-icon>delete</mat-icon></button>
           </div>
   `,
   styleUrl: './product-list-item.component.scss'
 })
-export class ProductListItemComponent {
-
-
+export class ProductListItemComponent implements AfterViewInit {
+  @Input() readonly: boolean = false;
   @Input() product!: CatalogueItem;
   @Input() loading$!: Observable<boolean>;
   @Output() removeProductFromSelection = new EventEmitter<CatalogueItem>();
+  
+  ngAfterViewInit(): void {
+    if(this.product)
+      this.product.portionInGrams = parseFloat(this.product.portionInGrams.toFixed(2));
+  }
 
+  roundValue() {
+    this.product.portionInGrams = parseFloat(this.product.portionInGrams.toFixed(2));
+  }
 
   removeProductFromSelectionClicked(selectedProduct: CatalogueItem) {
     this.removeProductFromSelection.emit(selectedProduct);

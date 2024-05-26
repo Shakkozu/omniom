@@ -3,15 +3,15 @@ public record MealIngredient(
     string Name,
     Guid Guid,
     decimal PortionInGrams,
-    decimal KcalPer100g,
-    decimal ProteinsPer100g,
-    decimal CarbohydratesPer100g,
-    decimal FatsPer100g)
+    decimal KcalPer100G,
+    decimal ProteinsPer100G,
+    decimal CarbohydratesPer100G,
+    decimal FatsPer100G)
 {
-    public decimal Kcal => KcalPer100g * PortionInGrams / 100;
-    public decimal Proteins => ProteinsPer100g * PortionInGrams / 100;
-    public decimal Carbohydrates => CarbohydratesPer100g * PortionInGrams / 100;
-    public decimal Fats => FatsPer100g * PortionInGrams / 100;
+    public decimal Kcal => KcalPer100G * PortionInGrams / 100;
+    public decimal Proteins => ProteinsPer100G * PortionInGrams / 100;
+    public decimal Carbohydrates => CarbohydratesPer100G * PortionInGrams / 100;
+    public decimal Fats => FatsPer100G * PortionInGrams / 100;
 }
 
 public record Meal(

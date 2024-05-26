@@ -9,7 +9,10 @@ import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
   selector: 'app-presentation-product-list',
   template: `
           <div *ngFor="let product of products" >
-          <app-presentation-product-list-item [product]="product" [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)"></app-presentation-product-list-item>
+          <app-presentation-product-list-item
+          [product]="product"
+          [readonly]="readonly"
+           [loading$]="loading$" (removeProductFromSelection)="this.removeProductFromSelection($event)"></app-presentation-product-list-item>
           <mat-divider class=""></mat-divider>
         </div>
   `,
@@ -17,6 +20,7 @@ import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
 })
 export class ProductListComponent {
   @Input() products: CatalogueItem[] = [];
+  @Input() readonly: boolean = false;
   @Input() loading$: Observable<boolean> = new Observable<boolean>();
   @Output() productRemovedFromList = new EventEmitter<CatalogueItem>();
   constructor (private store: Store) {

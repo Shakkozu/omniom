@@ -32,8 +32,9 @@ export class DishConfigurationStore {
 	
 	@Selector()
 	static dishDetailsById(itemId: string): (state: DishConfigurationState) => MealCatalogueItem | undefined {
-		return createSelector([DishConfigurationStore], (state: DishConfigurationState) => {
-			const mealCatalogueItemDto = state.mealCatalogueItems.find(item => item.guid === itemId);
+		return createSelector([DishConfigurationStore], (state: any) => {
+			const dishState: DishConfigurationState = state.dishConfiguration;
+			const mealCatalogueItemDto = dishState.mealCatalogueItems.find(item => item.guid === itemId);
 			if (!mealCatalogueItemDto) {
 				return undefined;
 			}
@@ -120,7 +121,6 @@ export class DishConfigurationStore {
 			excludedCatalogueDishesIds: []
 		});
 	}
-	
 
 	@Action(DishDeselected)
 	dishDeselected(ctx: StateContext<DishConfigurationState>, action: DishDeselected) {
@@ -130,15 +130,4 @@ export class DishConfigurationStore {
 			excludedCatalogueDishesIds: [...state.excludedCatalogueDishesIds, action.dishId]
 		});
 	}
-
-	private convertDishToViewModel(dish: Dish): DishViewModel {
-		return {
-			...dish,
-			kcalPerPortion: dish.ingredients.reduce((acc, curr) => acc + curr.kcal, 0) / dish.portions,
-			fatsGramsPerPortion: dish.ingredients.reduce((acc, curr) => acc + curr.fats, 0) / dish.portions,
-			carbsGramsPerPortion: dish.ingredients.reduce((acc, curr) => acc + curr.carbohydrates, 0) / dish.portions,
-			proteinsGramsPerPortion: dish.ingredients.reduce((acc, curr) => acc + curr.proteins, 0) / dish.portions
-		};
-	}
-
 }

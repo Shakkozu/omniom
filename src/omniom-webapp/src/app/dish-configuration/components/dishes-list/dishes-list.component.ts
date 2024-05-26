@@ -66,11 +66,11 @@ export class DishesListComponent {
     throw new Error('Method not implemented.');
   }
 
-  showDishDetails(id: string) {
+  showDishDetails(dish: any) {
     this.matDialog.open(DishDetailsComponent, {
       width: '70vw',
       height: '80vh',
-      data: { dishId: id }
+      data: { dishId: dish.guid }
     });
     
   }

@@ -123,10 +123,10 @@ public class NutritionDiaryIntegrationTests : BaseIntegrationTestsFixture
                         PortionInGrams = 100,
                         Meal = MealType.Breakfast.ToString(),
                         UserMealName = meal.Name,
-                        Calories = meal.Ingredients.Single().KcalPer100g,
-                        Proteins = meal.Ingredients.Single().ProteinsPer100g,
-                        Carbohydrates = meal.Ingredients.Single().CarbohydratesPer100g,
-                        Fats = meal.Ingredients.Single().FatsPer100g
+                        Calories = meal.Ingredients.Single().KcalPer100G,
+                        Proteins = meal.Ingredients.Single().ProteinsPer100G,
+                        Carbohydrates = meal.Ingredients.Single().CarbohydratesPer100G,
+                        Fats = meal.Ingredients.Single().FatsPer100G
                     }
                 }
             }
