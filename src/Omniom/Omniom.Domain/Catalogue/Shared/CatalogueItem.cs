@@ -36,27 +36,45 @@ public abstract class BaseCatalogueItem : ICatalogueItem
 
 public class MealCatalogueItem : BaseCatalogueItem
 {
-    public MealCatalogueItem()
-    {
-        
-    }
     public MealCatalogueItem(Meal meal)
     {
         Guid = meal.Guid;
         Name = meal.Name;
-        KcalPer100G = meal.Ingredients.Sum(x => x.KcalPer100G);
-        ProteinsPer100G = meal.Ingredients.Sum(x => x.ProteinsPer100G);
-        FatsPer100G = meal.Ingredients.Sum(x => x.FatsPer100G);
-        CarbohydratesPer100G = meal.Ingredients.Sum(x => x.CarbohydratesPer100G);
-        KcalPerPortion = meal.Ingredients.Sum(x => x.Kcal);
-        ProteinsPerPortion = meal.Ingredients.Sum(x => x.Proteins);
-        FatsPerPortion = meal.Ingredients.Sum(x => x.Fats);
-        CarbohydratesPerPortion = meal.Ingredients.Sum(x => x.Carbohydrates);
-        
+
+        // Calculate total values for the entire meal
+        decimal totalKcal = 0;
+        decimal totalProteins = 0;
+        decimal totalFats = 0;
+        decimal totalCarbohydrates = 0;
+        decimal totalWeight = 0;
+
+        foreach (var ingredient in meal.Ingredients)
+        {
+            decimal ingredientWeight = ingredient.PortionInGrams;
+            totalWeight += ingredientWeight;
+
+            totalKcal += (ingredient.KcalPer100G / 100m) * ingredientWeight;
+            totalProteins += (ingredient.ProteinsPer100G / 100m) * ingredientWeight;
+            totalFats += (ingredient.FatsPer100G / 100m) * ingredientWeight;
+            totalCarbohydrates += (ingredient.CarbohydratesPer100G / 100m) * ingredientWeight;
+        }
+
+        // Calculate per portion values
+        KcalPerPortion = totalKcal / meal.Portions;
+        ProteinsPerPortion = totalProteins / meal.Portions;
+        FatsPerPortion = totalFats / meal.Portions;
+        CarbohydratesPerPortion = totalCarbohydrates / meal.Portions;
+
+        // Calculate per 100g values
+        KcalPer100G = (totalKcal / totalWeight) * 100m;
+        ProteinsPer100G = (totalProteins / totalWeight) * 100m;
+        FatsPer100G = (totalFats / totalWeight) * 100m;
+        CarbohydratesPer100G = (totalCarbohydrates / totalWeight) * 100m;
+
         Description = meal.Description;
         Recipe = meal.Recipe;
         Portions = meal.Portions;
-        PortionInGrams = meal.Ingredients.Sum(i => i.PortionInGrams) / Portions;
+        PortionInGrams = totalWeight / Portions;
         Ingredients = meal.Ingredients;
     }
 
@@ -68,6 +86,7 @@ public class MealCatalogueItem : BaseCatalogueItem
 
     public IEnumerable<MealIngredient> Ingredients { get; set; }
 }
+
 
 public class ProductCatalogItem : BaseCatalogueItem
 {
