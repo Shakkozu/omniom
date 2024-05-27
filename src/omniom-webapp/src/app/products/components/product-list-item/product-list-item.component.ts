@@ -15,7 +15,7 @@ import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
             </div>
             <div class="w-2/6">
               <mat-form-field class="mt-2">
-                <mat-label>Gramatura</mat-label>
+                <mat-label>Porcja</mat-label>
                 <input matInput min="0" [readonly]="readonly || (loading$ | async)" type="number" placeholder="Portion size" [(ngModel)]="product.portionInGrams" (input)="roundValue()">
                 <span matTextSuffix>g</span>
               </mat-form-field>

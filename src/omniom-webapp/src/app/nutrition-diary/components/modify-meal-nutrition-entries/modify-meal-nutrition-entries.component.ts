@@ -55,7 +55,8 @@ export class ModifyMealNutritionEntriesComponent {
 
 
   onProductsConfirmed() {
-    const entries = this.products.map(p => ({ guid: p.guid, type: p.type, portionSize: p.portionInGrams }));
+    const roundPortionSizeToTwoDecimalPlaces = (portionSize: number) => Math.round(portionSize * 100) / 100;
+    const entries = this.products.map(p => ({ guid: p.guid, type: p.type, portionSize: roundPortionSizeToTwoDecimalPlaces(p.portionInGrams) }));
     const selectedDay = this.store.selectSnapshot(NutritionDiaryStore.selectedNutritionDay);
     if (selectedDay === undefined || selectedDay === null) {
       console.error('Selected day is undefined');
@@ -70,7 +71,7 @@ export class ModifyMealNutritionEntriesComponent {
   onProductListModified(event: ProductListChangedEvent) {
     const productSelected = event.itemType === CatalogueItemType.Product;
     if (event.type === 'selected') {
-      if (event.itemType === CatalogueItemType.Product) {
+      if (productSelected) {
         const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
         if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
           return;
@@ -83,12 +84,12 @@ export class ModifyMealNutritionEntriesComponent {
         if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
           return;
 
-        this.products.push(productInfo);
+
+        this.products.push(new CatalogueItem(productInfo.name, CatalogueItemType.Meal, productInfo.guid, productInfo.portionInGrams, productInfo.kcalPer100g, productInfo.proteinsPer100g, productInfo.fatsPer100g, productInfo.carbohydratesPer100g));
         return;
       }
     }
     if (productSelected) {
-     
       const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
       if (productIndex === -1)
         return;

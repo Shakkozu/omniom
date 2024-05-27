@@ -21,17 +21,4 @@ public class DiaryEntry
     public DateTime DateTime { get; set; }
     public Guid? UserMealId { get; internal set; }
     public string? UserMealName { get; internal set; }
-
-    internal void ModifyPortion(int portionInGrams, ProductDetailsDescription productData)
-    {
-        var portionSizeRatio = portionInGrams / 100;
-        PortionInGrams = portionInGrams;
-        Calories = productData.KcalPer100G * portionSizeRatio;
-        Fats = productData.FatPer100G * portionSizeRatio;
-        Proteins = productData.ProteinsPer100G * portionSizeRatio;
-        Carbohydrates = productData.CarbsPer100G * portionSizeRatio;
-        SaturatedFats = productData.SaturatedFatPer100G.HasValue ? productData.SaturatedFatPer100G * portionSizeRatio : default;
-        Sugars = productData.SugarsPer100G.HasValue ? productData.SugarsPer100G * portionSizeRatio : default;
-        ProductName = productData.Name;
-    }
 }

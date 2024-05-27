@@ -58,21 +58,21 @@ public class SaveMealNutritionEntriesCommandHandler : ICommandHandler<SaveMealNu
     {
         var products = await _findProductByIdQueryHandler.HandleAsync(new FindMultipleByIdQuery(command.MealEntries.Select(p => p.Guid)), ct);
         var mealCatalogueItems = await _getUserMealsQueryHandler.HandleAsync(new GetUserMealsQuery(command.UserId), ct);
-        var previousEntries = _dbContext.DiaryEntries.Where(x =>
-        x.UserId == command.UserId &&
-        x.DateTime == command.SelectedDay.ToUniversalTime().Date
-        && x.Meal == command.MealType);
+        var previousEntries = _dbContext.DiaryEntries
+            .Where(x =>
+                x.UserId == command.UserId &&
+                x.DateTime == command.SelectedDay.ToUniversalTime().Date &&
+                x.Meal == command.MealType);
         _dbContext.DiaryEntries.RemoveRange(previousEntries);
 
         var result = new List<DiaryEntry>();
         foreach (var entry in command.MealEntries)
         {
+            var portion = entry.PortionSize;
+            var portionSizeRatio = (decimal)portion / 100;
             if (entry.CatalogueItemType == CatalogueItemType.Product)
             {
-
                 var productDetails = products.Single(p => p.Guid == entry.Guid);
-                var portion = entry.PortionSize;
-                var portionSizeRatio = (decimal)portion / 100;
                 result.Add(new DiaryEntry
                 {
                     UserId = command.UserId,
@@ -93,8 +93,6 @@ public class SaveMealNutritionEntriesCommandHandler : ICommandHandler<SaveMealNu
             else
             {
                 var meal = mealCatalogueItems.Single(m => m.Guid == entry.Guid);
-                var portion = entry.PortionSize;
-                var portionSizeRatio = (decimal)portion / meal.PortionInGrams;
                 result.Add(new DiaryEntry
                 {
                     UserId = command.UserId,
@@ -113,7 +111,6 @@ public class SaveMealNutritionEntriesCommandHandler : ICommandHandler<SaveMealNu
                 });
             }
         }
-
 
         await _dbContext.DiaryEntries.AddRangeAsync(result, ct);
     }

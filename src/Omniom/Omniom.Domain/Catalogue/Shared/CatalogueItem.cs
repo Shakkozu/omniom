@@ -7,7 +7,7 @@ public interface ICatalogueItem
     Guid Guid { get; set; }
     string Name { get; set; }
     string Type { get; }
-    decimal PortionInGrams { get; set; }
+    int PortionInGrams { get; set; }
     decimal KcalPer100G { get; set; }
     decimal ProteinsPer100G { get; set; }
     decimal FatsPer100G { get; set; }
@@ -23,7 +23,7 @@ public abstract class BaseCatalogueItem : ICatalogueItem
     public Guid Guid { get; set; }
     public string Name { get; set; }
     public abstract string Type { get; }
-    public decimal PortionInGrams { get; set; }
+    public int PortionInGrams { get; set; }
     public decimal KcalPer100G { get; set; }
     public decimal ProteinsPer100G { get; set; }
     public decimal FatsPer100G { get; set; }
@@ -60,21 +60,21 @@ public class MealCatalogueItem : BaseCatalogueItem
         }
 
         // Calculate per portion values
-        KcalPerPortion = totalKcal / meal.Portions;
-        ProteinsPerPortion = totalProteins / meal.Portions;
-        FatsPerPortion = totalFats / meal.Portions;
+        KcalPerPortion = Math.Round(totalKcal / meal.Portions, 1);
+        ProteinsPerPortion = Math.Round(totalProteins / meal.Portions, 1);
+        FatsPerPortion = Math.Round(totalFats / meal.Portions, 1);
         CarbohydratesPerPortion = totalCarbohydrates / meal.Portions;
 
         // Calculate per 100g values
-        KcalPer100G = (totalKcal / totalWeight) * 100m;
-        ProteinsPer100G = (totalProteins / totalWeight) * 100m;
-        FatsPer100G = (totalFats / totalWeight) * 100m;
-        CarbohydratesPer100G = (totalCarbohydrates / totalWeight) * 100m;
+        KcalPer100G = Math.Round((totalKcal / totalWeight) * 100m, 1);
+        ProteinsPer100G = Math.Round((totalProteins / totalWeight) * 100m, 1);
+        FatsPer100G = Math.Round((totalFats / totalWeight) * 100m, 1);
+        CarbohydratesPer100G = Math.Round((totalCarbohydrates / totalWeight) * 100m, 1);
 
         Description = meal.Description;
         Recipe = meal.Recipe;
         Portions = meal.Portions;
-        PortionInGrams = totalWeight / Portions;
+        PortionInGrams = (int)Math.Round(totalWeight / Portions);
         Ingredients = meal.Ingredients;
     }
 
