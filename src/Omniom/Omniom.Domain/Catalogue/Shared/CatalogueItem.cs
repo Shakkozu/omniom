@@ -36,6 +36,10 @@ public abstract class BaseCatalogueItem : ICatalogueItem
 
 public class MealCatalogueItem : BaseCatalogueItem
 {
+    public MealCatalogueItem()
+    {
+        // required for deserialization
+    }
     public MealCatalogueItem(Meal meal)
     {
         Guid = meal.Guid;

@@ -29,7 +29,7 @@ internal class CreatingMealsIntegrationTests : BaseIntegrationTestsFixture
             createdMeal.Name.Should().Be(meal.Name);
             createdMeal.Description.Should().Be(meal.Description);
             createdMeal.Portions.Should().Be(meal.Portions);
-            createdMeal.PortionInGrams.Should().Be(meal.Ingredients.Sum(i => i.PortionInGrams) / meal.Portions);
+            createdMeal.PortionInGrams.Should().Be((int)(meal.Ingredients.Sum(i => i.PortionInGrams) / meal.Portions));
             createdMeal.Ingredients.Should().BeEquivalentTo(meal.Ingredients);
             createdMeal.KcalPer100G.Should().Be(meal.Ingredients.Sum(x => x.KcalPer100G));
             createdMeal.ProteinsPer100G.Should().Be(meal.Ingredients.Sum(x => x.ProteinsPer100G));
