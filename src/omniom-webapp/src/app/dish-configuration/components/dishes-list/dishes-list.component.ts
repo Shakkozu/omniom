@@ -10,6 +10,7 @@ import { ProductListChangedEvent as CatalogueItemListChangedEvent } from '../../
 import { CatalogueItem, CatalogueItemType } from '../../../products/model';
 import { MatDialog } from '@angular/material/dialog';
 import { DishDetailsComponent } from '../dish-details/dish-details.component';
+import { NewDishDialogComponent } from '../new-dish-dialog/new-dish-dialog.component';
 
 @Component({
   selector: 'app-dishes-list',
@@ -22,11 +23,13 @@ import { DishDetailsComponent } from '../dish-details/dish-details.component';
   styleUrl: './dishes-list.component.scss'
 })
 export class DishesListComponent {
+
   addButtonEnabled: any;
   public dishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.dishes);
   public selectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.selectedDishes);
   public notSelectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.dishesWithoutSelection);
   @Input() selectionList: boolean = false;
+  @Input() addNewDishButtonEnabled: boolean = false;
   @ViewChild(MatSelectionList) selectedDishesList!: MatSelectionList;
   @ViewChild(MatSelectionList) notSelectedDishesList!: MatSelectionList;
 
@@ -50,6 +53,16 @@ export class DishesListComponent {
 
     this.store.dispatch(new DishSelected(dishId));
     this.dishListChanged.emit({ type: 'selected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal});
+  }
+
+  onAddNewDishButtonClicked() {
+    this.matDialog.open(NewDishDialogComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: {
+        products: []
+      }
+    });
   }
 
   dishDeselected($event: MatSelectionListChange) {

@@ -1,3 +1,8 @@
+<div class="row my-4">
+  <ng-container *ngIf="addNewDishButtonEnabled">
+    <button mat-flat-button color="primary" (click)="onAddNewDishButtonClicked()">Dodaj</button>
+  </ng-container>
+</div>
 <mat-list *ngIf="!selectionList">
   <mat-card>
     <ng-container *ngFor="let dish of dishes$ | async; let last = last;">
@@ -5,7 +10,7 @@
         <mat-list-item class="bg-white rounded-lg">
           <span matListItemTitle>{{dish.name}}</span>
           <div matListItemMeta>
-            <span class="text-label-large">{{dish.kcal}} kcal / porcję ({{dish.portionInGrams}}g)</span>
+            <span class="text-label-large">{{dish.kcal.toFixed(0)}} kcal / porcję ({{dish.portionInGrams.toFixed(0)}}g)</span>
             <button matIconPrefix (click)="showDishDetails(dish)" class="pt-4" mat-icon-button
               color="primary" aria-label="">
               <mat-icon class="mt-1">visibility</mat-icon>
@@ -26,7 +31,7 @@
         <div class="item-container py-2">
           <mat-list-option value="{{dish.guid}}" class="bg-white rounded-lg" selected>
             <span matListItemTitle>{{dish.name}}</span>
-            <span matListItemLine class="text-label-large">{{dish.kcal}} kcal / porcję ({{dish.portionInGrams}}g)</span>
+            <span matListItemLine class="text-label-large">{{dish.kcal.toFixed(0)}} kcal / porcję ({{dish.portionInGrams.toFixed(0)}}g)</span>
           </mat-list-option>
           <div class="w-11/12 mx-auto" *ngIf="!last">
             <mat-divider></mat-divider>
@@ -41,7 +46,7 @@
         <div class="item-container py-2">
           <mat-list-option value="{{dish.guid}}" class="bg-white rounded-lg">
             <span matListItemTitle>{{dish.name}}</span>
-            <span matListItemLine class="text-label-large">{{dish.kcal}} kcal / porcję ({{dish.portionInGrams}}g)</span>
+            <span matListItemLine class="text-label-large">{{dish.kcal.toFixed(0)}} kcal / porcję ({{dish.portionInGrams.toFixed(0)}}g)</span>
           </mat-list-option>
           <div class="w-11/12 mx-auto" *ngIf="!last">
             <mat-divider></mat-divider>

@@ -23,6 +23,7 @@ import { CatalogueItem } from '../../model';
   </app-products-list>
   <app-dishes-list *ngIf="!onlyProducts && selectedProductType === 'Dish'"
   [selectionList]="selectionList"
+  [addNewDishButtonEnabled]="addNewDishButtonEnabled"
   (dishListChanged)="dishListChanged.emit($event)"
   >
 </app-dishes-list>
@@ -32,6 +33,7 @@ export class ProductsCatalogueComponent implements OnInit {
   private searchUpdated: Subject<string> = new Subject<string>();
   @ViewChild('searchBar') searchBar!: SearchBarComponent;
   @Input() addButtonEnabled: boolean = false;
+  @Input() addNewDishButtonEnabled: boolean = false;
   @Input() onlyProducts: boolean = false;
   @Input() selectionList: boolean = false;  
   @Output() addProductButtonClicked: EventEmitter<CatalogueItem> = new EventEmitter<CatalogueItem>();

@@ -7,7 +7,7 @@ import { CatalogueItem } from '../../model';
   selector: 'app-products-list-page',
   template: `
 <div class="container w-1/4">
-	<app-products-catalogue></app-products-catalogue>
+	<app-products-catalogue [addNewDishButtonEnabled]="true"></app-products-catalogue>
 </div>`,
 })
 export class ProductsListPageComponent implements OnInit {

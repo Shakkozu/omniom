@@ -10,7 +10,7 @@ import { CatalogueItem, CatalogueItemType, MealEntry } from '../../model';
               <mat-list-item class="">
                 <button matListItemAvatar mat-icon-button><mat-icon>{{catalogueItemIcon}}</mat-icon></button>
                 <span matListItemTitle>{{ product.name }}</span>
-                <span matListItemLine>{{product.kcal }}kcal  B: {{product.proteins}}g T: {{product.fats}}g W:{{product.carbohydrates}}g</span>
+                <span matListItemLine>{{product.kcal.toFixed(0) }}kcal  B: {{product.proteins}}g T: {{product.fats}}g W:{{product.carbohydrates}}g</span>
               </mat-list-item>
             </div>
             <div class="w-2/6">
