@@ -140,3 +140,8 @@ export class NewDishDialogComponent implements OnDestroy {
     this.store.dispatch(new CleanupExcludedList());
   }
 }
+
+export interface NewDishDialogConfiguration {
+  products: CatalogueItem[];
+  createNewDishOnSave: boolean;
+}

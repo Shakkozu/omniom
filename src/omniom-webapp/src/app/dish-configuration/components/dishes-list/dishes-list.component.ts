@@ -10,7 +10,7 @@ import { ProductListChangedEvent as CatalogueItemListChangedEvent } from '../../
 import { CatalogueItem, CatalogueItemType } from '../../../products/model';
 import { MatDialog } from '@angular/material/dialog';
 import { DishDetailsComponent } from '../dish-details/dish-details.component';
-import { NewDishDialogComponent } from '../new-dish-dialog/new-dish-dialog.component';
+import { NewDishDialogComponent, NewDishDialogConfiguration } from '../new-dish-dialog/new-dish-dialog.component';
 
 @Component({
   selector: 'app-dishes-list',
@@ -56,12 +56,14 @@ export class DishesListComponent {
   }
 
   onAddNewDishButtonClicked() {
+    const config: NewDishDialogConfiguration = {
+      products: [],
+      createNewDishOnSave: true
+    };
     this.matDialog.open(NewDishDialogComponent, {
       width: '70vw',
       height: '80vh',
-      data: {
-        products: []
-      }
+      data: config
     });
   }
 

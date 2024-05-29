@@ -9,7 +9,7 @@ import {  ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-e
 import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileStore } from '../../../user-profile/store/user-profile.store';
-import { NewDishDialogComponent } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
+import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { ProductCatalogueItem } from '../../../products/model';
 
 @Component({
@@ -156,12 +156,14 @@ export class MealDetailsComponent implements OnDestroy {
   public createNewDish(mealEntries: NutritionDiaryEntry[]) {
     const products = mealEntries.filter(entry => entry.productId !== null && entry.productId !== undefined)
       .map(entry => new ProductCatalogueItem(entry.productName, entry.productId, entry.portionInGrams, entry.calories, entry.proteins, entry.fats, entry.carbohydrates));
+    const config: NewDishDialogConfiguration = {
+      products: products,
+      createNewDishOnSave: true
+    };
     this.matDialog.open(NewDishDialogComponent, {
       width: '70vw',
       height: '80vh',
-      data: {
-        products: products
-      }
+      data: config
     });
   }
 }
