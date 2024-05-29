@@ -85,17 +85,16 @@ export class NewDishDialogComponent implements OnDestroy {
     private fb: FormBuilder,
     private store: Store,
     private formErrorHandler: FormErrorHandler,
-    @Inject(MAT_DIALOG_DATA) public data: {
-      products: CatalogueItem[]
-    }) {
-      this.form = this.fb.group({
-        name: ['', [Validators.required, Validators.minLength(3)]],
-        portions: [1, [Validators.min(1), Validators.max(100), Validators.required]],
-        recipe: [''],
-        description: [''],
-      });
+    @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      portions: [1, [Validators.min(1), Validators.max(100), Validators.required]],
+      recipe: [''],
+      description: [''],
+    });
     this.products = data.products;
   }
+
 
   public productAddedToMealDiary(selectedProduct: CatalogueItem) {
     if (!selectedProduct)
@@ -116,7 +115,7 @@ export class NewDishDialogComponent implements OnDestroy {
       return;
     if (this.products.length < 1)
       return;
-      
+
 
     const dish: Dish = {
       name: this.form.value.name,
@@ -127,8 +126,10 @@ export class NewDishDialogComponent implements OnDestroy {
       ingredients: this.products.map(p => p.toProductCatalogueItem())
     };
 
-    this.store.dispatch(new CreateDish(dish));
-    this.dialogRef.close();
+    if (this.data.createNewDishOnSave) {
+      this.store.dispatch(new CreateDish(dish));
+    }
+    this.dialogRef.close(dish);
   }
 
   public getErrorMessage(formControlName: string): string {
