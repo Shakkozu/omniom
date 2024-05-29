@@ -3,7 +3,7 @@ import { UserProfileStore } from '../../store/user-profile.store';
 import { Store } from '@ngxs/store';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
-import { FetchUserProfileConfiguration, UpdateNutritionTargetsConfiguration } from '../../store/user-profile.actions';
+import { UpdateNutritionTargetsConfiguration } from '../../store/user-profile.actions';
 import { NutritionTargetsConfiguration } from '../../model';
 
 @Component({

@@ -1,0 +1,89 @@
+<mat-card class="p-4">
+	<mat-card-title>Konfiguracja Jadłospisu</mat-card-title>
+	<mat-card-content>
+		<form [formGroup]="mealPlanForm" >
+			<mat-form-field class="px-4" appearance="fill">
+				<mat-label>Nazwa Jadłospisu</mat-label>
+				<input matInput formControlName="mealPlanName">
+			</mat-form-field>
+
+			<mat-form-field class="px-4" appearance="fill">
+				<mat-label>Kalorie</mat-label>
+				<input matInput type="number" formControlName="dailyCalories">
+			</mat-form-field>
+
+			<mat-form-field class="px-4" appearance="fill" disabled>
+				<mat-label>Liczba Obowiązujących Dni</mat-label>
+				<input matInput value="7" readonly>
+			</mat-form-field>
+		</form>
+
+		<mat-accordion>
+			<ng-container *ngFor="let day of mealPlan.days">
+				<mat-expansion-panel>
+					<mat-expansion-panel-header>
+						<mat-panel-title>
+							Dzień {{ day.dayNumber }}
+						</mat-panel-title>
+					</mat-expansion-panel-header>
+
+					<div class="flex flex-wrap">
+						<ng-container class="" *ngFor="let meal of meals">
+							<div class="flex-1 border-r-2 border-l-2">
+								<div class="flex items-left mb-4 pt-3 justify-center border-b-2">
+									<h3 class="p-2">{{ getMealTypeTranslation(meal) }}</h3>
+									<div class="example-button-container">
+										<button (click)="openProductDialog(day.dayNumber, meal)" mat-mini-fab
+											color="primary">
+											<mat-icon>add</mat-icon>
+										</button>
+									</div>
+								</div>
+								<mat-list>
+									<mat-list-item *ngFor="let product of getProductsForMeal(day.dayNumber, meal)"
+										class="bg-white rounded-lg">
+										<span matListItemTitle>{{product.name}}</span>
+										<span matListItemLine>{{product.portionInGrams}}g</span>
+										<div matListItemMeta>
+											<div class="inline-grid">
+												<span class="text-label-large">{{product.kcal}} kcal</span>
+												<span class="text-label-large">B: {{product.proteins}}g / T:
+													{{product.fats}}g / W: {{product.carbohydrates}}g </span>
+
+											</div>
+										</div>
+										<mat-divider></mat-divider>
+									</mat-list-item>
+								</mat-list>
+							</div>
+						</ng-container>
+					</div>
+				</mat-expansion-panel>
+			</ng-container>
+		</mat-accordion>
+	</mat-card-content>
+	<mat-card-actions>
+		<button mat-raised-button color="primary" (click)="saveMealPlan()">Zapisz Jadłospis</button>
+	</mat-card-actions>
+</mat-card>
+
+<ng-template #productDialog>
+	<h2 mat-dialog-title>Dodaj Produkt</h2>
+	<mat-dialog-content>
+		<mat-form-field appearance="fill">
+			<mat-label>Produkt</mat-label>
+			<mat-select [(value)]="selectedProduct">
+				<mat-option *ngFor="let product of products" [value]="product">{{ product.name }}</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<mat-form-field appearance="fill">
+			<mat-label>Ilość (g)</mat-label>
+			<input matInput type="number" [(ngModel)]="productQuantity">
+		</mat-form-field>
+	</mat-dialog-content>
+	<mat-dialog-actions>
+		<button mat-button>Dodaj</button>
+		<button mat-button mat-dialog-close>Anuluj</button>
+	</mat-dialog-actions>
+</ng-template>

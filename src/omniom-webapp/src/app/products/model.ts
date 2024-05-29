@@ -80,10 +80,10 @@ export class CatalogueItem {
 			CatalogueItemType.Meal,
 			dish.guid,
 			dish.portions,
-			dish.kcalPerPortion,
-			dish.proteinsGramsPerPortion,
-			dish.fatsGramsPerPortion,
-			dish.carbsGramsPerPortion);
+			(dish.kcalPerPortion / dish.portions) * 100,
+			(dish.proteinsGramsPerPortion / dish.portions) * 100,
+			(dish.fatsGramsPerPortion / dish.portions) * 100,
+			(dish.carbsGramsPerPortion / dish.portions) * 100);
 	}
 
 	get kcal(): number {

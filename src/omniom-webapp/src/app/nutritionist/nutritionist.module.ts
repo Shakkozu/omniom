@@ -14,6 +14,7 @@ import { AdminVerificationPage } from './pages/admin-verification-page/admin-ver
 import { VerificationRequestDetailsComponent } from './components/verification-request-details/verification-request-details.component';
 import { RejectVerificationRequestDialogComponent } from './components/reject-verification-request-dialog/reject-verification-request-dialog.component';
 import { CreateVerificationRequestComponent } from './components/create-verification-request/create-verification-request.component';
+import { MealPlanConfiguratorComponent } from './components/meal-plan-configurator/meal-plan-configurator.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { CreateVerificationRequestComponent } from './components/create-verifica
     AdminVerificationPage,
     VerificationRequestDetailsComponent,
     RejectVerificationRequestDialogComponent,
-    CreateVerificationRequestComponent
+    CreateVerificationRequestComponent,
+    MealPlanConfiguratorComponent
   ],
   imports: [
     NgxsModule.forFeature([

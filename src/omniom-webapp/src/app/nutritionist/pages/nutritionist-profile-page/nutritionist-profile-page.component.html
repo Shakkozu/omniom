@@ -1,8 +1,13 @@
 
 
 <div class="flex" >
-	<div style="flex: 0.5; height: 90vh;">
+	<div style="flex: 0.3; height: 90vh;">
 		<app-profile-details *ngIf="userIsRegisteredAsNutritionist$ | async"></app-profile-details>
 		<app-registration-page *ngIf="!(userIsRegisteredAsNutritionist$ | async)"></app-registration-page>
+	</div>
+	<div class="mx-4"></div>
+	<div style="flex: 0.5; height: 90vh;">
+		<button mat-raised-button color="primary" (click)="addNewMealPlan()">Dodaj jadłospis</button>
+		<!-- <app-meal-plan-configurator></app-meal-plan-configurator> -->
 	</div>
 </div>
