@@ -155,7 +155,8 @@ export class MealPlanConfiguratorComponent implements OnInit {
     }
 
     const config: ModifyDishDialogConfiguration = {
-      dishDetails: mealDetails.product
+      dishDetails: mealDetails.product,
+      singlePortion: true
     };
     const modifyRef = this.dialog.open(ModifyDishDialogComponent, {
       width: '70vw',

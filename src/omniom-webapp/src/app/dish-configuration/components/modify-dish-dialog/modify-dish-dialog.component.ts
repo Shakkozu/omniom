@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngxs/store';
-import { NewDishDialogConfiguration } from '../new-dish-dialog/new-dish-dialog.component';
 import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
 import { Dish } from '../../model';
 import { DishFormComponent } from '../dish-form/dish-form.component';
@@ -24,7 +22,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 <div class="dialog-content flex flex-col p-6">
   <div class="flex">
     <div class="flex flex-col w-1/2 p-4 mr-4 bg-white rounded-2xl shadow-xl">
-      <app-dish-form [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
+      <app-dish-form [singlePortion]="this.data.singlePortion ?? false" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
     </div>
 
     <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
@@ -40,7 +38,6 @@ export class ModifyDishDialogComponent implements AfterViewInit {
   public meal: MealCatalogueItem;
   constructor (
     public dialogRef: MatDialogRef<ModifyDishDialogComponent>,
-    private store: Store,
     @Inject(MAT_DIALOG_DATA) public data: ModifyDishDialogConfiguration) {
     this.meal = this.data.dishDetails;
     this.products = this.meal.ingredients; 
@@ -62,4 +59,5 @@ export class ModifyDishDialogComponent implements AfterViewInit {
 
 export interface ModifyDishDialogConfiguration {
   dishDetails: MealCatalogueItem;
+  singlePortion?: boolean;
 }
