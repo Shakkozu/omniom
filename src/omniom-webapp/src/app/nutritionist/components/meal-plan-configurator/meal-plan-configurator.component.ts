@@ -7,8 +7,10 @@ import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model
 import { v4 as uuidv4 } from 'uuid';
 import { ModifyDishDialogComponent, ModifyDishDialogConfiguration } from '../../../dish-configuration/components/modify-dish-dialog/modify-dish-dialog.component';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
-import { DaySummary, MealPlan, MealPlanDay, MealPlanProduct } from '../../model';
+import { DaySummary, MealPlan, MealPlanDay, MealPlanProduct, MealPlanStatus } from '../../model';
 import { MealType } from '../../../nutrition-diary/model';
+import { Store } from '@ngxs/store';
+import { SaveMealPlanAsDraft } from '../../store/meal-plan-configuration.actions';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -22,6 +24,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
   public meals: any[] = [MealType.Breakfast, MealType.Dinner, MealType.Snack, MealType.Supper]; // todo allow nutritionist to configure daily meals
 
   constructor (private fb: FormBuilder,
+    private store: Store,
     private formErrorHandler: FormErrorHandler,
     public dialog: MatDialog) {
     this.mealPlanForm = this.fb.group({
@@ -32,6 +35,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
   ngOnInit(): void {
     this.mealPlan = {
       name: '',
+      status: MealPlanStatus.Draft,
       dailyCalories: 0,
       days: this.initializeDays(),
       guid: uuidv4()
@@ -253,12 +257,14 @@ export class MealPlanConfiguratorComponent implements OnInit {
     mealPlanMeal.products.splice(mealPlanProductIndex, 1);    
   }
 
-  saveMealPlan() {
+  saveMealPlanAsDraft() {
     const isValid = this.validateMealPlan();
     if (!isValid) {
       console.error('[MealPlanConfigurator] Meal plan is invalid');
       return;
     }
+
+    this.store.dispatch(new SaveMealPlanAsDraft(this.mealPlan));
   }
   
   public validateMealPlan(): boolean {

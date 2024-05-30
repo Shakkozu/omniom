@@ -3,6 +3,7 @@ import { MealCatalogueItem } from "../products/model";
 
 export interface MealPlan {
 	name: string;
+	status: MealPlanStatus,
 	dailyCalories: number;
 	days: MealPlanDay[];
 	guid: string;
@@ -29,4 +30,11 @@ export interface DaySummary {
 	totalProteins: string;
 	totalFats: string;
 	totalCarbs: string;
+}
+
+
+export enum MealPlanStatus {
+	Active = 'Active',
+	Draft = 'Draft',
+	Archived = 'Archived'
 }

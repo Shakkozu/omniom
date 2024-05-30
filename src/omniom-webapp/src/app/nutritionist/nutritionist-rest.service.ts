@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Injectable } from "@angular/core";
-import { Observable, forkJoin, from, map, of, switchMap } from "rxjs";
+import { Observable } from "rxjs";
 import { NutritionistProfile } from "./store/nutritionist.store";
 import { CreateVerificationRequest } from "./store/nutritionist.actions";
-import { CreateVerificationRequestComponent } from "./components/create-verification-request/create-verification-request.component";
+
 
 @Injectable({
 	providedIn: 'root',
