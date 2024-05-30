@@ -20,33 +20,39 @@
 
 		<mat-accordion multi="true">
 			<ng-container *ngFor="let day of mealPlan.days">
-				<mat-expansion-panel [expanded]="true">
-					<mat-expansion-panel-header>
-						<mat-panel-title class="text-headline-small">
-							Dzień {{ day.dayNumber }}
-						</mat-panel-title>
-					</mat-expansion-panel-header>
+				<ng-container *ngIf="getDaySummary(day) as dayDetails">
+					<mat-expansion-panel [expanded]="true">
+						<mat-expansion-panel-header>
+							<mat-panel-title class="text-headline-small">
+								Dzień {{ day.dayNumber }}
+								<span class="text-title-medium ms-4">{{ dayDetails.totalCalories }} kcal,  B: {{ dayDetails.totalProteins }}g, T: {{ dayDetails.totalFats }}g, W: {{ dayDetails.totalCarbs }}g
+								</span>
+							</mat-panel-title>
+						</mat-expansion-panel-header>
 
-					<div class="flex flex-wrap">
-						<ng-container class="" *ngFor="let meal of meals">
-							<div class="flex-1 border-r-2 border-l-2">
-								<div class="flex items-left mb-4 pt-3 justify-center border-b-2">
-									<h3 class="p-2">{{ getMealTypeTranslation(meal) }}</h3>
-									<div class="example-button-container">
-										<button (click)="openProductDialog(day.dayNumber, meal)" mat-mini-fab
-											color="primary">
-											<mat-icon>add</mat-icon>
-										</button>
+						<div class="flex flex-wrap">
+							<ng-container class="" *ngFor="let meal of meals">
+								<div class="flex-1 border-r-2 border-l-2">
+									<div class="flex items-left mb-4 pt-3 justify-center border-b-2">
+										<h3 class="p-2">{{ getMealTypeTranslation(meal) }}</h3>
+										<div class="example-button-container">
+											<button (click)="openProductDialog(day.dayNumber, meal)" mat-mini-fab
+												color="primary">
+												<mat-icon>add</mat-icon>
+											</button>
+										</div>
 									</div>
-								</div>
-								<mat-list>
-									<mat-list-item *ngFor="let mealProduct of getProductsForMeal(day.dayNumber, meal)"
-										class="bg-white rounded-lg">
-										<span matListItemTitle>{{mealProduct.product.name}} </span>
-										<span matListItemLine class="text-label-large">B: {{mealProduct.product.proteins}}g / T:
-											{{mealProduct.product.fats}}g / W: {{mealProduct.product.carbohydrates}}g </span>
-										<span matListItemLine>{{mealProduct.product.kcal}} kcal</span>
-										<div matListItemMeta>
+									<mat-list>
+										<mat-list-item
+											*ngFor="let mealProduct of getProductsForMeal(day.dayNumber, meal)"
+											class="bg-white rounded-lg">
+											<span matListItemTitle>{{mealProduct.product.name}} </span>
+											<span matListItemLine class="text-label-large">B:
+												{{mealProduct.product.proteins}}g / T:
+												{{mealProduct.product.fats}}g / W:
+												{{mealProduct.product.carbohydrates}}g </span>
+											<span matListItemLine>{{mealProduct.product.kcal}} kcal</span>
+											<div matListItemMeta>
 												<button (click)="modifyMeal(mealProduct.guid)" mat-icon-button
 													color="primary">
 													<mat-icon>edit</mat-icon>
@@ -55,21 +61,23 @@
 													color="primary">
 													<mat-icon>delete</mat-icon>
 												</button>
-										</div>
-										<mat-divider></mat-divider>
-									</mat-list-item>
-									<ng-container *ngIf="getProductsForMeal(day.dayNumber, meal).length === 0">
-										<mat-list-item>
-											<mat-icon matListItemIcon style="color: red" color="warn"
-												class="mt-2">info</mat-icon>
-											<span matListItemTitle>Brak produktów</span>
+											</div>
+											<mat-divider></mat-divider>
 										</mat-list-item>
-									</ng-container>
-								</mat-list>
-							</div>
-						</ng-container>
-					</div>
-				</mat-expansion-panel>
+										<ng-container *ngIf="getProductsForMeal(day.dayNumber, meal).length === 0">
+											<mat-list-item>
+												<mat-icon matListItemIcon style="color: red" color="warn"
+													class="mt-2">info</mat-icon>
+												<span matListItemTitle>Brak produktów</span>
+											</mat-list-item>
+										</ng-container>
+									</mat-list>
+								</div>
+							</ng-container>
+
+						</div>
+					</mat-expansion-panel>
+				</ng-container>
 			</ng-container>
 		</mat-accordion>
 	</mat-card-content>

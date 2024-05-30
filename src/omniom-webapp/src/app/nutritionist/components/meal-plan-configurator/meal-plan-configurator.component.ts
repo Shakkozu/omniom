@@ -84,6 +84,33 @@ export class MealPlanConfiguratorComponent implements OnInit {
       });
     });
     return days;
+  }
+
+  getDaySummary(day: MealPlanDay): DaySummary {
+    const mealPlanDay = this.mealPlan.days.find(d => d.dayNumber === day.dayNumber);
+    if (!mealPlanDay) {
+      return {
+        dayNumber: day.dayNumber,
+        totalCalories: '0',
+        totalProteins: '0',
+        totalFats: '0',
+        totalCarbs: '0'
+      };
+    }
+
+    const totalCalories = mealPlanDay.meals.flatMap(m => m.products).reduce((acc, p) => acc + p.product.kcal, 0);
+    const totalProteins = mealPlanDay.meals.flatMap(m => m.products).reduce((acc, p) => acc + p.product.proteins, 0);
+    const totalFats = mealPlanDay.meals.flatMap(m => m.products).reduce((acc, p) => acc + p.product.fats, 0);
+    const totalCarbs = mealPlanDay.meals.flatMap(m => m.products).reduce((acc, p) => acc + p.product.carbohydrates, 0);
+
+    return {
+      dayNumber: day.dayNumber,
+      totalCalories: totalCalories.toFixed(0),
+      totalProteins: totalProteins.toFixed(1),
+      totalFats: totalFats.toFixed(1),
+      totalCarbs: totalCarbs.toFixed(1)
+    };
+
 
   }
 
@@ -220,7 +247,15 @@ export class MealPlanConfiguratorComponent implements OnInit {
   }
 
   saveMealPlan() {
-    // Logic to save the meal plan configuration
+    const isValid = this.validateMealPlan();
+    if (!isValid) {
+      console.error('[MealPlanConfigurator] Meal plan is invalid');
+      return;
+    }
+  }
+  
+  private validateMealPlan(): boolean {
+    return this.mealPlan.days.every(d => d.meals.every(m => m.products.length > 0));
   }
 }
 
@@ -245,4 +280,12 @@ export interface MealPlanMeal {
 export interface MealPlanProduct {
   product: MealCatalogueItem;
   guid: string;
+}
+
+export interface DaySummary {
+  dayNumber: number;
+  totalCalories: string;
+  totalProteins: string;
+  totalFats: string;
+  totalCarbs: string;
 }
