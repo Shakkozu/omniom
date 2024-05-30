@@ -77,24 +77,3 @@
 		<button mat-raised-button color="primary" (click)="saveMealPlan()">Zapisz Jadłospis</button>
 	</mat-card-actions>
 </mat-card>
-
-<ng-template #productDialog>
-	<h2 mat-dialog-title>Dodaj Produkt</h2>
-	<mat-dialog-content>
-		<mat-form-field appearance="fill">
-			<mat-label>Produkt</mat-label>
-			<mat-select [(value)]="selectedProduct">
-				<mat-option *ngFor="let product of products" [value]="product">{{ product.name }}</mat-option>
-			</mat-select>
-		</mat-form-field>
-
-		<mat-form-field appearance="fill">
-			<mat-label>Ilość (g)</mat-label>
-			<input matInput type="number" [(ngModel)]="productQuantity">
-		</mat-form-field>
-	</mat-dialog-content>
-	<mat-dialog-actions>
-		<button mat-button>Dodaj</button>
-		<button mat-button mat-dialog-close>Anuluj</button>
-	</mat-dialog-actions>
-</ng-template>

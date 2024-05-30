@@ -18,9 +18,6 @@ export class MealPlanConfiguratorComponent implements OnInit {
   public mealPlan!: MealPlan;
   days: number[] = [1, 2, 3, 4, 5, 6, 7];
   public meals: any[] = [MealType.Breakfast, MealType.Dinner, MealType.Snack, MealType.Supper]; // todo allow nutritionist to configure daily meals
-  public products: any[] = [{ name: 'Jabłko' }, { name: 'Banana' }, { name: 'Kurczak' }, { name: 'Ryż' }];
-  selectedProduct: any;
-  productQuantity: number = 0;
 
   constructor (private fb: FormBuilder, public dialog: MatDialog) {
     this.mealPlanForm = this.fb.group({
