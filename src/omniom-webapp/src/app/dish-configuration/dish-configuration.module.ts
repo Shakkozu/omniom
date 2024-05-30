@@ -6,11 +6,15 @@ import { MaterialModule } from '../material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductsModule } from '../products/products.module';
 import { DishDetailsComponent } from './components/dish-details/dish-details.component';
+import { ModifyDishDialogComponent } from './components/modify-dish-dialog/modify-dish-dialog.component';
+import { DishFormComponent } from './components/dish-form/dish-form.component';
 
 
 @NgModule({
   declarations: [
     NewDishDialogComponent,
+    ModifyDishDialogComponent,
+    DishFormComponent,
   ],
   imports: [
     CommonModule,

@@ -5,6 +5,7 @@ import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dis
 import { Dish } from '../../../dish-configuration/model';
 import { MealType } from '../../../nutrition-diary/model';
 import { CatalogueItem, CatalogueItemType, MealCatalogueItem } from '../../../products/model';
+import { v4 as uuidv4, v4 } from 'uuid';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -43,8 +44,18 @@ export class MealPlanConfiguratorComponent implements OnInit {
           {
             meal: MealType.Breakfast,
             products: [
-              new CatalogueItem('Jabłko', CatalogueItemType.Product, 'guid1', 100, 0.5, 10, 0.5, 50),
-              new CatalogueItem('Czekolada', CatalogueItemType.Product, 'guid2', 100, 0.5, 10, 0.5, 50),
+              {
+                product: new CatalogueItem('Owsianka Oreo', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
+              {
+                product: new CatalogueItem('Jabłko', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
+              {
+                product: new CatalogueItem('Czekolada', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
 
             ]
           },
@@ -58,7 +69,20 @@ export class MealPlanConfiguratorComponent implements OnInit {
           },
           {
             meal: MealType.Snack,
-            products: []
+            products: [
+              {
+                product: new CatalogueItem('Owsianka Oreo', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
+              {
+                product: new CatalogueItem('Jabłko', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
+              {
+                product: new CatalogueItem('Czekolada', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                guid: uuidv4()
+              },
+            ]
           },
           {
             meal: MealType.Supper,
@@ -70,6 +94,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
     return days;
 
   }
+
 
   getProductsForMeal(day: number, meal: any) {
     const mealPlanDay = this.mealPlan.days.find(d => d.dayNumber === day);
@@ -103,6 +128,10 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
   }
 
+  public modifyMeal(mealProductGuid: string) {
+
+  }
+
   openProductDialog(day: number, meal: any) {
     const config: NewDishDialogConfiguration = {
       products: [],
@@ -128,13 +157,17 @@ export class MealPlanConfiguratorComponent implements OnInit {
     }
 
     const mealPlanMeal = mealPlanDay.meals.find(m => m.meal === meal);
+    const mealPlanProduct: MealPlanProduct = {
+      product: MealCatalogueItem.fromDish(result),
+      guid: uuidv4()
+    }
     if (!mealPlanMeal) {
       mealPlanDay.meals.push({
         meal: meal,
-        products: [MealCatalogueItem.fromDish(result)]
+        products: [mealPlanProduct]
       });
     } else {
-      mealPlanMeal.products.push(MealCatalogueItem.fromDish(result));
+      mealPlanMeal.products.push(mealPlanProduct);
     }
 
 
@@ -160,5 +193,10 @@ export interface MealPlanDay {
 
 export interface MealPlanMeal {
   meal: MealType;
-  products: CatalogueItem[];
+  products: MealPlanProduct[];
+}
+
+export interface MealPlanProduct {
+  product: CatalogueItem;
+  guid: string;
 }

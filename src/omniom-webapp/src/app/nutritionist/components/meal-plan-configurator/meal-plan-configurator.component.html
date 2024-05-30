@@ -1,7 +1,7 @@
 <mat-card class="p-4">
 	<mat-card-title>Konfiguracja Jadłospisu</mat-card-title>
 	<mat-card-content>
-		<form [formGroup]="mealPlanForm" >
+		<form [formGroup]="mealPlanForm">
 			<mat-form-field class="px-4" appearance="fill">
 				<mat-label>Nazwa Jadłospisu</mat-label>
 				<input matInput formControlName="mealPlanName">
@@ -18,11 +18,11 @@
 			</mat-form-field>
 		</form>
 
-		<mat-accordion>
+		<mat-accordion multi="true">
 			<ng-container *ngFor="let day of mealPlan.days">
-				<mat-expansion-panel>
+				<mat-expansion-panel [expanded]="true">
 					<mat-expansion-panel-header>
-						<mat-panel-title>
+						<mat-panel-title class="text-headline-small">
 							Dzień {{ day.dayNumber }}
 						</mat-panel-title>
 					</mat-expansion-panel-header>
@@ -40,20 +40,31 @@
 									</div>
 								</div>
 								<mat-list>
-									<mat-list-item *ngFor="let product of getProductsForMeal(day.dayNumber, meal)"
+									<mat-list-item *ngFor="let mealProduct of getProductsForMeal(day.dayNumber, meal)"
 										class="bg-white rounded-lg">
-										<span matListItemTitle>{{product.name}}</span>
-										<span matListItemLine>{{product.portionInGrams}}g</span>
+										<span matListItemTitle>{{mealProduct.product.name}} {{mealProduct.product.kcal}} kcal</span>
+										<span matListItemLine class="text-label-large">B: {{mealProduct.product.proteins}}g / T:
+											{{mealProduct.product.fats}}g / W: {{mealProduct.product.carbohydrates}}g </span>
+										<span matListItemLine>{{mealProduct.product.portionInGrams}}g</span>
 										<div matListItemMeta>
-											<div class="inline-grid">
-												<span class="text-label-large">{{product.kcal}} kcal</span>
-												<span class="text-label-large">B: {{product.proteins}}g / T:
-													{{product.fats}}g / W: {{product.carbohydrates}}g </span>
-
-											</div>
+												<button (click)="modifyMeal(mealProduct.guid)" mat-icon-button
+													color="primary">
+													<mat-icon>edit</mat-icon>
+												</button>
+												<button mat-icon-button
+													color="primary">
+													<mat-icon>delete</mat-icon>
+												</button>
 										</div>
 										<mat-divider></mat-divider>
 									</mat-list-item>
+									<ng-container *ngIf="getProductsForMeal(day.dayNumber, meal).length === 0">
+										<mat-list-item>
+											<mat-icon matListItemIcon style="color: red" color="warn"
+												class="mt-2">info</mat-icon>
+											<span matListItemTitle>Brak produktów</span>
+										</mat-list-item>
+									</ng-container>
 								</mat-list>
 							</div>
 						</ng-container>
