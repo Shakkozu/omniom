@@ -3,11 +3,12 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { Dish } from '../../../dish-configuration/model';
-import { MealType } from '../../../nutrition-diary/model';
 import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model';
 import { v4 as uuidv4 } from 'uuid';
 import { ModifyDishDialogComponent, ModifyDishDialogConfiguration } from '../../../dish-configuration/components/modify-dish-dialog/modify-dish-dialog.component';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
+import { DaySummary, MealPlan, MealPlanDay, MealPlanProduct } from '../../model';
+import { MealType } from '../../../nutrition-diary/model';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -271,32 +272,3 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
 
 
-export interface MealPlan {
-  name: string;
-  dailyCalories: number;
-  days: MealPlanDay[];
-  guid: string;
-}
-
-export interface MealPlanDay {
-  dayNumber: number;
-  meals: MealPlanMeal[];
-}
-
-export interface MealPlanMeal {
-  meal: MealType;
-  products: MealPlanProduct[];
-}
-
-export interface MealPlanProduct {
-  product: MealCatalogueItem;
-  guid: string;
-}
-
-export interface DaySummary {
-  dayNumber: number;
-  totalCalories: string;
-  totalProteins: string;
-  totalFats: string;
-  totalCarbs: string;
-}
