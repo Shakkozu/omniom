@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CatalogueItem } from '../../../products/model';
 import { Store } from '@ngxs/store';
@@ -26,7 +26,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 <div class="dialog-content flex flex-col p-6">
   <div class="flex">
     <div class="flex flex-col w-1/2 p-4 mr-4 bg-white rounded-2xl shadow-xl">
-      <app-dish-form [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
+      <app-dish-form [singlePortion]="this.singlePortion" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
     </div>
 
     <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
@@ -36,8 +36,9 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 </div>
   `,
 })
-export class NewDishDialogComponent implements OnDestroy {
+export class NewDishDialogComponent implements OnDestroy, OnInit {
   public products: CatalogueItem[] = [];
+  public singlePortion: boolean = false;
   @ViewChild(ProductsCatalogueComponent) productsCatalogue?: ProductsCatalogueComponent;
   @ViewChild(DishFormComponent) dishForm!: DishFormComponent;
 
@@ -47,6 +48,7 @@ export class NewDishDialogComponent implements OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
     this.products = data.products;
   }
+  
 
   public save() {
     this.dishForm?.save();
@@ -59,6 +61,10 @@ export class NewDishDialogComponent implements OnDestroy {
     this.dialogRef.close($event);
   }
 
+  ngOnInit(): void {
+    this.singlePortion = this.data.singlePortion ?? false;
+  }
+
 
   ngOnDestroy(): void {
     this.store.dispatch(new CleanupExcludedList());
@@ -68,4 +74,5 @@ export class NewDishDialogComponent implements OnDestroy {
 export interface NewDishDialogConfiguration {
   products: CatalogueItem[];
   createNewDishOnSave: boolean;
+  singlePortion?: boolean;
 }

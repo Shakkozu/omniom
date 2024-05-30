@@ -17,7 +17,7 @@ import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
             <mat-error>{{getErrorMessage("name")}}</mat-error>
           </mat-form-field>
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col" *ngIf="!singlePortion">
           <mat-form-field>
             <mat-label>Ilość Porcji</mat-label>
             <input matInput type="number" formControlName="portions">
@@ -44,6 +44,7 @@ export class DishFormComponent {
   form: FormGroup;
   @Output() formSubmitted: EventEmitter<Dish> = new EventEmitter();
   @Input() products: CatalogueItem[] = [];
+  @Input() singlePortion: boolean = false;
 
   constructor (
     private fb: FormBuilder,
@@ -55,6 +56,9 @@ export class DishFormComponent {
       recipe: [''],
       description: [''],
     });
+    if (this.singlePortion) {
+      this.form.get('portions')?.disable();
+    }
   }
 
   public getErrorMessage(formControlName: string): string {

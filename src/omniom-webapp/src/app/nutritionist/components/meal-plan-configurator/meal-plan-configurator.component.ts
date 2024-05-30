@@ -186,10 +186,11 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
   }
 
-  openProductDialog(day: number, meal: any) {
+  public addProductToMeal(day: number, meal: any) {
     const config: NewDishDialogConfiguration = {
       products: [],
-      createNewDishOnSave: false
+      createNewDishOnSave: false,
+      singlePortion: true
     };
     const dialogRef = this.dialog.open(NewDishDialogComponent, {
       width: '70vw',
@@ -204,7 +205,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
     });
   }
 
-  addProduct(day: number, meal: MealType, result: Dish) {
+  private addProduct(day: number, meal: MealType, result: Dish) {
     const mealPlanDay = this.mealPlan.days.find(d => d.dayNumber === day);
     if (!mealPlanDay) {
       return;
