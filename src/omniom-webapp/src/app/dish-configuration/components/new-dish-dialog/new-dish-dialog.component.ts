@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CatalogueItem } from '../../../products/model';
 import { Store } from '@ngxs/store';
-import { CleanupExcludedList, ProductAddedToExcludedList, ProductRemovedFromExcludedList } from '../../../products/store/products-catalogue.actions';
+import { CleanupExcludedList } from '../../../products/store/products-catalogue.actions';
 import { ProductsCatalogueComponent } from '../../../products/components/products-catalogue/products-catalogue.component';
 import { Dish } from '../../model';
 import { CreateDish } from '../../store/dish-configuration.actions';
@@ -30,15 +30,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
     </div>
 
     <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
-      <div class="h-full ">
-        <h2 class="text-xl mt-4">Składniki <mat-icon *ngIf="products.length < 1" color="warn" class="text-body-large pt-1">error</mat-icon></h2>
-        <app-presentation-product-list (productRemovedFromList)="onProductRemoved($event)" [products]="products"></app-presentation-product-list>
-        <app-products-catalogue #productsCatalogue
-          [addButtonEnabled]="true"
-          [onlyProducts]= "true"
-          (addProductButtonClicked)="productAddedToMealDiary($event)">
-        </app-products-catalogue>
-      </div>
+      <app-dish-products-selector [products]="products"></app-dish-products-selector>
     </div>
   </div>
 </div>
@@ -54,19 +46,6 @@ export class NewDishDialogComponent implements OnDestroy {
     private store: Store,
     @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
     this.products = data.products;
-  }
-
-  public productAddedToMealDiary(selectedProduct: CatalogueItem) {
-    if (!selectedProduct)
-      return;
-
-    this.products.push(selectedProduct);
-    this.store.dispatch(new ProductAddedToExcludedList([selectedProduct.guid]));
-    this.productsCatalogue?.clearSearchPhrase();
-  }
-
-  public onProductRemoved(removedMealEntry: CatalogueItem) {
-    this.store.dispatch(new ProductRemovedFromExcludedList(removedMealEntry.guid));
   }
 
   public save() {

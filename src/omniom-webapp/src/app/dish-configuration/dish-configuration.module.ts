@@ -8,6 +8,7 @@ import { ProductsModule } from '../products/products.module';
 import { DishDetailsComponent } from './components/dish-details/dish-details.component';
 import { ModifyDishDialogComponent } from './components/modify-dish-dialog/modify-dish-dialog.component';
 import { DishFormComponent } from './components/dish-form/dish-form.component';
+import { DishProductsSelectorComponent } from './components/dish-products-selector/dish-products-selector.component';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { DishFormComponent } from './components/dish-form/dish-form.component';
     NewDishDialogComponent,
     ModifyDishDialogComponent,
     DishFormComponent,
+    DishProductsSelectorComponent,
   ],
   imports: [
     CommonModule,
