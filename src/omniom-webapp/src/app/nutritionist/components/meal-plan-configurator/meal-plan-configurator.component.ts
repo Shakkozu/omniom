@@ -196,8 +196,27 @@ export class MealPlanConfiguratorComponent implements OnInit {
     } else {
       mealPlanMeal.products.push(mealPlanProduct);
     }
+  }
 
+  public removeMeal(mealGuid: string) {
+    const mealDetails = this.mealPlan.days.flatMap(d => d.meals).flatMap(m => m.products).find(p => p.guid === mealGuid);
+    if (!mealDetails) {
+      console.error('[MealPlanConfigurator] Meal not found');
+      return;
+    }
 
+    const mealPlanDay = this.mealPlan.days.find(d => d.meals.some(m => m.products.some(p => p.guid === mealGuid)));
+    if (!mealPlanDay) {
+      return;
+    }
+
+    const mealPlanMeal = mealPlanDay.meals.find(m => m.products.some(p => p.guid === mealGuid));
+    if (!mealPlanMeal) {
+      return;
+    }
+
+    const mealPlanProductIndex = mealPlanMeal.products.findIndex(p => p.guid === mealGuid);
+    mealPlanMeal.products.splice(mealPlanProductIndex, 1);    
   }
 
   saveMealPlan() {

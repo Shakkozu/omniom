@@ -42,16 +42,16 @@
 								<mat-list>
 									<mat-list-item *ngFor="let mealProduct of getProductsForMeal(day.dayNumber, meal)"
 										class="bg-white rounded-lg">
-										<span matListItemTitle>{{mealProduct.product.name}} {{mealProduct.product.kcal}} kcal</span>
+										<span matListItemTitle>{{mealProduct.product.name}} </span>
 										<span matListItemLine class="text-label-large">B: {{mealProduct.product.proteins}}g / T:
 											{{mealProduct.product.fats}}g / W: {{mealProduct.product.carbohydrates}}g </span>
-										<span matListItemLine>{{mealProduct.product.portionInGrams}}g</span>
+										<span matListItemLine>{{mealProduct.product.kcal}} kcal</span>
 										<div matListItemMeta>
 												<button (click)="modifyMeal(mealProduct.guid)" mat-icon-button
 													color="primary">
 													<mat-icon>edit</mat-icon>
 												</button>
-												<button mat-icon-button
+												<button mat-icon-button (click)="removeMeal(mealProduct.guid)"
 													color="primary">
 													<mat-icon>delete</mat-icon>
 												</button>

@@ -131,16 +131,26 @@ export class MealCatalogueItem extends CatalogueItem {
 	}
 
 	static override fromDish(dish: Dish): MealCatalogueItem {
-		const allIngredientsProteinsPer100g = dish.ingredients.reduce((acc, curr) => acc + curr.proteinsPer100g, 0);
-		const allIngredientsFatsPer100g = dish.ingredients.reduce((acc, curr) => acc + curr.fatsPer100g, 0);
-		const allIngredientsCarbsPer100g = dish.ingredients.reduce((acc, curr) => acc + curr.carbohydratesPer100g, 0);
-		const allIngredientsKcalPer100g = dish.ingredients.reduce((acc, curr) => acc + curr.kcalPer100g, 0);
-		const allIngredientsTotalWeight = dish.ingredients.reduce((acc, curr) => acc + curr.portionInGrams, 0);
-		const portionInGrams = allIngredientsTotalWeight / dish.portions;
+		let totalKcal = 0;
+		let totalProteins = 0;
+		let totalFats = 0;
+		let totalCarbs = 0;
+		let totalPortionInGrams = 0;
+		dish.ingredients.forEach(p => {
+			totalKcal += p.kcal;
+			totalProteins += p.proteins;
+			totalFats += p.fats;
+			totalCarbs += p.carbohydrates;
+			totalPortionInGrams += p.portionInGrams;
+		});
+
+		const kcalPer100G = (totalKcal / totalPortionInGrams) * 100;
+		const proteinsPer100G = (totalProteins / totalPortionInGrams) * 100;
+		const fatsPer100G = (totalFats / totalPortionInGrams) * 100;
+		const carbohydratesPer100G = (totalCarbs / totalPortionInGrams) * 100;
+		const portionInGrams = totalPortionInGrams / dish.portions;
 		
-		return new MealCatalogueItem(dish.name, dish.guid, portionInGrams, allIngredientsKcalPer100g, allIngredientsProteinsPer100g,
-			allIngredientsFatsPer100g, allIngredientsCarbsPer100g,
-			dish.description, dish.recipe, dish.portions, dish.ingredients);
+		return new MealCatalogueItem(dish.name, dish.guid, portionInGrams, kcalPer100G, proteinsPer100G, fatsPer100G, carbohydratesPer100G, dish.description, dish.recipe, dish.portions, dish.ingredients);
 	}
 
 	static fromMealDto(dish: MealCatalogueItemDto): MealCatalogueItem {

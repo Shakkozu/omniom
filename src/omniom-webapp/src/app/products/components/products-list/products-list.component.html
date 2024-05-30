@@ -6,9 +6,8 @@
 					<span matListItemTitle>{{product.name}}</span>
 					<span matListItemLine>{{product.portionInGrams}}g</span>
 					<div matListItemMeta>
-						<span class="text-label-large">{{product.kcalPer100g}} kcal</span>
-						<button *ngIf="addButtonEnabled" matIconPrefix (click)="addProduct(product)" class="pt-4" mat-icon-button
-							color="primary" aria-label="Example icon button with a home icon">
+						<span class="text-label-large">{{product.kcalPer100g}} kcal / 100g</span>
+						<button *ngIf="addButtonEnabled" matIconPrefix (click)="addProduct(product)" class="pt-4" mat-icon-button color="primary">
 							<mat-icon class="mt-1">add</mat-icon>
 						</button>
 					</div>
