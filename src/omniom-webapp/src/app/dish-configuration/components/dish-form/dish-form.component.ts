@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { Dish } from '../../model';
 import { v4 as uuidv4 } from 'uuid';
-import { CatalogueItem } from '../../../products/model';
+import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
 
 @Component({
   selector: 'app-dish-form',
@@ -59,6 +59,15 @@ export class DishFormComponent {
 
   public getErrorMessage(formControlName: string): string {
     return this.formErrorHandler.handleError(this.form, formControlName);
+  }
+
+  initialize(meal: MealCatalogueItem) {
+    this.form.patchValue({
+      name: meal.name,
+      portions: meal.portions,
+      recipe: meal.recipe,
+      description: meal.description
+    });
   }
 
   public save() {

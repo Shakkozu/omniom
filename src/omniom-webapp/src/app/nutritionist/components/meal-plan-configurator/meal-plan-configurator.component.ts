@@ -4,8 +4,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { Dish } from '../../../dish-configuration/model';
 import { MealType } from '../../../nutrition-diary/model';
-import { CatalogueItem, CatalogueItemType, MealCatalogueItem } from '../../../products/model';
-import { v4 as uuidv4, v4 } from 'uuid';
+import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model';
+import { v4 as uuidv4 } from 'uuid';
+import { ModifyDishDialogComponent, ModifyDishDialogConfiguration } from '../../../dish-configuration/components/modify-dish-dialog/modify-dish-dialog.component';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -35,6 +36,16 @@ export class MealPlanConfiguratorComponent implements OnInit {
     };
   }
 
+  private AMealCatalogueItem(): MealCatalogueItem {
+    const productCatalogueItems = [
+      new ProductCatalogueItem('Owsianka', uuidv4(), 120, 100, 0.5, 10, 0.5),
+      new ProductCatalogueItem('Mleko', uuidv4(), 120, 100, 0.5, 10, 0.5),
+      new ProductCatalogueItem('Kakao', uuidv4(), 120, 100, 0.5, 10, 0.5),
+    ];
+    return new MealCatalogueItem('Owsianka Oreo', uuidv4(), 100, 100, 100, 0.5, 10, 'opis', 'recipe', 1, productCatalogueItems);
+  }
+
+
   private initializeDays(): MealPlanDay[] {
     const days: MealPlanDay[] = [];
     this.days.forEach(day => {
@@ -45,15 +56,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
             meal: MealType.Breakfast,
             products: [
               {
-                product: new CatalogueItem('Owsianka Oreo', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
-                guid: uuidv4()
-              },
-              {
-                product: new CatalogueItem('Jabłko', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
-                guid: uuidv4()
-              },
-              {
-                product: new CatalogueItem('Czekolada', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                product: this.AMealCatalogueItem(),
                 guid: uuidv4()
               },
 
@@ -71,17 +74,9 @@ export class MealPlanConfiguratorComponent implements OnInit {
             meal: MealType.Snack,
             products: [
               {
-                product: new CatalogueItem('Owsianka Oreo', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
+                product: this.AMealCatalogueItem(),
                 guid: uuidv4()
-              },
-              {
-                product: new CatalogueItem('Jabłko', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
-                guid: uuidv4()
-              },
-              {
-                product: new CatalogueItem('Czekolada', CatalogueItemType.Meal, 'guid1', 100, 0.5, 10, 0.5, 50),
-                guid: uuidv4()
-              },
+              }
             ]
           },
           {
@@ -129,6 +124,41 @@ export class MealPlanConfiguratorComponent implements OnInit {
   }
 
   public modifyMeal(mealProductGuid: string) {
+    const mealDetails = this.mealPlan.days.flatMap(d => d.meals).flatMap(m => m.products).find(p => p.guid === mealProductGuid);
+    if (!mealDetails) {
+      console.error('[MealPlanConfigurator] Meal not found');
+      return;
+    }
+
+    const config: ModifyDishDialogConfiguration = {
+      dishDetails: mealDetails.product
+    };
+    const modifyRef = this.dialog.open(ModifyDishDialogComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: config
+    })
+    modifyRef.afterClosed().subscribe((result: Dish) => {
+      if (!result) return;
+
+      const mealPlanDay = this.mealPlan.days.find(d => d.meals.some(m => m.products.some(p => p.guid === mealProductGuid)));
+      if (!mealPlanDay) {
+        return;
+      }
+      
+      const mealPlanMeal = mealPlanDay.meals.find(m => m.products.some(p => p.guid === mealProductGuid));
+      if (!mealPlanMeal) {
+        return;
+      }
+      
+      const mealPlanProduct = mealPlanMeal.products.find(p => p.guid === mealProductGuid);
+      if (!mealPlanProduct) {
+        return;
+      }
+      
+      const meal = MealCatalogueItem.fromDish(result);
+      mealPlanProduct.product = meal;
+    });
 
   }
 
@@ -197,6 +227,6 @@ export interface MealPlanMeal {
 }
 
 export interface MealPlanProduct {
-  product: CatalogueItem;
+  product: MealCatalogueItem;
   guid: string;
 }
