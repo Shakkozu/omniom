@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { Dish } from '../../../dish-configuration/model';
@@ -7,6 +7,7 @@ import { MealType } from '../../../nutrition-diary/model';
 import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model';
 import { v4 as uuidv4 } from 'uuid';
 import { ModifyDishDialogComponent, ModifyDishDialogConfiguration } from '../../../dish-configuration/components/modify-dish-dialog/modify-dish-dialog.component';
+import { FormErrorHandler } from '../../../shared/form-error-handler';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -19,17 +20,20 @@ export class MealPlanConfiguratorComponent implements OnInit {
   days: number[] = [1, 2, 3, 4, 5, 6, 7];
   public meals: any[] = [MealType.Breakfast, MealType.Dinner, MealType.Snack, MealType.Supper]; // todo allow nutritionist to configure daily meals
 
-  constructor (private fb: FormBuilder, public dialog: MatDialog) {
+  constructor (private fb: FormBuilder,
+    private formErrorHandler: FormErrorHandler,
+    public dialog: MatDialog) {
     this.mealPlanForm = this.fb.group({
-      mealPlanName: [''],
-      dailyCalories: [0]
+      mealPlanName: ['', [Validators.required, Validators.minLength(3)]],
+      dailyCalories: [1500, [Validators.required, Validators.min(1500), Validators.max(3500)]]
     });
   }
   ngOnInit(): void {
     this.mealPlan = {
       name: '',
       dailyCalories: 0,
-      days: this.initializeDays()
+      days: this.initializeDays(),
+      guid: uuidv4()
     };
   }
 
@@ -58,10 +62,6 @@ export class MealPlanConfiguratorComponent implements OnInit {
               },
 
             ]
-          },
-          {
-            meal: MealType.SecondBreakfast,
-            products: []
           },
           {
             meal: MealType.Dinner,
@@ -112,6 +112,10 @@ export class MealPlanConfiguratorComponent implements OnInit {
     };
 
 
+  }
+
+  public getErrorMessage(formControlName: string): string {
+    return this.formErrorHandler.handleError(this.mealPlanForm, formControlName);
   }
 
 
@@ -256,8 +260,12 @@ export class MealPlanConfiguratorComponent implements OnInit {
     }
   }
   
-  private validateMealPlan(): boolean {
+  public validateMealPlan(): boolean {
     return this.mealPlan.days.every(d => d.meals.every(m => m.products.length > 0));
+  }
+
+  public IsDayValid(day: MealPlanDay): boolean {
+    return day.meals.every(m => m.products.length > 0);
   }
 }
 
@@ -267,6 +275,7 @@ export interface MealPlan {
   name: string;
   dailyCalories: number;
   days: MealPlanDay[];
+  guid: string;
 }
 
 export interface MealPlanDay {

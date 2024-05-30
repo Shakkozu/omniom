@@ -5,11 +5,13 @@
 			<mat-form-field class="px-4" appearance="fill">
 				<mat-label>Nazwa Jadłospisu</mat-label>
 				<input matInput formControlName="mealPlanName">
+				<mat-error>{{getErrorMessage('mealPlanName')}}</mat-error>
 			</mat-form-field>
 
 			<mat-form-field class="px-4" appearance="fill">
 				<mat-label>Kalorie</mat-label>
 				<input matInput type="number" formControlName="dailyCalories">
+				<mat-error>{{getErrorMessage('dailyCalories')}}</mat-error>
 			</mat-form-field>
 
 			<mat-form-field class="px-4" appearance="fill" disabled>
@@ -20,10 +22,11 @@
 
 		<mat-accordion multi="true">
 			<ng-container *ngFor="let day of mealPlan.days">
-				<ng-container *ngIf="getDaySummary(day) as dayDetails">
+				<ng-container *ngIf="getDaySummary(day) as dayDetails"  >
 					<mat-expansion-panel [expanded]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title class="text-headline-small">
+								<mat-icon *ngIf="!IsDayValid(day)" matTooltip="Nie wszystkie posiłki są uzupełnione" class="mr-4" style="color: rgb(253, 224, 71);" color="info">warning</mat-icon>
 								Dzień {{ day.dayNumber }}
 								<span class="text-title-medium ms-4">{{ dayDetails.totalCalories }} kcal,  B: {{ dayDetails.totalProteins }}g, T: {{ dayDetails.totalFats }}g, W: {{ dayDetails.totalCarbs }}g
 								</span>
