@@ -5,6 +5,54 @@
 
 System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego stanu zdrowia (wagi, pomiarów), rozszerzony o funkcjonalność koordynowania współpracy pomiędzy dietetykami oraz użytkownikami aplikacji, którzy monitorują swoje posiłki i sylwetkę
 
+- [Omniom](#omniom)
+  - [Powód powstania](#powód-powstania)
+  - [Główne założenia](#główne-założenia)
+    - [Możliwości komercjalizacji projektu](#możliwości-komercjalizacji-projektu)
+  - [Baza produktowa](#baza-produktowa)
+  - [Założenia projektowe](#założenia-projektowe)
+    - [MVP](#mvp)
+    - [Architektura](#architektura)
+      - [Diagram architektury C4](#diagram-architektury-c4)
+        - [C2 - Container level](#c2---container-level)
+        - [C3 - Component level](#c3---component-level)
+    - [Lista funkcjonalności do zrealizowania w MVP](#lista-funkcjonalności-do-zrealizowania-w-mvp)
+
+---
+
+## Uruchomienie projektu 
+
+Do uruchomienia projektu potrzebny jest zainstalowany silnik dockera.
+
+Repozytorium należy skopiować, następnie przejść do katalogu głównego aplikacji, oraz uruchomić komendę
+
+```
+docker compose up --build
+```
+
+
+Uruchomione zestaną 4 kontenery:
+- angular-app - Klient angularowy aplikacji
+- omniom-api - .NET API obsługujące żądania aplikacji klienckiej
+- products-catalogue-db - Kontener z bazą danych postgres zawierającą dane dot. produktów (został odseparowany, aby umożliwić łatwe udostępnienie bazy produktów dalej na podstawie licencji z OpenFoodsApi)
+- omniom-db - Kontener postgres z główną bazą danych aplikacji
+
+
+Aplikacja webowa jest udostępniona na porcie `10005`, a więc aplikacja jest dostępna pod adresem:
+```
+http://localhost:10005/
+```
+
+W aplikacji zostało utworzone konto administratora, na które można się zalogować za pomocą:
+```
+login: admin@example.com
+password: zaq1@WSX
+```
+
+
+
+
+
 ---
 
 ## Powód powstania
@@ -58,69 +106,74 @@ Takie podejście umożliwi izolację każdej ścieżki biznesowej i wprowadzania
 
 ### Lista funkcjonalności do zrealizowania w MVP
 
-- Uwierzytelnianie
-    - Rejestracja użytkowników
-    - Logowanie użytkowników
+- **Uwierzytelnianie**
+    - [x] Rejestracja użytkowników
+    - [x] Logowanie użytkowników
+- **Katalog Produktów**
+    -  [x] Zasilenie bazy produktowej importem
+    -  [x] Wyświetlanie listy produktów
+- **Katalog dań**
+    -  [x] Wyświetlanie listy dań
+    -  [x] dodawanie prywatnych przepisów dań (instrukcja przygotowania, lista składników, liczba porcji)
+- **Profil Użytkownika**
+    -  [x] Ustalanie dziennego zapotrzebowania kalorycznego, wraz z rozwarstwieniem na makroskładniki
+    -  [x] Wyświetlanie podsumowania przyjętych kalorii oraz makroskładników w okresach dziennych
+- **Jadłospis**
+    - [x] Konfiguracjia liczby posiłków w ciągu dnia
+    - [x] Dodawanie listy zjedzonych produktów do posiłku
+    - [x] Dodawanie dań do posiłku
+    - [x] Dostosowywanie gramatur zjedzonych produktów/dań
+    - [x] Usuwanie dania/produktu z listy zjedzonych pproduktów
+    - [x] Przeglądanie historycznych posiłków
+- **Konfiguracja Profilu Dietetyka**
+    - [x] Przegląd zarejestrowanych dań
+    - [ ] Konfiguracja jadłospisów na podstawie przygotowanych wcześniej dań
+    - [ ] Przypisywanie jadłospisów do klientów
+- **Nawiązywanie współprac**
+    - [ ] Podejmowanie współprac pomiędzy dietetykiem a klientem
+
+### Funkcjonalności do realizacji w kolejnych etapach projektu
+
+- **Uwierzytelnianie**
     - Zmiana danych osobowych
     - Odzyskiwanie hasła
-- Katalog Produktów
-    - Zasilenie bazy produktowej importem
-    - Wyświetlanie listy produktów
+- **Katalog Produktów**
     - Dodawanie prywatnych produktów do bazy danych
-- Katalog dań
-    - Wyświetlanie listy dań
-    - dodawanie prywatnych przepisów dań (instrukcja przygotowania, lista składników, liczba porcji)
-- Profil Użytkownika
+- **Profil Użytkownika**
     - Aktualizacja danych dotyczących sylwetki (waga + pomiary ciała)
-    - Ustalanie dziennego zapotrzebowania kalorycznego, wraz z rozwarstwieniem na makroskładniki
-    - Wyświetlanie podsumowania przyjętych kalorii oraz makroskładników w okresach dziennych
     - Generowanie raportów z postępami
-- Jadłospis
-    - Konfiguracjia liczby posiłków w ciągu dnia
-    - Dodawanie listy zjedzonych produktów do posiłku
-    - Dodawanie dań do posiłku
-    - Dostosowywanie gramatur zjedzonych produktów/dań
-    - Usuwanie dania/produktu z listy zjedzonych pproduktów
-    - Kopiowanie danych z historycznych posiłków
-    - Przeglądanie historycznych posiłków
-- Konfiguracja Profilu Dietetyka
-    - Konfiguracja jadłospisów na podstawie przygotowanych wcześniej dań
+- **Konfiguracja Profilu Dietetyka**
     - Generowanie raportów listy produktów potrzebnych do jadłospisu
-    - Przypisywanie jadłospisów do klientów
     - Przegląd historiii jadłospisów przypisanych do klienta
     - Przegląd zarejestrowanych dań
     - Wyświetlanie monitorowania stanu zdrowia klientów z aktywną współpracą
-- Nawiązywanie współprac
-    - Podejmowanie współprac pomiędzy dietetykiem a klientem
+- **Nawiązywanie współprac**
     - Przedłużanie współpracy
     - Anulowanie współpracy
-- Prowadzenie współprac
+- **Prowadzenie współprac**
     - Proponowanie jadłospisu klientom
     - Monitorowanie stanu zdrowia klientów
-- Chat
+- **Chat**
     - Komunikacja pomiędzy użytkownikami (w głównej mierzy pomiędzy klientami oraz dietetykami)
     - Lista konswersacji
 
-- Ogłoszenia
+- **Ogłoszenia**
     - Dodawanie szkiców ogłoszeń przez dietetyka
     - Akceptacja ogłoszeń przez administratora
     - Zgłaszanie uwag do proponowanego ogłoszenia przez administratora
     - Publikacja Ogłoszeń
 
-- Katalog ogłoszeń
+- **Katalog ogłoszeń**
     - Wyświetlanie listy ogłoszeń
     - Promowanie ogłoszeń
 
-- Moduł zakupów
+- **Moduł zakupów**
     - Zakup promowania ogłoszenia
     - Zakup współpracy z dietetykiem
     - Wyświetlanie listy zakupów dla użytkownika
     - Wyświetlanie listy zakupów dla administratora
 
-- Płatności
+- **Płatności**
     - Możliwość uiszczania opłat z pomocą bramki płatniczej za zakupy
     - Wyświetlanie listy płatności przez administratora
-
-
-
 
