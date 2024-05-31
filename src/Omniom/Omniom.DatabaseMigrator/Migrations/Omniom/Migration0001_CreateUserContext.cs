@@ -26,7 +26,7 @@ public class Migration0001_CreateUserContext : Migration
             .WithColumn("access_failed_count").AsInt32().NotNullable();
 
         Create.Table("roles")
-            .WithColumn("id").AsString().PrimaryKey()
+            .WithColumn("id").AsString()
             .WithColumn("name").AsString().NotNullable()
             .WithColumn("normalized_name").AsString().NotNullable();
 
@@ -35,7 +35,7 @@ public class Migration0001_CreateUserContext : Migration
             .WithColumn("role_id").AsString().NotNullable();
 
         Create.Table("user_claims")
-            .WithColumn("id").AsString().PrimaryKey().Identity()
+            .WithColumn("id").AsString()
             .WithColumn("user_id").AsString().NotNullable()
             .WithColumn("claim_type").AsString().NotNullable()
             .WithColumn("claim_value").AsString().NotNullable();
