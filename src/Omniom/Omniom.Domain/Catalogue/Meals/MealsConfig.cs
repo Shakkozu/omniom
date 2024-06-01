@@ -22,6 +22,7 @@ public static class MealsConfig
             return sp.GetRequiredService<MealsDbContext>().Set<UserMealDao>().AsNoTracking().AsQueryable();
         });
         services.AddTransient<IQueryHandler<GetUserMealsQuery, IEnumerable<MealCatalogueItem>>, GetUserMealsQueryHandler>();
+        services.AddTransient<ICommandHandler<CreateMealCommand>, CreateMealCommandHandler>();
     }
 
     public static IEndpointRouteBuilder MapMealsEndpoints(this IEndpointRouteBuilder endpoints)
