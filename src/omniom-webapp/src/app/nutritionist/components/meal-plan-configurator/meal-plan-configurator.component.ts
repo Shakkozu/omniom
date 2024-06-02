@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
@@ -11,11 +11,14 @@ import { DaySummary, MealPlan, MealPlanDay, MealPlanProduct, MealPlanStatus } fr
 import { MealType } from '../../../nutrition-diary/model';
 import { Store } from '@ngxs/store';
 import { SaveMealPlanAsDraft } from '../../store/meal-plan-configuration.actions';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
 
 @Component({
   selector: 'app-meal-plan-configurator',
   templateUrl: './meal-plan-configurator.component.html',
-  styleUrl: './meal-plan-configurator.component.scss'
+  styleUrl: './meal-plan-configurator.component.scss',
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class MealPlanConfiguratorComponent implements OnInit {
   mealPlanForm: FormGroup;
@@ -26,6 +29,9 @@ export class MealPlanConfiguratorComponent implements OnInit {
   constructor (private fb: FormBuilder,
     private store: Store,
     private formErrorHandler: FormErrorHandler,
+    private route: ActivatedRoute,
+    private router: Router,
+    private mealPlanService: MealPlanConfigurationRestService,
     public dialog: MatDialog) {
     this.mealPlanForm = this.fb.group({
       mealPlanName: ['', [Validators.required, Validators.minLength(3)]],
@@ -33,6 +39,23 @@ export class MealPlanConfiguratorComponent implements OnInit {
     });
   }
   ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const mealPlanGuid = params.get('id');
+
+      if (mealPlanGuid) {
+        this.mealPlanService.getMealPlanDetails(mealPlanGuid).subscribe(mealPlan => {
+          console.log(mealPlan);
+          this.mealPlan = mealPlan;
+          this.mealPlanForm.patchValue({
+            mealPlanName: mealPlan.name,
+            dailyCalories: mealPlan.dailyCalories
+          });
+        });
+        return;
+      }
+
+        
+    });
     this.mealPlan = {
       name: '',
       status: MealPlanStatus.Draft,
@@ -42,13 +65,8 @@ export class MealPlanConfiguratorComponent implements OnInit {
     };
   }
 
-  private AMealCatalogueItem(): MealCatalogueItem {
-    const productCatalogueItems = [
-      new ProductCatalogueItem('Owsianka', uuidv4(), 120, 100, 0.5, 10, 0.5),
-      new ProductCatalogueItem('Mleko', uuidv4(), 120, 100, 0.5, 10, 0.5),
-      new ProductCatalogueItem('Kakao', uuidv4(), 120, 100, 0.5, 10, 0.5),
-    ];
-    return new MealCatalogueItem('Owsianka Oreo', uuidv4(), 100, 100, 100, 0.5, 10, 'opis', 'recipe', 1, productCatalogueItems);
+  public navigateBack() {
+  this.router.navigate(['/nutritionist'], { relativeTo: this.route });
   }
 
 
@@ -59,21 +77,21 @@ export class MealPlanConfiguratorComponent implements OnInit {
         dayNumber: day,
         meals: [
           {
-            meal: MealType.Breakfast,
+            mealType: MealType.Breakfast,
             products: [
             ]
           },
           {
-            meal: MealType.Dinner,
+            mealType: MealType.Dinner,
             products: []
           },
           {
-            meal: MealType.Snack,
+            mealType: MealType.Snack,
             products: [
             ]
           },
           {
-            meal: MealType.Supper,
+            mealType: MealType.Supper,
             products: []
           }
         ]
@@ -121,7 +139,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
       return [];
     }
 
-    const mealPlanMeal = mealPlanDay.meals.find(m => m.meal === meal);
+    const mealPlanMeal = mealPlanDay.meals.find(m => m.mealType === meal);
     if (!mealPlanMeal) {
       return [];
     }
@@ -212,14 +230,14 @@ export class MealPlanConfiguratorComponent implements OnInit {
       return;
     }
 
-    const mealPlanMeal = mealPlanDay.meals.find(m => m.meal === meal);
+    const mealPlanMeal = mealPlanDay.meals.find(m => m.mealType === meal);
     const mealPlanProduct: MealPlanProduct = {
       product: MealCatalogueItem.fromDish(result),
       guid: uuidv4()
     }
     if (!mealPlanMeal) {
       mealPlanDay.meals.push({
-        meal: meal,
+        mealType: meal,
         products: [mealPlanProduct]
       });
     } else {
@@ -254,6 +272,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
       name: this.mealPlanForm.value.mealPlanName,
       dailyCalories: this.mealPlanForm.value.dailyCalories
     };
+    console.log(mealPlan);
     this.store.dispatch(new SaveMealPlanAsDraft(mealPlan));
   }
   

@@ -1,9 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { environment } from "../../environments/environment";
-import { MealPlan } from "./model";
-import { Observable } from "rxjs";
+import { MealPlan, MealPlanDto } from "./model";
+import { Observable, map } from "rxjs";
 import { MealPlanListItem } from "./components/meal-plans-list/meal-plans-list.component";
+import { MealPlanMapper } from "./meal-plan-mapper";
 
 
 
@@ -12,7 +13,9 @@ import { MealPlanListItem } from "./components/meal-plans-list/meal-plans-list.c
 })
 export class MealPlanConfigurationRestService {
 	baseUrl: string;
-	constructor (private http: HttpClient) { 
+	constructor (private http: HttpClient,
+		private mapper: MealPlanMapper
+	) { 
 		this.baseUrl = `${ environment.apiUrl }/api/nutritionist/meal-plans`;
 
 	}
@@ -24,10 +27,14 @@ export class MealPlanConfigurationRestService {
 	
 	getMealPlanDetails(guid: string): Observable<MealPlan> {
 		const url = `${ this.baseUrl }/${ guid }`;
-		return this.http.get<MealPlan>(url);
+
+		return this.http.get<MealPlan>(url).pipe(
+			map((mealPlanDto: MealPlanDto) => this.mapper.mapMealPlanDtoToMealPlan(mealPlanDto))
+		);
 	}
 
 	getMealPlans(): Observable<MealPlanListItem[]> {
 		return this.http.get<MealPlanListItem[]>(this.baseUrl);
 	}
 }
+

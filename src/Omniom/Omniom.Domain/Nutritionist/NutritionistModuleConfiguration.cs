@@ -40,7 +40,7 @@ public static class NutritionistModuleConfiguration
 
         services.AddScoped<IQueryHandler<GetMealPlanDetails, MealPlan>, GetMealPlanDetailsHandler>();
         services.AddScoped<IQueryHandler<GetMealPlanListQuery, IEnumerable<MealPlanListItem>>, GetMealPlansListQueryHandler>();
-        services.AddScoped<ICommandHandler<SaveMealPlanAsDraft>, SaveMealPlanAsDraftHandler>();
+        services.AddScoped<ICommandHandler<SaveMealPlanAsDraft>, TransactionalSaveMealPlanAsDraftHandler>();
     }
 
     public static void MapNutritionistEndpoints(this IEndpointRouteBuilder endpoints)

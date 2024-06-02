@@ -1,5 +1,10 @@
 <mat-card class="p-4">
-	<mat-card-title>Konfiguracja Jadłospisu</mat-card-title>
+	<mat-card-title>
+		Konfiguracja Jadłospisu
+		<button class="m-2" mat-raised-button color="primary" (click)="navigateBack()">
+			Cofnij
+		</button>
+	</mat-card-title>
 	<mat-card-content>
 		<form [formGroup]="mealPlanForm">
 			<mat-form-field class="px-4" appearance="fill">
@@ -22,7 +27,7 @@
 
 		<mat-accordion multi="true">
 			<ng-container *ngFor="let day of mealPlan.days">
-				<ng-container *ngIf="getDaySummary(day) as dayDetails"  >
+				<ng-container *ngIf="getDaySummary(day) as dayDetails">
 					<mat-expansion-panel [expanded]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title class="text-headline-small">

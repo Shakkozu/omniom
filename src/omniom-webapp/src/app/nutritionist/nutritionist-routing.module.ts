@@ -8,7 +8,8 @@ import { MealPlanConfiguratorComponent } from './components/meal-plan-configurat
 const routes: Routes = [
   { path: '', component:  NutritionistProfilePageComponent },
   { path: 'profile', component:  NutritionistProfilePageComponent, pathMatch: 'full'},
-  { path: 'meal-plan-configurator', component:  MealPlanConfiguratorComponent, pathMatch: 'full'},
+  { path: 'meal-plan-configurator/:id', component: MealPlanConfiguratorComponent, pathMatch: 'full' },
+  { path: 'meal-plan-configurator', component: MealPlanConfiguratorComponent, pathMatch: 'full' },
   { path: 'pending-verification-requests', component: AdminVerificationPage, pathMatch: 'full', canActivate: [AdminGuard]},
 ];
 

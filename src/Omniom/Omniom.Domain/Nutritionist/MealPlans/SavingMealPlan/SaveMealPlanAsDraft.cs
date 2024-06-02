@@ -8,6 +8,7 @@ using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
 using Omniom.Domain.Nutritionist.Storage;
 using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 namespace Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
 
@@ -39,6 +40,31 @@ public static class Route
 }
 
 internal record SaveMealPlanAsDraft(MealPlan MealPlan, Guid UserId) : ICommand;
+
+internal class TransactionalSaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
+{
+    private readonly NutritionistDbContext _dbContext;
+
+    public TransactionalSaveMealPlanAsDraftHandler(NutritionistDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public async Task HandleAsync(SaveMealPlanAsDraft command, CancellationToken ct)
+    {
+        using var transaction = await _dbContext.Database.BeginTransactionAsync(ct);
+        try
+        {
+            await new SaveMealPlanAsDraftHandler(_dbContext).HandleAsync(command, ct);
+            await transaction.CommitAsync(ct);
+        }
+        catch
+        {
+            await transaction.RollbackAsync(ct);
+            throw;
+        }
+    }
+}
 internal class SaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
 {
     private readonly NutritionistDbContext _dbContext;
@@ -51,6 +77,12 @@ internal class SaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
     public async Task HandleAsync(SaveMealPlanAsDraft command, CancellationToken ct)
     {
         var userMealPlan = new UserMealPlanDao(command.MealPlan, command.UserId, DateTime.UtcNow, DateTime.UtcNow);
+        var existingMealPlan = await _dbContext.MealPlans.FirstOrDefaultAsync(mp => mp.Guid == userMealPlan.Guid && mp.UserId == userMealPlan.UserId, ct);
+        if (existingMealPlan != null)
+        {
+            _dbContext.MealPlans.Remove(existingMealPlan);
+        }
+
         _dbContext.MealPlans.Add(userMealPlan);
         await _dbContext.SaveChangesAsync(ct);
     }
@@ -159,4 +191,4 @@ public enum MealPlanStatus
     Active
 }
 
-public record MealPlanProduct(MealCatalogueItem MealCatalogueItem, Guid Guid);
+public record MealPlanProduct(MealCatalogueItem Product, Guid Guid);

@@ -4,8 +4,6 @@ import { Observable, of } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { PendingVerificationListItem } from '../../nutritionist-administration-rest.service';
-import { FetchVerificationRequestDetails } from '../../store/nutritionist.actions';
 import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
 import { Router } from '@angular/router';
 
@@ -38,7 +36,13 @@ import { Router } from '@angular/router';
 
     <ng-container matColumnDef="options">
       <th class="w-1/6" mat-header-cell *matHeaderCellDef></th>
-      <td mat-cell *matCellDef="let item"> <button mat-icon-button (click)="showRequestDetails(item)" color="primary"><mat-icon>visibility</mat-icon></button> </td>
+      <td mat-cell *matCellDef="let item">
+      <ng-container *ngIf="item.status === 'Draft'">
+        <button mat-icon-button (click)="editMealPlan(item)" color="primary">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </ng-container>
+     </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -80,19 +84,17 @@ export class MealPlansListComponent implements OnInit {
     this.router.navigate(['/nutritionist/meal-plan-configurator']);
   }
 
+  public editMealPlan(mealPlan: MealPlanListItem) {
+    this.router.navigate(['/nutritionist/meal-plan-configurator', mealPlan.guid]);
+  }
+
+
   ngOnInit(): void {
     this.mealPlanRestService.getMealPlans().subscribe(data => {
-      console.log(data);
       this.dataSource = new MatTableDataSource<MealPlanListItem>(data);
       this.dataSource.paginator = this.paginator;
     });
   }
-
-
-  showRequestDetails(item: PendingVerificationListItem) {
-    this.store.dispatch(new FetchVerificationRequestDetails(item.userId));
-  }
-
 }
 
 export interface PeriodicElement {
