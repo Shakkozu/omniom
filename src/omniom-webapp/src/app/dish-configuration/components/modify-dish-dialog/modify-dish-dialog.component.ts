@@ -12,7 +12,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
     <button mat-icon-button (click)="dialogRef.close()">
       <mat-icon>close</mat-icon>
     </button>
-    <span class="self-center">Nowe Danie</span>
+    <span class="self-center">{{meal.name}}</span>
   </div>
   <div>
     <button style="font-size: large;" mat-button class="w-24 font-title-large self-center" (click)="save()" type="submit">Zapisz</button>

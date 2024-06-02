@@ -42,13 +42,7 @@
 							<ng-container class="" *ngFor="let meal of meals">
 								<div class="flex-1 border-r-2 border-l-2">
 									<div class="flex items-left mb-4 pt-3 justify-center border-b-2">
-										<h3 class="p-2">{{ getMealTypeTranslation(meal) }}</h3>
-										<div class="example-button-container">
-											<button (click)="addProductToMeal(day.dayNumber, meal)" mat-mini-fab
-												color="primary">
-												<mat-icon>add</mat-icon>
-											</button>
-										</div>
+										<h2 class="p-2">{{ getMealTypeTranslation(meal) }}</h2>
 									</div>
 									<mat-list>
 										<mat-list-item
@@ -79,6 +73,14 @@
 												<span matListItemTitle>Brak produktów</span>
 											</mat-list-item>
 										</ng-container>
+										<div class="example-button-container mx-2">
+											<button (click)="addProductToMeal(day.dayNumber, meal)" mat-button color="primary">
+												Dodaj
+											</button>
+											<button (click)="addProductToMeal(day.dayNumber, meal)" mat-button color="primary">
+												Wybierz
+											</button>
+										</div>
 									</mat-list>
 								</div>
 							</ng-container>
