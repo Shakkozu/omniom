@@ -6,25 +6,29 @@ using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.NutritionDiary.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Omniom.Domain.Nutritionist.Storage;
+using Newtonsoft.Json;
 
 namespace Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
 
 public static class Route
 {
-    public static IEndpointRouteBuilder MapSaveMealPlanAsDraft(this IEndpointRouteBuilder endpoints)
+    public static IEndpointRouteBuilder MapSaveMealPlanAsDraftEndpoint(this IEndpointRouteBuilder endpoints)
     {
-        endpoints.MapPost("/api/nutritionist/meal-plans/draft", async (HttpContext context,
+        endpoints.MapPost("/api/nutritionist/meal-plans", async (HttpContext context,
                        [FromServices] IFetchUserIdentifierFromContext userIdProvider,
                         [FromServices] ICommandHandler<SaveMealPlanAsDraft> handler,
-                        [FromBody] MealPlan command,
-                                                        CancellationToken ct) =>
+                        [FromBody] MealPlan mealPlan,
+                        CancellationToken ct) =>
         {
+            var validationErrors = mealPlan.GetValidationErrors().ToList();
+            if (validationErrors.Any())
+            {
+                context.Response.StatusCode = 400;
+                await context.Response.WriteAsJsonAsync(validationErrors);
+                return;
+            }
+            var command = new SaveMealPlanAsDraft(mealPlan, userIdProvider.GetUserId());
             await handler.HandleAsync(command, ct);
             context.Response.StatusCode = 201;
         });
@@ -46,22 +50,54 @@ internal class SaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
 
     public async Task HandleAsync(SaveMealPlanAsDraft command, CancellationToken ct)
     {
-        var mealPlan = new UserMealPlanDao(command.MealPlan, command.UserId);
-        _dbContext.MealPlans.Add(mealPlan);
+        var userMealPlan = new UserMealPlanDao(command.MealPlan, command.UserId, DateTime.UtcNow, DateTime.UtcNow);
+        _dbContext.MealPlans.Add(userMealPlan);
         await _dbContext.SaveChangesAsync(ct);
     }
 }
 
 internal class UserMealPlanDao
 {
-    private MealPlan _mealPlan;
-    private Guid _userId;
-
-    public UserMealPlanDao(MealPlan mealPlan, Guid userId)
+    public UserMealPlanDao()
+    { }
+    public UserMealPlanDao(MealPlan mealPlan, Guid userId, DateTime createdAt, DateTime modifiedAt)
     {
-        _mealPlan = mealPlan;
-        _userId = userId;
+        UserId = userId;
+        CreatedAt = createdAt;
+        ModifiedAt = modifiedAt;
+        Guid = mealPlan.Guid;
+        Name = mealPlan.Name;
+        Status = mealPlan.Status;
+        DailyCaloriesTarget = mealPlan.DailyCalories;
+        MealDayDetails = JsonConvert.SerializeObject(mealPlan.Days.OrderBy(x => x.DayNumber).ToList());
     }
+
+    public MealPlan ToMealPlan()
+    {
+        return new MealPlan
+        {
+            Guid = Guid,
+            Status = Status,
+            DailyCalories = DailyCaloriesTarget,
+            Days = JsonConvert.DeserializeObject<IEnumerable<MealPlanDay>>(MealDayDetails)?.OrderBy(x => x.DayNumber).ToList() ?? throw new ArgumentNullException("Meal day details is invalid"),
+            Name = Name,
+            CreatedAt = CreatedAt,
+            ModifiedAt = ModifiedAt
+        };
+    }
+
+    public int Id { get; set; }
+    public string Name { get; }
+    public Guid UserId { get; }
+    public Guid Guid { get; }
+    public string Status { get; }
+    public int DailyCaloriesTarget { get; }
+
+    public string MealDayDetails { get; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime ModifiedAt { get; set; }
 }
 
 public class MealPlan
@@ -71,19 +107,56 @@ public class MealPlan
     public string Name { get; set; }
     public int DailyCalories { get; set; }
 
-    public IEnumerable<MealPlanDay> Days { get; set; }
+    public List<MealPlanDay> Days { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+    public DateTime ModifiedAt { get; set; }
+
+    public IEnumerable<string> GetValidationErrors()
+    {
+        if (string.IsNullOrWhiteSpace(Name))
+        {
+            yield return "Name is required";
+        }
+
+        if (DailyCalories <= 0)
+        {
+            yield return "Daily calories must be greater than 0";
+        }
+
+        if (Days == null || Days.Count == 0)
+        {
+            yield return "At least one day must be provided";
+        }
+
+        foreach (var day in Days)
+        {
+            if (day.Meals == null || day.Meals.Count == 0)
+            {
+                yield return $"At least one meal must be provided for day {day.DayNumber}";
+            }
+        }
+
+    }
 }
 
 public record MealPlanDay
 {
     public int DayNumber { get; set; }
-    public IEnumerable<MealPlan> Meals { get; set; }
+    public List<MealPlanMeal> Meals { get; set; }
 }
 
 public record MealPlanMeal
 {
     public MealType MealType { get; set; }
-    public IEnumerable<MealPlanProduct> Products { get; set; }
+    public List<MealPlanProduct> Products { get; set; }
+}
+
+public enum MealPlanStatus
+{
+    Archived,
+    Draft,
+    Active
 }
 
 public record MealPlanProduct(MealCatalogueItem MealCatalogueItem, Guid Guid);

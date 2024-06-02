@@ -13,6 +13,9 @@ using Omniom.Domain.Nutritionist.Verification.GettingAttachmentDetails;
 using Omniom.Domain.Nutritionist.Verification.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
 using Omniom.Domain.Nutritionist.Verification.CreatingVerificationRequests;
+using Omniom.Domain.Catalogue.Meals.GettingMeal;
+using Omniom.Domain.Nutritionist.MealPlans.FetchingMealPlan;
+using Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
 
 namespace Omniom.Domain.Nutritionist;
 
@@ -28,13 +31,16 @@ public static class NutritionistModuleConfiguration
         services.AddScoped<IQueryHandler<GetPendingVerificationRequestsQuery, List<PendingVerificationListItem>>, GetPendingVerificationRequestsQueryHandler>();
         services.AddScoped<IQueryHandler<GetUserVerificationRequestDetailsQuery, UserVerificationRequestDetails>, GetUserVerificationRequestDetailsQueryHandler>();
         services.AddScoped<IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse>, GetProfileDetailsQueryHandler>();
-        services.AddScoped<IQueryHandler<GetProfileDetailsQuery, GetProfileDetailsResponse>, GetProfileDetailsQueryHandler>();
         services.AddDbContext<NutritionistDbContext>(options =>
         {
             options.UseNpgsql(configuration.GetConnectionString("OmniomDatabase"));
         });
         services.AddTransient(sp => sp.GetRequiredService<NutritionistDbContext>().Set<NutritionistVerificationRequest>().AsNoTracking());
         services.AddScoped<ITransactions, NutritionistContextTransactions>();
+
+        services.AddScoped<IQueryHandler<GetMealPlanDetails, MealPlan>, GetMealPlanDetailsHandler>();
+        services.AddScoped<IQueryHandler<GetMealPlanListQuery, IEnumerable<MealPlanListItem>>, GetMealPlansListQueryHandler>();
+        services.AddScoped<ICommandHandler<SaveMealPlanAsDraft>, SaveMealPlanAsDraftHandler>();
     }
 
     public static void MapNutritionistEndpoints(this IEndpointRouteBuilder endpoints)
@@ -46,5 +52,8 @@ public static class NutritionistModuleConfiguration
         endpoints.MapGetProfileInformationEndpoint();
         endpoints.MapVerifyQualificationsEndpoint();
         endpoints.MapGetAttachmentDetailsEndpoint();
+        endpoints.MapGetMealPlansListEndpoint();
+        endpoints.MapSaveMealPlanAsDraftEndpoint();
+        endpoints.MapGetMealPlanDetailsEndpoint();
     }
 }

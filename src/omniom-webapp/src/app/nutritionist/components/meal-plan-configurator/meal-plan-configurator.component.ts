@@ -61,11 +61,6 @@ export class MealPlanConfiguratorComponent implements OnInit {
           {
             meal: MealType.Breakfast,
             products: [
-              {
-                product: this.AMealCatalogueItem(),
-                guid: uuidv4()
-              },
-
             ]
           },
           {
@@ -75,10 +70,6 @@ export class MealPlanConfiguratorComponent implements OnInit {
           {
             meal: MealType.Snack,
             products: [
-              {
-                product: this.AMealCatalogueItem(),
-                guid: uuidv4()
-              }
             ]
           },
           {
@@ -258,13 +249,12 @@ export class MealPlanConfiguratorComponent implements OnInit {
   }
 
   saveMealPlanAsDraft() {
-    const isValid = this.validateMealPlan();
-    if (!isValid) {
-      console.error('[MealPlanConfigurator] Meal plan is invalid');
-      return;
-    }
-
-    this.store.dispatch(new SaveMealPlanAsDraft(this.mealPlan));
+    const mealPlan = {
+      ...this.mealPlan,
+      name: this.mealPlanForm.value.mealPlanName,
+      dailyCalories: this.mealPlanForm.value.dailyCalories
+    };
+    this.store.dispatch(new SaveMealPlanAsDraft(mealPlan));
   }
   
   public validateMealPlan(): boolean {

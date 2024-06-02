@@ -15,6 +15,8 @@ import { VerificationRequestDetailsComponent } from './components/verification-r
 import { RejectVerificationRequestDialogComponent } from './components/reject-verification-request-dialog/reject-verification-request-dialog.component';
 import { CreateVerificationRequestComponent } from './components/create-verification-request/create-verification-request.component';
 import { MealPlanConfiguratorComponent } from './components/meal-plan-configurator/meal-plan-configurator.component';
+import { MealPlansListComponent } from './components/meal-plans-list/meal-plans-list.component';
+import { MealPlanConfigurationStore } from './store/meal-plan-configuration.store';
 
 
 @NgModule({
@@ -28,11 +30,13 @@ import { MealPlanConfiguratorComponent } from './components/meal-plan-configurat
     VerificationRequestDetailsComponent,
     RejectVerificationRequestDialogComponent,
     CreateVerificationRequestComponent,
-    MealPlanConfiguratorComponent
+    MealPlanConfiguratorComponent,
+    MealPlansListComponent
   ],
   imports: [
     NgxsModule.forFeature([
-      NutritionistStore
+      NutritionistStore,
+      MealPlanConfigurationStore
     ]),
     CommonModule,
     FormsModule,

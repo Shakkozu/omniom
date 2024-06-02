@@ -25,7 +25,7 @@ internal class CreatingMealsIntegrationTests : BaseIntegrationTestsFixture
 
         Assert.Multiple(() =>
         {
-            var createdMeal = userMeals.Single();
+            var createdMeal = userMeals.Single(m => m.Guid == meal.Guid);
             createdMeal.Name.Should().Be(meal.Name);
             createdMeal.Description.Should().Be(meal.Description);
             createdMeal.Portions.Should().Be(meal.Portions);

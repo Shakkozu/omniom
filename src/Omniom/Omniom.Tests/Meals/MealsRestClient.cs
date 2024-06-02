@@ -1,6 +1,6 @@
-﻿using Omniom.Domain.Catalogue.Meals.GettingMeal;
-using Omniom.Domain.Catalogue.Meals.Storage;
+﻿using Omniom.Domain.Catalogue.Meals.Storage;
 using Omniom.Domain.Catalogue.Shared;
+using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using System.Net.Http.Json;
 
 namespace Omniom.Tests.DishConfiguration;

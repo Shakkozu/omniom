@@ -26,7 +26,7 @@ internal class ProductsTestsFixture
 
     internal async Task<IEnumerable<ProductCatalogItem>> AProductsFromCatalogue()
     {
-        return (await _searchProductsQueryHandler.HandleAsync(new SearchProductsQuery("", 10), CancellationToken.None)).Products as IEnumerable<ProductCatalogItem>;
+        return (await _searchProductsQueryHandler.HandleAsync(new SearchProductsQuery("", 50), CancellationToken.None)).Products as IEnumerable<ProductCatalogItem>;
     }
 
     internal static CreateProductCommand ACreateProductCommand()

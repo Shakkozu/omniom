@@ -39,7 +39,7 @@ internal static class Route
     }
 }
 
-internal record CreateMealCommand(Guid UserId, Meal Meal) : Domain.Shared.BuildingBlocks.ICommand;
+public record CreateMealCommand(Guid UserId, Meal Meal) : Domain.Shared.BuildingBlocks.ICommand;
 internal class CreateMealCommandHandler : ICommandHandler<CreateMealCommand>
 {
     private readonly MealsDbContext _dbContext;

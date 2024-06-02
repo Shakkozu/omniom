@@ -14,6 +14,7 @@ using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 using Omniom.Domain.Catalogue.Products.SeedDatabase;
 using Omniom.Domain.Catalogue.Products.AddProducts;
 using Omniom.Domain.Catalogue.Products.SearchProducts;
+using Omniom.Tests.DishConfiguration;
 
 namespace Omniom.Tests.Shared;
 
@@ -63,6 +64,7 @@ public class OmniomApp : WebApplicationFactory<Program>
         {
             collection.AddTransient<Fixtures>();
             collection.AddTransient<ProductsTestsFixture>();
+            collection.AddSingleton<MealsTestsFixture>();
             collection.AddTransient<AuthFixture>();
         });
 
@@ -104,6 +106,7 @@ public class OmniomApp : WebApplicationFactory<Program>
     internal SearchProductsQueryHandler SearchProductsQueryHandler => RequestScope().ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
     internal ImportProductsToCatalogue ProductCatalogueImportHandler => RequestScope().ServiceProvider.GetRequiredService<ImportProductsToCatalogue>();
     internal ProductsTestsFixture ProductsTestsFixture  => RequestScope().ServiceProvider.GetRequiredService<ProductsTestsFixture>();
+    internal MealsTestsFixture MealsTestsFixture => RequestScope().ServiceProvider.GetRequiredService<MealsTestsFixture>();
     internal AuthFixture AuthFixture => RequestScope().ServiceProvider.GetRequiredService<AuthFixture>();
 
     internal ICommandHandler<SaveMealNutritionEntriesCommand> AddNutritionEntriesCommandHandler => RequestScope().ServiceProvider.GetRequiredService<ICommandHandler<SaveMealNutritionEntriesCommand>>();

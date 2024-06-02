@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
 
 namespace Omniom.Domain.Nutritionist.Storage;
@@ -11,6 +12,8 @@ internal class NutritionistDbContext : DbContext
 
     public DbSet<NutritionistVerificationRequest> VerificationRequests { get; internal set; }
     public DbSet<Nutritionist> Nutritionists { get; internal set; }
+
+    public DbSet<UserMealPlanDao> MealPlans { get; internal set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -61,6 +64,20 @@ internal static class NutritionistSchema
             });
         });
 
+        modelBuilder.Entity<UserMealPlanDao>(model =>
+        {
+            model.ToTable("meal_plans");
+            model.Property(e => e.Id).HasColumnName("id").UseIdentityColumn();
+            model.Property(e => e.Guid).HasColumnName("guid");
+            model.Property(e => e.UserId).HasColumnName("user_id");
+            model.Property(e => e.Name).HasColumnName("name");
+            model.Property(e => e.CreatedAt).HasColumnName("created_at");
+            model.Property(e => e.ModifiedAt).HasColumnName("modified_at");
+            model.Property(e => e.Status).HasColumnName("status");
+            model.Property(e => e.DailyCaloriesTarget).HasColumnName("daily_kcal_target");
+            model.Property(e => e.MealDayDetails).HasColumnName("details");
+        });
+
         modelBuilder.Entity<Nutritionist>(model =>
         {
             model.ToTable("nutritionists");
@@ -78,6 +95,7 @@ internal static class NutritionistSchema
         });
     }
 }
+
 
 internal class NutritionistVerificationRequest
 {

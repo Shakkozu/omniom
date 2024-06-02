@@ -1,22 +1,30 @@
-import { Action, State, StateContext } from "@ngxs/store";
+import { Action, Selector, State, StateContext } from "@ngxs/store";
 import { MealPlan } from "../model";
 import { Injectable } from "@angular/core";
 import { SaveMealPlanAsDraft, SaveMealPlanAsDraftSuccess } from "./meal-plan-configuration.actions";
 import { MealPlanConfigurationRestService } from "../meal-plan-configuration-rest-service";
+import { Router } from "@angular/router";
 
 export interface MealPlanConfigurationStateModel {
 	mealPlans: MealPlan[];
 }
 @State<MealPlanConfigurationStateModel>({
-	name: '[nutritionist] meal-plan-configuration',
+	name: 'mealPlanConfiguration',
 	defaults: {
 		mealPlans: [],
 	}
 })
 @Injectable()
 export class MealPlanConfigurationStore {
-	constructor (private nutrtionistService: MealPlanConfigurationRestService) {
+	constructor (private nutrtionistService: MealPlanConfigurationRestService,
+		private router: Router
+	) {
 
+	}
+
+	@Selector()
+	static mealPlans(state: MealPlanConfigurationStateModel) {
+		return state.mealPlans;
 	}
 
 	@Action(SaveMealPlanAsDraft)
@@ -51,5 +59,6 @@ export class MealPlanConfigurationStore {
 		ctx.patchState({
 			mealPlans: modifiedMealPlansCollection
 		});
+		this.router.navigate(['/nutritionist']);
 	}
 }
