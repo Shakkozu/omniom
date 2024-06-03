@@ -28,8 +28,9 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
     <div class="flex flex-col w-1/3 p-4 mr-4 bg-white rounded-2xl shadow-xl">
       <app-dish-form [singlePortion]="this.singlePortion" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
     </div>
-
+    
     <div class="flex flex-col w-2/3 p-4 bg-white rounded-2xl shadow-xl">
+      <p>{{getProductsSummary()}}</p>
       <app-dish-products-selector [products]="products"></app-dish-products-selector>
     </div>
   </div>
@@ -49,6 +50,14 @@ export class NewDishDialogComponent implements OnDestroy, AfterViewInit {
       this.products = [];
     }
   
+  public getProductsSummary(): string {
+    const totalKCal = this.products.reduce((acc, product) => acc + product.kcal, 0);
+    const totalProtein = this.products.reduce((acc, product) => acc + product.proteins, 0);
+    const totalCarbs = this.products.reduce((acc, product) => acc + product.carbohydrates, 0);
+    const totalFats = this.products.reduce((acc, product) => acc + product.fats, 0);
+    return `Kcal: ${totalKCal.toFixed(2)}, B: ${totalProtein.toFixed(2)}, W: ${totalCarbs.toFixed(2)}, T: ${totalFats.toFixed(2)}`;
+    
+  }
 
   public save() {
     this.dishForm?.save();

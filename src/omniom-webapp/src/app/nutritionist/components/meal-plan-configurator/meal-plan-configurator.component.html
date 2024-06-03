@@ -7,6 +7,7 @@
 			Cofnij
 		</button>
 		<button mat-raised-button color="primary" (click)="saveMealPlanAsDraft()">Zapisz szkic</button>
+		<button mat-raised-button *ngIf="validateMealPlan()" class="mx-2" color="primary" (click)="saveMealPlanAsDraft()">Opublikuj</button>
 	</mat-card-actions>
 	<mat-card-content>
 		<form [formGroup]="mealPlanForm">
