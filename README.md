@@ -31,7 +31,7 @@ docker compose up --build
 ```
 
 
-Uruchomione zestaną 4 kontenery:
+Uruchomione zostaną 4 kontenery:
 - angular-app - Klient angularowy aplikacji
 - omniom-api - .NET API obsługujące żądania aplikacji klienckiej
 - products-catalogue-db - Kontener z bazą danych postgres zawierającą dane dot. produktów (został odseparowany, aby umożliwić łatwe udostępnienie bazy produktów dalej na podstawie licencji z OpenFoodsApi)
