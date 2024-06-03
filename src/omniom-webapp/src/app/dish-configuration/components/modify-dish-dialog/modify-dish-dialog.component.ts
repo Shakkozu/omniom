@@ -22,7 +22,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 <div class="dialog-content flex flex-col p-6">
   <div class="flex">
     <div class="flex flex-col w-1/2 p-4 mr-4 bg-white rounded-2xl shadow-xl">
-      <app-dish-form [singlePortion]="this.data.singlePortion ?? false" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
+      <app-dish-form [descriptionReadonly]="this.data.descriptionReadonly ?? false" [singlePortion]="this.data.singlePortion ?? false" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
     </div>
 
     <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
@@ -60,4 +60,5 @@ export class ModifyDishDialogComponent implements AfterViewInit {
 export interface ModifyDishDialogConfiguration {
   dishDetails: MealCatalogueItem;
   singlePortion?: boolean;
+  descriptionReadonly?: boolean;
 }

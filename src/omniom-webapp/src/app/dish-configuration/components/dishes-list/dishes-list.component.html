@@ -11,9 +11,13 @@
           <span matListItemTitle>{{dish.name}}</span>
           <div matListItemMeta>
             <span class="text-label-large">{{dish.kcal.toFixed(0)}} kcal / porcję ({{dish.portionInGrams.toFixed(0)}}g)</span>
-            <button matIconPrefix (click)="showDishDetails(dish)" class="pt-4" mat-icon-button
+            <button *ngIf="!singleSelectButtonEnabled" matIconPrefix (click)="showDishDetails(dish)" class="pt-4" mat-icon-button
               color="primary" aria-label="">
               <mat-icon class="mt-1">visibility</mat-icon>
+            </button>
+            <button *ngIf="singleSelectButtonEnabled" matIconPrefix (click)="onDishSelectedButtonClicked(dish)" class="pt-4" mat-icon-button
+              color="primary" aria-label="">
+              <mat-icon class="mt-1">check</mat-icon>
             </button>
           </div>
         </mat-list-item>

@@ -42,7 +42,8 @@ import { DishDetailsComponent } from '../dish-configuration/components/dish-deta
     SearchBarComponent,
     ProductsCatalogueComponent,
     ProductPresentationListItemComponent,
-    ProductPresentationListComponent
+    ProductPresentationListComponent,
+    DishesListComponent
   ]
 })
 export class ProductsModule { }

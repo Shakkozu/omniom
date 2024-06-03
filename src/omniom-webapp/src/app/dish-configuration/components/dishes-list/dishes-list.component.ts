@@ -7,7 +7,7 @@ import { Store } from '@ngxs/store';
 import { FetchDishes, DishSelected as DishSelected, DishDeselected } from '../../store/dish-configuration.actions';
 import { DishConfigurationStore } from '../../store/dish-configuration.state';
 import { ProductListChangedEvent as CatalogueItemListChangedEvent } from '../../../products/components/products-list/products-list.component';
-import { CatalogueItem, CatalogueItemType } from '../../../products/model';
+import { CatalogueItem, CatalogueItemType, MealCatalogueItem } from '../../../products/model';
 import { MatDialog } from '@angular/material/dialog';
 import { DishDetailsComponent } from '../dish-details/dish-details.component';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../new-dish-dialog/new-dish-dialog.component';
@@ -29,12 +29,14 @@ export class DishesListComponent {
   public selectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.selectedDishes);
   public notSelectedDishes$: Observable<CatalogueItem[]> = this.store.select(DishConfigurationStore.dishesWithoutSelection);
   @Input() selectionList: boolean = false;
+  @Input() singleSelectButtonEnabled: boolean = false;
   @Input() addNewDishButtonEnabled: boolean = false;
+  @Output() singleMealCatalogueItemSelected: EventEmitter<MealCatalogueItem> = new EventEmitter<MealCatalogueItem>();
   @ViewChild(MatSelectionList) selectedDishesList!: MatSelectionList;
   @ViewChild(MatSelectionList) notSelectedDishesList!: MatSelectionList;
 
   @Output() dishListChanged: EventEmitter<CatalogueItemListChangedEvent> = new EventEmitter<CatalogueItemListChangedEvent>();
-  
+
   public displayedColumns: string[] = ['name', 'kcalPer100g', 'fats', 'carbs', 'proteins'];
   constructor (private store: Store,
     private matDialog: MatDialog) {
@@ -52,7 +54,17 @@ export class DishesListComponent {
       return;
 
     this.store.dispatch(new DishSelected(dishId));
-    this.dishListChanged.emit({ type: 'selected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal});
+    this.dishListChanged.emit({ type: 'selected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal });
+  }
+
+  public onDishSelectedButtonClicked(selectedDish: CatalogueItem) {
+    this.store.select(DishConfigurationStore.dishDetailsById(selectedDish.guid))
+      .subscribe((dish) => {
+        if (dish) {
+          this.singleMealCatalogueItemSelected.emit(dish);
+        };
+      })
+
   }
 
   onAddNewDishButtonClicked() {
@@ -74,7 +86,7 @@ export class DishesListComponent {
       return;
 
     this.store.dispatch(new DishDeselected(dishId));
-    this.dishListChanged.emit({ type: 'deselected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal});
+    this.dishListChanged.emit({ type: 'deselected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal });
   }
 
   showDishDetails(dish: any) {

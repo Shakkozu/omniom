@@ -13,7 +13,7 @@ import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Nazwa Dania</mat-label>
-            <input matInput formControlName="name">
+            <input matInput formControlName="name" [readonly]="descriptionReadonly">
             <mat-error>{{getErrorMessage("name")}}</mat-error>
           </mat-form-field>
         </div>
@@ -27,13 +27,13 @@ import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Przepis</mat-label>
-            <textarea [cols]="5" [rows]="5" matInput formControlName="recipe"></textarea>
+            <textarea [cols]="5" [rows]="5" [readonly]="descriptionReadonly" matInput formControlName="recipe"></textarea>
           </mat-form-field>
         </div>
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Opis</mat-label>
-            <textarea matInput formControlName="description"></textarea>
+            <textarea matInput [readonly]="descriptionReadonly" formControlName="description"></textarea>
           </mat-form-field>
           <mat-error *ngIf="products.length < 1 && form.touched">Co najmniej 1 składnik jest wymagany</mat-error>
         </div>
@@ -44,6 +44,7 @@ export class DishFormComponent {
   form: FormGroup;
   @Output() formSubmitted: EventEmitter<Dish> = new EventEmitter();
   @Input() products: CatalogueItem[] = [];
+  @Input() descriptionReadonly: boolean = false;
   @Input() singlePortion: boolean = false;
 
   constructor (

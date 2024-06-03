@@ -157,6 +157,17 @@ export class MealCatalogueItem extends CatalogueItem {
 		const ingredients = dish.ingredients.map(p => ProductCatalogueItem.fromDto(p));
 		return new MealCatalogueItem(dish.name, dish.guid, dish.portionInGrams, dish.kcalPer100G, dish.proteinsPer100G, dish.fatsPer100G, dish.carbohydratesPer100G, dish.description, dish.recipe, dish.portions, ingredients);
 	}
+
+	toMealCatalogueItemWithSinglePortion(): MealCatalogueItem {
+		const ingredients = this.ingredients.map(p => {
+			const portionInGrams = Math.round(p.portionInGrams / this.portions);
+			return new ProductCatalogueItem(p.name, p.guid, portionInGrams, p.kcalPer100g, p.proteinsPer100g, p.fatsPer100g, p.carbohydratesPer100g);
+		});
+		const totalPortionInGrams = ingredients.reduce((acc, p) => acc + p.portionInGrams, 0);
+		return new MealCatalogueItem(this.name, this.guid, totalPortionInGrams, this.kcalPer100g, this.proteinsPer100g, this.fatsPer100g, this.carbohydratesPer100g, this.description, this.recipe, 1, ingredients);
+	}
+
+
 }
 
 export enum CatalogueItemType {

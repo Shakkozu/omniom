@@ -1,6 +1,6 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { CatalogueItem } from '../../../products/model';
+import { CatalogueItem, MealCatalogueItem } from '../../../products/model';
 import { Store } from '@ngxs/store';
 import { CleanupExcludedList } from '../../../products/store/products-catalogue.actions';
 import { ProductsCatalogueComponent } from '../../../products/components/products-catalogue/products-catalogue.component';
@@ -36,7 +36,7 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 </div>
   `,
 })
-export class NewDishDialogComponent implements OnDestroy, OnInit {
+export class NewDishDialogComponent implements OnDestroy, AfterViewInit {
   public products: CatalogueItem[] = [];
   public singlePortion: boolean = false;
   @ViewChild(ProductsCatalogueComponent) productsCatalogue?: ProductsCatalogueComponent;
@@ -45,9 +45,9 @@ export class NewDishDialogComponent implements OnDestroy, OnInit {
   constructor (
     public dialogRef: MatDialogRef<NewDishDialogComponent>,
     private store: Store,
-    @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
-    this.products = data.products;
-  }
+      @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
+      this.products = [];
+    }
   
 
   public save() {
@@ -60,9 +60,16 @@ export class NewDishDialogComponent implements OnDestroy, OnInit {
     }
     this.dialogRef.close($event);
   }
-
-  ngOnInit(): void {
+  
+  ngAfterViewInit(): void {
     this.singlePortion = this.data.singlePortion ?? false;
+    if (this.data.sourceMeal) {
+      this.products = this.data.sourceMeal.ingredients;
+      this.dishForm.initialize(this.data.sourceMeal);
+    }
+    else if (this.data.products && this.data.products.length > 0) {
+      this.products = this.data.products;
+    }
   }
 
 
@@ -72,7 +79,8 @@ export class NewDishDialogComponent implements OnDestroy, OnInit {
 }
 
 export interface NewDishDialogConfiguration {
-  products: CatalogueItem[];
   createNewDishOnSave: boolean;
   singlePortion?: boolean;
+  products?: CatalogueItem[];
+  sourceMeal?: MealCatalogueItem;
 }

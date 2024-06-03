@@ -17,6 +17,8 @@ import { CreateVerificationRequestComponent } from './components/create-verifica
 import { MealPlanConfiguratorComponent } from './components/meal-plan-configurator/meal-plan-configurator.component';
 import { MealPlansListComponent } from './components/meal-plans-list/meal-plans-list.component';
 import { MealPlanConfigurationStore } from './store/meal-plan-configuration.store';
+import { SelectDishDialogComponent } from './components/select-dish-dialog/select-dish-dialog.component';
+import { DishesConfigurationModule } from '../dish-configuration/dish-configuration.module';
 
 
 @NgModule({
@@ -31,7 +33,8 @@ import { MealPlanConfigurationStore } from './store/meal-plan-configuration.stor
     RejectVerificationRequestDialogComponent,
     CreateVerificationRequestComponent,
     MealPlanConfiguratorComponent,
-    MealPlansListComponent
+    MealPlansListComponent,
+    SelectDishDialogComponent
   ],
   imports: [
     NgxsModule.forFeature([
@@ -42,7 +45,8 @@ import { MealPlanConfigurationStore } from './store/meal-plan-configuration.stor
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
-    NutritionistRoutingModule
+    NutritionistRoutingModule,
+    DishesConfigurationModule
   ]
 })
 export class NutritionistModule { }

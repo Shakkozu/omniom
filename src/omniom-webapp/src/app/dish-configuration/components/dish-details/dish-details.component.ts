@@ -32,7 +32,7 @@ import { CatalogueItem, ProductCatalogueItem } from '../../../products/model';
         <div class="flex flex-col">
           <mat-form-field>
             <mat-label>Ilość Porcji</mat-label>
-            <input readonly matInput type="number" formControlName="portions">
+            <input matInput type="number" formControlName="portions">
           </mat-form-field>
         </div>
         <div class="flex flex-col">

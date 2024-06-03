@@ -13,6 +13,7 @@ import { Store } from '@ngxs/store';
 import { SaveMealPlanAsDraft } from '../../store/meal-plan-configuration.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
+import { SelectDishDialogComponent } from '../select-dish-dialog/select-dish-dialog.component';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -21,6 +22,7 @@ import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-
   changeDetection: ChangeDetectionStrategy.Default
 })
 export class MealPlanConfiguratorComponent implements OnInit {
+
   mealPlanForm: FormGroup;
   public mealPlan!: MealPlan;
   days: number[] = [1, 2, 3, 4, 5, 6, 7];
@@ -54,7 +56,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
         return;
       }
 
-        
+
     });
     this.mealPlan = {
       name: '',
@@ -66,7 +68,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
   }
 
   public navigateBack() {
-  this.router.navigate(['/nutritionist'], { relativeTo: this.route });
+    this.router.navigate(['/nutritionist'], { relativeTo: this.route });
   }
 
 
@@ -188,17 +190,17 @@ export class MealPlanConfiguratorComponent implements OnInit {
       if (!mealPlanDay) {
         return;
       }
-      
+
       const mealPlanMeal = mealPlanDay.meals.find(m => m.products.some(p => p.guid === mealProductGuid));
       if (!mealPlanMeal) {
         return;
       }
-      
+
       const mealPlanProduct = mealPlanMeal.products.find(p => p.guid === mealProductGuid);
       if (!mealPlanProduct) {
         return;
       }
-      
+
       const meal = MealCatalogueItem.fromDish(result);
       mealPlanProduct.product = meal;
     });
@@ -208,7 +210,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
   public addProductToMeal(day: number, meal: any) {
     const config: NewDishDialogConfiguration = {
       products: [],
-      createNewDishOnSave: false,
+      createNewDishOnSave: true,
       singlePortion: true
     };
     const dialogRef = this.dialog.open(NewDishDialogComponent, {
@@ -220,6 +222,35 @@ export class MealPlanConfiguratorComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.addProduct(day, meal, result);
+      }
+    });
+  }
+
+  addExistingDishToMeal(dayNumber: number, mealType: any) {
+    const dialogRef = this.dialog.open(SelectDishDialogComponent, {
+      width: '70vw',
+      height: '80vh',
+    });
+
+    dialogRef.afterClosed().subscribe(mealDetails => {
+      if (mealDetails) {
+        const mealDetailsWithSinglePortion = mealDetails.toMealCatalogueItemWithSinglePortion();
+        const config: NewDishDialogConfiguration = {
+          createNewDishOnSave: false,
+          singlePortion: true,
+          sourceMeal: mealDetailsWithSinglePortion
+        };
+        const addMealRef = this.dialog.open(NewDishDialogComponent, {
+          width: '70vw',
+          height: '80vh',
+          data: config
+        });
+        addMealRef.afterClosed().subscribe(result => {
+          if (result) {
+            this.addProduct(dayNumber, mealType, result);
+          }
+        }
+        )
       }
     });
   }
@@ -263,7 +294,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
     }
 
     const mealPlanProductIndex = mealPlanMeal.products.findIndex(p => p.guid === mealGuid);
-    mealPlanMeal.products.splice(mealPlanProductIndex, 1);    
+    mealPlanMeal.products.splice(mealPlanProductIndex, 1);
   }
 
   saveMealPlanAsDraft() {
@@ -275,7 +306,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
     console.log(mealPlan);
     this.store.dispatch(new SaveMealPlanAsDraft(mealPlan));
   }
-  
+
   public validateMealPlan(): boolean {
     return this.mealPlan.days.every(d => d.meals.every(m => m.products.length > 0));
   }
