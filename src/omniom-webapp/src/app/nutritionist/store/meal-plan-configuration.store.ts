@@ -59,6 +59,5 @@ export class MealPlanConfigurationStore {
 		ctx.patchState({
 			mealPlans: modifiedMealPlansCollection
 		});
-		this.router.navigate(['/nutritionist']);
 	}
 }

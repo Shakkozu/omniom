@@ -25,6 +25,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
   mealPlanForm: FormGroup;
   public mealPlan!: MealPlan;
+  public productsListModified: boolean = false;
   days: number[] = [1, 2, 3, 4, 5, 6, 7];
   public meals: any[] = [MealType.Breakfast, MealType.Dinner, MealType.Snack, MealType.Supper]; // todo allow nutritionist to configure daily meals
 
@@ -40,6 +41,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
       dailyCalories: [1500, [Validators.required, Validators.min(1500), Validators.max(3500)]]
     });
   }
+
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const mealPlanGuid = params.get('id');
@@ -65,6 +67,10 @@ export class MealPlanConfiguratorComponent implements OnInit {
       days: this.initializeDays(),
       guid: uuidv4()
     };
+  }
+
+  public hasNotSavedChanges(): boolean {
+    return this.mealPlanForm.dirty;
   }
 
   public navigateBack() {
@@ -134,7 +140,6 @@ export class MealPlanConfiguratorComponent implements OnInit {
     return this.formErrorHandler.handleError(this.mealPlanForm, formControlName);
   }
 
-
   getProductsForMeal(day: number, meal: any) {
     const mealPlanDay = this.mealPlan.days.find(d => d.dayNumber === day);
     if (!mealPlanDay) {
@@ -203,6 +208,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
       const meal = MealCatalogueItem.fromDish(result);
       mealPlanProduct.product = meal;
+      this.productsListModified = true;
     });
 
   }
@@ -231,7 +237,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
       width: '40vw',
       height: '60vh',
     });
-
+    
     dialogRef.afterClosed().subscribe(mealDetails => {
       if (mealDetails) {
         const mealDetailsWithSinglePortion = mealDetails.toMealCatalogueItemWithSinglePortion();
@@ -256,6 +262,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
   }
 
   private addProduct(day: number, meal: MealType, result: Dish) {
+    this.productsListModified = true;
     const mealPlanDay = this.mealPlan.days.find(d => d.dayNumber === day);
     if (!mealPlanDay) {
       return;
@@ -295,6 +302,7 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
     const mealPlanProductIndex = mealPlanMeal.products.findIndex(p => p.guid === mealGuid);
     mealPlanMeal.products.splice(mealPlanProductIndex, 1);
+    this.productsListModified = true;
   }
 
   saveMealPlanAsDraft() {
@@ -303,8 +311,12 @@ export class MealPlanConfiguratorComponent implements OnInit {
       name: this.mealPlanForm.value.mealPlanName,
       dailyCalories: this.mealPlanForm.value.dailyCalories
     };
-    console.log(mealPlan);
-    this.store.dispatch(new SaveMealPlanAsDraft(mealPlan));
+    this.store.dispatch(new SaveMealPlanAsDraft(mealPlan)).subscribe(
+      () => {
+        this.productsListModified = false;
+      }
+    );
+
   }
 
   public validateMealPlan(): boolean {

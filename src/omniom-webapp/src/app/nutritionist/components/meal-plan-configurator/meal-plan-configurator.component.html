@@ -1,6 +1,6 @@
 <mat-card class="p-4">
 	<mat-card-title>
-		Konfiguracja Jadłospisu
+		Konfiguracja Jadłospisu <span *ngIf="productsListModified" matTooltip="Niezapisane zmiany">*</span>
 	</mat-card-title>
 	<mat-card-actions>
 		<button class="m-2" mat-raised-button color="primary" (click)="navigateBack()">
