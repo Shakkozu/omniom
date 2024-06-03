@@ -25,11 +25,11 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
 
 <div class="dialog-content flex flex-col p-6">
   <div class="flex">
-    <div class="flex flex-col w-1/2 p-4 mr-4 bg-white rounded-2xl shadow-xl">
+    <div class="flex flex-col w-1/3 p-4 mr-4 bg-white rounded-2xl shadow-xl">
       <app-dish-form [singlePortion]="this.singlePortion" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
     </div>
 
-    <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
+    <div class="flex flex-col w-2/3 p-4 bg-white rounded-2xl shadow-xl">
       <app-dish-products-selector [products]="products"></app-dish-products-selector>
     </div>
   </div>

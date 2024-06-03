@@ -228,8 +228,8 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
   addExistingDishToMeal(dayNumber: number, mealType: any) {
     const dialogRef = this.dialog.open(SelectDishDialogComponent, {
-      width: '70vw',
-      height: '80vh',
+      width: '40vw',
+      height: '60vh',
     });
 
     dialogRef.afterClosed().subscribe(mealDetails => {

@@ -49,7 +49,7 @@ import { Router } from '@angular/router';
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 
-  <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[20, 50, 100]" showFirstLastButtons></mat-paginator>
 </div>
   `,
   styleUrl: './meal-plans-list.component.scss'
@@ -60,8 +60,7 @@ export class MealPlansListComponent implements OnInit {
   public dataSource: MatTableDataSource<MealPlanListItem> = new MatTableDataSource<MealPlanListItem>();
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor (private store: Store,
-    private mealPlanRestService: MealPlanConfigurationRestService,
+  constructor (private mealPlanRestService: MealPlanConfigurationRestService,
     private router: Router
   ) {
 
