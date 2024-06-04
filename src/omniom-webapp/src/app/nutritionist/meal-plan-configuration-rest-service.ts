@@ -6,8 +6,6 @@ import { Observable, map } from "rxjs";
 import { MealPlanListItem } from "./components/meal-plans-list/meal-plans-list.component";
 import { MealPlanMapper } from "./meal-plan-mapper";
 
-
-
 @Injectable({
 	providedIn: 'root',
 })

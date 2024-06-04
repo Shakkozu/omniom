@@ -10,13 +10,14 @@
 
 		<div class="flex mt-8">
 			<app-active-collaborations-list class="h-36 max-h-36"
+			[mealPlans$]="mealPlans$"
 				*ngIf="userIsRegisteredAsNutritionist$ | async"></app-active-collaborations-list>
 		</div>
 	</div>
 
 	<div style="flex: 0.5" class="mx-8 max-h-36 h-36">
 		<div class="flex-row">
-			<app-meal-plans-list class="h-36 max-h-36" *ngIf="userIsRegisteredAsNutritionist$ | async"></app-meal-plans-list>
+			<app-meal-plans-list [mealPlans$]="mealPlans$" class="h-36 max-h-36" *ngIf="userIsRegisteredAsNutritionist$ | async"></app-meal-plans-list>
 		</div>
 
 	</div>

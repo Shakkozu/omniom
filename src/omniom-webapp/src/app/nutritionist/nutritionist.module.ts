@@ -49,6 +49,9 @@ import { ActiveCollaborationsListComponent } from '../nutritionist-collaboration
     NutritionistRoutingModule,
     DishesConfigurationModule,
     ActiveCollaborationsListComponent
+  ],
+  exports: [
+    MealPlansListComponent
   ]
 })
 export class NutritionistModule { }

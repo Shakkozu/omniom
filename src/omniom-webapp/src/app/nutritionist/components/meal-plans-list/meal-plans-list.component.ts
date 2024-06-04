@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MealPlanStatus } from '../../model';
 import { Observable, of } from 'rxjs';
-import { Store } from '@ngxs/store';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
@@ -59,9 +58,9 @@ import { Router } from '@angular/router';
   styleUrl: './meal-plans-list.component.scss'
 })
 export class MealPlansListComponent implements OnInit {
-  public mealPlansListItems$: Observable<MealPlanListItem[]> = of([]);
   public displayedColumns: string[] = ['name', 'status', 'dailyCalories', 'modifiedAt', 'options'];
   public dataSource: MatTableDataSource<MealPlanListItem> = new MatTableDataSource<MealPlanListItem>();
+  @Input() public mealPlans$: Observable<MealPlanListItem[]> = of([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor (private mealPlanRestService: MealPlanConfigurationRestService,
@@ -69,7 +68,7 @@ export class MealPlansListComponent implements OnInit {
   ) {
 
   }
-
+  
   public translateStatus(status: MealPlanStatus): string {
     switch (status) {
       case MealPlanStatus.Draft:
@@ -95,20 +94,12 @@ export class MealPlansListComponent implements OnInit {
     this.router.navigate(['/nutritionist/meal-plan-configurator', mealPlan.guid]);
   }
 
-
   ngOnInit(): void {
-    this.mealPlanRestService.getMealPlans().subscribe(data => {
-      this.dataSource = new MatTableDataSource<MealPlanListItem>(data);
+    this.mealPlans$.subscribe((mealPlans) => {
+      this.dataSource = new MatTableDataSource<MealPlanListItem>(mealPlans);
       this.dataSource.paginator = this.paginator;
     });
   }
-}
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
 }
 
 export interface MealPlanListItem {
