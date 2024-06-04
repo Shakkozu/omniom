@@ -5,15 +5,22 @@
 </div>
 
 <div class="flex h-72">
-	<div style="flex: 0.4;">
+	<div style="flex: 0.5;">
 		<app-profile-details *ngIf="userIsRegisteredAsNutritionist$ | async"></app-profile-details>
+
+		<div class="flex mt-8">
+			<app-active-collaborations-list class="h-36 max-h-36"
+				*ngIf="userIsRegisteredAsNutritionist$ | async"></app-active-collaborations-list>
+		</div>
 	</div>
 
-	<div style="flex: 0.5" class="mx-4 max-h-36 h-36">
+	<div style="flex: 0.5" class="mx-8 max-h-36 h-36">
 		<div class="flex-row">
 			<app-meal-plans-list class="h-36 max-h-36" *ngIf="userIsRegisteredAsNutritionist$ | async"></app-meal-plans-list>
 		</div>
 
 	</div>
 
+	<div style="flex: 0.5" class="mx-4 max-h-36 h-36">
+		
 </div>

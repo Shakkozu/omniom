@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { NutritionistStore } from '../../store/nutritionist.store';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-nutritionist-profile-page',

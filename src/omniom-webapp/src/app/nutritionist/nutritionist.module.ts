@@ -19,6 +19,7 @@ import { MealPlansListComponent } from './components/meal-plans-list/meal-plans-
 import { MealPlanConfigurationStore } from './store/meal-plan-configuration.store';
 import { SelectDishDialogComponent } from './components/select-dish-dialog/select-dish-dialog.component';
 import { DishesConfigurationModule } from '../dish-configuration/dish-configuration.module';
+import { ActiveCollaborationsListComponent } from '../nutritionist-collaboration/active-collaborations-list/active-collaborations-list.component';
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import { DishesConfigurationModule } from '../dish-configuration/dish-configurat
     ReactiveFormsModule,
     MaterialModule,
     NutritionistRoutingModule,
-    DishesConfigurationModule
+    DishesConfigurationModule,
+    ActiveCollaborationsListComponent
   ]
 })
 export class NutritionistModule { }
