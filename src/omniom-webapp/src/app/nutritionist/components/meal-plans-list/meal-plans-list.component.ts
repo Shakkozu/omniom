@@ -39,11 +39,11 @@ import { Router } from '@angular/router';
       <td mat-cell *matCellDef="let item">
       <div class="flex">
         <ng-container *ngIf="item.status === 'Draft'">
-          <button mat-icon-button (click)="editMealPlan(item)" color="primary">
+          <button  mat-icon-button (click)="editMealPlan(item)" color="primary">
             <mat-icon>edit</mat-icon>
           </button>
         </ng-container>
-        <button mat-icon-button (click)="previewMealPlan(item)" color="primary">
+        <button *ngIf="item.status === 'Active'" mat-icon-button (click)="previewMealPlan(item)" color="primary">
           <mat-icon>visibility</mat-icon>
         </button>
       </div>
