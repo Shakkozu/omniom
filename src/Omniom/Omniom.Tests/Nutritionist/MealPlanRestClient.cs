@@ -11,6 +11,12 @@ internal static class MealPlanRestClient
         var response = await client.PostAsJsonAsync("/api/nutritionist/meal-plans", mealPlan);
         response.EnsureSuccessStatusCode();
     }
+    
+    internal static async Task PublishMealPlan(this HttpClient client, Guid mealPlanGuid)
+    {
+        var response = await client.PutAsJsonAsync($"/api/nutritionist/meal-plans/{mealPlanGuid}/publish", new {});
+        response.EnsureSuccessStatusCode();
+    }
 
     internal static async Task<MealPlan> GetMealPlanDetails(this HttpClient client, Guid mealPlanGuid)
     {

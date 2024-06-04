@@ -118,11 +118,17 @@ internal class UserMealPlanDao
         };
     }
 
+    internal void Publish()
+    {
+        Status = MealPlanStatus.Active.ToString();
+        ModifiedAt = DateTime.UtcNow;
+    }
+
     public int Id { get; set; }
     public string Name { get; }
     public Guid UserId { get; }
     public Guid Guid { get; }
-    public string Status { get; }
+    public string Status { get; private set; }
     public int DailyCaloriesTarget { get; }
 
     public string MealDayDetails { get; }

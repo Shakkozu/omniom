@@ -10,7 +10,7 @@ import { FormErrorHandler } from '../../../shared/form-error-handler';
 import { DaySummary, MealPlan, MealPlanDay, MealPlanProduct, MealPlanStatus } from '../../model';
 import { MealType } from '../../../nutrition-diary/model';
 import { Store } from '@ngxs/store';
-import { SaveMealPlanAsDraft } from '../../store/meal-plan-configuration.actions';
+import { PublishMealPlan, SaveMealPlanAsDraft } from '../../store/meal-plan-configuration.actions';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
 import { SelectDishDialogComponent } from '../select-dish-dialog/select-dish-dialog.component';
@@ -316,7 +316,12 @@ export class MealPlanConfiguratorComponent implements OnInit {
         this.productsListModified = false;
       }
     );
+  }
 
+  public publishMealPlan() {
+    this.store.dispatch(new PublishMealPlan(this.mealPlan));
+
+    
   }
 
   public validateMealPlan(): boolean {

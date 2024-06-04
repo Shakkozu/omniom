@@ -13,9 +13,9 @@ using Omniom.Domain.Nutritionist.Verification.GettingAttachmentDetails;
 using Omniom.Domain.Nutritionist.Verification.FetchingUserVerificationRequestDetails;
 using Omniom.Domain.Nutritionist.Verification.FetchingPendingVerificationRequests;
 using Omniom.Domain.Nutritionist.Verification.CreatingVerificationRequests;
-using Omniom.Domain.Catalogue.Meals.GettingMeal;
 using Omniom.Domain.Nutritionist.MealPlans.FetchingMealPlan;
 using Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
+using Omniom.Domain.Nutritionist.MealPlans.PublishingMealPlan;
 
 namespace Omniom.Domain.Nutritionist;
 
@@ -41,6 +41,7 @@ public static class NutritionistModuleConfiguration
         services.AddScoped<IQueryHandler<GetMealPlanDetails, MealPlan>, GetMealPlanDetailsHandler>();
         services.AddScoped<IQueryHandler<GetMealPlanListQuery, IEnumerable<MealPlanListItem>>, GetMealPlansListQueryHandler>();
         services.AddScoped<ICommandHandler<SaveMealPlanAsDraft>, TransactionalSaveMealPlanAsDraftHandler>();
+        services.AddScoped<ICommandHandler<PublishMealPlan>, PublishMealPlanHandler>();
     }
 
     public static void MapNutritionistEndpoints(this IEndpointRouteBuilder endpoints)
@@ -52,8 +53,10 @@ public static class NutritionistModuleConfiguration
         endpoints.MapGetProfileInformationEndpoint();
         endpoints.MapVerifyQualificationsEndpoint();
         endpoints.MapGetAttachmentDetailsEndpoint();
+
         endpoints.MapGetMealPlansListEndpoint();
         endpoints.MapSaveMealPlanAsDraftEndpoint();
         endpoints.MapGetMealPlanDetailsEndpoint();
+        endpoints.MapPublishMealPlanEndpoint();
     }
 }

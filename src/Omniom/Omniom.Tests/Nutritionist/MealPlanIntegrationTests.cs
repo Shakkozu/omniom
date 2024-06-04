@@ -9,6 +9,30 @@ namespace Omniom.Tests.Nutritionist;
 public class MealPlanIntegrationTests : BaseIntegrationTestsFixture
 {
     [Test]
+    public async Task SeedData()
+    {
+            var httpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.Admin);
+        for(int i = 0; i < 10; i++)
+        {
+            var mealPlan = AMealPlan();
+            await httpClient.CreateMealPlan(mealPlan);
+        }
+    }
+
+    [Test]
+    public async Task ShouldPublishMealPlan()
+    {
+        var mealPlan = AMealPlan();
+        var httpClient = await _omniomApp.CreateHttpClientWithAuthorizationAsync(OmniomApp.UserType.User);
+        await httpClient.CreateMealPlan(mealPlan);
+
+        await httpClient.PublishMealPlan(mealPlan.Guid);
+
+        var mealPlanDetails = await httpClient.GetMealPlanDetails(mealPlan.Guid);
+        mealPlanDetails.Status.Should().Be(MealPlanStatus.Active.ToString());
+    }
+
+    [Test]
     public async Task ShouldCreateMealPlan()
     {
         var mealPlan = AMealPlan();
@@ -71,7 +95,7 @@ public class MealPlanIntegrationTests : BaseIntegrationTestsFixture
                 
                 new MealPlanMeal
                 {
-                    MealType = MealType.SecondBreakfast,
+                    MealType = MealType.Snack,
                     Products = ARandomSetOfMealPlanProducts(2).ToList()
                 },
                 

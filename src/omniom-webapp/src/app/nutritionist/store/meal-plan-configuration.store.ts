@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from "@ngxs/store";
-import { MealPlan } from "../model";
+import { MealPlan, MealPlanStatus } from "../model";
 import { Injectable } from "@angular/core";
-import { SaveMealPlanAsDraft, SaveMealPlanAsDraftSuccess } from "./meal-plan-configuration.actions";
+import { PublishMealPlan, SaveMealPlanAsDraft, SaveMealPlanAsDraftSuccess } from "./meal-plan-configuration.actions";
 import { MealPlanConfigurationRestService } from "../meal-plan-configuration-rest-service";
 import { Router } from "@angular/router";
 
@@ -42,6 +42,27 @@ export class MealPlanConfigurationStore {
 		ctx.patchState({
 			mealPlans: [...state.mealPlans, action.mealPlan]
 		});
+	}
+
+	@Action(PublishMealPlan)
+	publishMealPlan(ctx: StateContext<MealPlanConfigurationStateModel>, action: PublishMealPlan) {
+		this.nutrtionistService.saveMealPlan(action.mealPlan).subscribe({
+			next: () => {
+				this.nutrtionistService.publishMealPlan(action.mealPlan.guid).subscribe({
+					next: () => {
+						action.mealPlan.status = MealPlanStatus.Active;
+						ctx.dispatch(new SaveMealPlanAsDraftSuccess(action.mealPlan));
+						this.router.navigate(['/nutritionist']);
+					},
+					error: (error) => {
+						console.error('error while publishing meal plan', error);
+					},
+				});
+			},
+			error: (error) => {
+				console.error('error while saving meal plan', error);
+			},
+		})
 	}
 
 	@Action(SaveMealPlanAsDraftSuccess)

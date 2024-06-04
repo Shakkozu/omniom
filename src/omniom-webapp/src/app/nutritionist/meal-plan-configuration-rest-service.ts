@@ -20,9 +20,15 @@ export class MealPlanConfigurationRestService {
 
 	}
 
+
 	saveMealPlan(mealPlan: MealPlan): Observable<void> {
 		const url = `${ this.baseUrl }`;
 		return this.http.post<void>(url, mealPlan);
+	}
+
+	publishMealPlan(mealPlanId: string) {
+		const url = `${ this.baseUrl }/${mealPlanId}/publish`;
+		return this.http.put<void>(url, mealPlanId);
 	}
 	
 	getMealPlanDetails(guid: string): Observable<MealPlan> {
