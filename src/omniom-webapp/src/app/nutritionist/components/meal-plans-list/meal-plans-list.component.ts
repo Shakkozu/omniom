@@ -35,16 +35,20 @@ import { Router } from '@angular/router';
     </ng-container>
 
     <ng-container matColumnDef="options">
-      <th class="w-1/6" mat-header-cell *matHeaderCellDef></th>
+      <th class="w-1/5" mat-header-cell *matHeaderCellDef></th>
       <td mat-cell *matCellDef="let item">
-      <ng-container *ngIf="item.status === 'Draft'">
-        <button mat-icon-button (click)="editMealPlan(item)" color="primary">
-          <mat-icon>edit</mat-icon>
+      <div class="flex">
+        <ng-container *ngIf="item.status === 'Draft'">
+          <button mat-icon-button (click)="editMealPlan(item)" color="primary">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </ng-container>
+        <button mat-icon-button (click)="previewMealPlan(item)" color="primary">
+          <mat-icon>visibility</mat-icon>
         </button>
-      </ng-container>
+      </div>
      </td>
     </ng-container>
-
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
@@ -84,6 +88,10 @@ export class MealPlansListComponent implements OnInit {
   }
 
   public editMealPlan(mealPlan: MealPlanListItem) {
+    this.router.navigate(['/nutritionist/meal-plan-configurator', mealPlan.guid]);
+  }
+
+  public previewMealPlan(mealPlan: MealPlanListItem) {
     this.router.navigate(['/nutritionist/meal-plan-configurator', mealPlan.guid]);
   }
 

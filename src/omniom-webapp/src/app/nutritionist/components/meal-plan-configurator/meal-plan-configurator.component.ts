@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
 import { Dish } from '../../../dish-configuration/model';
-import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model';
+import { MealCatalogueItem } from '../../../products/model';
 import { v4 as uuidv4 } from 'uuid';
 import { ModifyDishDialogComponent, ModifyDishDialogConfiguration } from '../../../dish-configuration/components/modify-dish-dialog/modify-dish-dialog.component';
 import { FormErrorHandler } from '../../../shared/form-error-handler';
@@ -29,6 +29,10 @@ export class MealPlanConfiguratorComponent implements OnInit {
   days: number[] = [1, 2, 3, 4, 5, 6, 7];
   public meals: any[] = [MealType.Breakfast, MealType.Dinner, MealType.Snack, MealType.Supper]; // todo allow nutritionist to configure daily meals
 
+  public get isReadonly(): boolean {
+    return this.mealPlan.status === MealPlanStatus.Active;
+  }
+
   constructor (private fb: FormBuilder,
     private store: Store,
     private formErrorHandler: FormErrorHandler,
@@ -48,12 +52,13 @@ export class MealPlanConfiguratorComponent implements OnInit {
 
       if (mealPlanGuid) {
         this.mealPlanService.getMealPlanDetails(mealPlanGuid).subscribe(mealPlan => {
-          console.log(mealPlan);
           this.mealPlan = mealPlan;
           this.mealPlanForm.patchValue({
             mealPlanName: mealPlan.name,
             dailyCalories: mealPlan.dailyCalories
           });
+          if (this.isReadonly)
+            this.mealPlanForm.disable();
         });
         return;
       }
