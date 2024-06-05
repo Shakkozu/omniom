@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MealPlanListItem } from '../../nutritionist/components/meal-plans-list/meal-plans-list.component';
 import { CommonModule } from '@angular/common';
 import { CollaborationSummary } from '../active-collaborations-list/active-collaborations-list.component';
+import { MealPlanStatus } from '../../nutritionist/model';
 
 @Component({
   selector: 'app-assign-meal-plan-to-collaboration-dialog',
@@ -53,7 +54,7 @@ export class AssignMealPlanToCollaborationDialog {
   }
 
   public get getMealPlans() {
-    return this.data?.mealPlans ?? [];
+    return this.data?.mealPlans.filter(mp => mp.status === MealPlanStatus.Active) ?? [];
   }
 
   onMealPlanSelected(mealPlan: MealPlanListItem) {

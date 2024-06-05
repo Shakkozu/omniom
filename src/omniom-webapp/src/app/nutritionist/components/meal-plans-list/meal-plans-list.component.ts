@@ -63,8 +63,7 @@ export class MealPlansListComponent implements OnInit {
   @Input() public mealPlans$: Observable<MealPlanListItem[]> = of([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor (private mealPlanRestService: MealPlanConfigurationRestService,
-    private router: Router
+  constructor (private router: Router
   ) {
 
   }
