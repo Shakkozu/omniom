@@ -13,6 +13,7 @@ import { ProductsModule } from "../products/products.module";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { DailyNutritionGoalComponent } from "./components/daily-nutrition-goal/daily-nutrition-goal.component";
 import { DishesConfigurationModule } from "../dish-configuration/dish-configuration.module";
+import { AssignedMealPlanDayDetailsComponent } from "../nutritionist-collaboration/assigned-meal-plan-day-details/assigned-meal-plan-day-details.component";
 
 @NgModule({
 	declarations: [
@@ -28,12 +29,13 @@ import { DishesConfigurationModule } from "../dish-configuration/dish-configurat
 			NutritionDiaryStore
 		]),
 		MaterialModule,
+		AssignedMealPlanDayDetailsComponent,
 		CommonModule,
 		FormsModule,
 		ReactiveFormsModule,
 		NutritionDiaryRoutingModule,
 		ProductsModule,
-		DishesConfigurationModule
+		DishesConfigurationModule,
 	],
 	exports: [
 		ModifyMealNutritionEntriesComponent

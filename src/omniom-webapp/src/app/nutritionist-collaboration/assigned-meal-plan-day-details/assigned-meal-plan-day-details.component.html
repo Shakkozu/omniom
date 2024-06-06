@@ -1,0 +1,16 @@
+<div class="w-full mt-8  bg-white shadow-xl rounded-lg text-center flex flex-row">
+    <h2>Przypisany jadłodpis na dziś:</h2>
+
+    <mat-list>
+        <mat-list-item *ngFor="let meal of mealPlans">
+            <h3 mat-line>{{meal.mealType}}</h3>
+            <mat-list>
+                <mat-list-item *ngFor="let dish of meal.products">
+                    <span mat-line>{{dish.product.name}}</span>
+                    <span mat-line>{{dish.product.kcal}} kcal / porcję ({{dish.product.portionInGrams}}g)</span>
+                </mat-list-item>
+            </mat-list>
+        </mat-list-item>
+
+    </mat-list>
+</div>
