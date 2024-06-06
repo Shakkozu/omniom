@@ -36,7 +36,6 @@ public static class Route
 
         return endpoints;
     }
-
 }
 
 internal record SaveMealPlanAsDraft(MealPlan MealPlan, Guid UserId) : ICommand;
@@ -65,6 +64,7 @@ internal class TransactionalSaveMealPlanAsDraftHandler : ICommandHandler<SaveMea
         }
     }
 }
+
 internal class SaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
 {
     private readonly NutritionistDbContext _dbContext;
@@ -76,7 +76,7 @@ internal class SaveMealPlanAsDraftHandler : ICommandHandler<SaveMealPlanAsDraft>
 
     public async Task HandleAsync(SaveMealPlanAsDraft command, CancellationToken ct)
     {
-        var userMealPlan = new UserMealPlanDao(command.MealPlan, command.UserId, DateTime.UtcNow, DateTime.UtcNow);
+        var userMealPlan = new UserMealPlanDao(command.MealPlan, command.UserId, DateTime.UtcNow, DateTime.UtcNow, MealPlanStatus.Draft);
         var existingMealPlan = await _dbContext.MealPlans.FirstOrDefaultAsync(mp => mp.Guid == userMealPlan.Guid && mp.UserId == userMealPlan.UserId, ct);
         if (existingMealPlan != null)
         {
@@ -92,14 +92,15 @@ internal class UserMealPlanDao
 {
     public UserMealPlanDao()
     { }
-    public UserMealPlanDao(MealPlan mealPlan, Guid userId, DateTime createdAt, DateTime modifiedAt)
+
+    public UserMealPlanDao(MealPlan mealPlan, Guid userId, DateTime createdAt, DateTime modifiedAt, MealPlanStatus status)
     {
         UserId = userId;
         CreatedAt = createdAt;
         ModifiedAt = modifiedAt;
         Guid = mealPlan.Guid;
         Name = mealPlan.Name;
-        Status = mealPlan.Status;
+        Status = status.ToString();
         DailyCaloriesTarget = mealPlan.DailyCalories;
         MealDayDetails = JsonConvert.SerializeObject(mealPlan.Days.OrderBy(x => x.DayNumber).ToList());
     }
@@ -174,7 +175,6 @@ public class MealPlan
                 yield return $"At least one meal must be provided for day {day.DayNumber}";
             }
         }
-
     }
 }
 

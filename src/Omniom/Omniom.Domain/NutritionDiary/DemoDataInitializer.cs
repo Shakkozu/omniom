@@ -5,12 +5,16 @@ using Microsoft.Extensions.Logging;
 using Omniom.Domain.Auth.GetUserIdByEmail;
 using Omniom.Domain.Auth.RegisterUser;
 using Omniom.Domain.Catalogue.Meals.CreatingNewMeal;
+using Omniom.Domain.Catalogue.Meals.GettingMeal;
 using Omniom.Domain.Catalogue.Meals.InitializingModuleData;
 using Omniom.Domain.Catalogue.Products.SearchProducts;
 using Omniom.Domain.Catalogue.Shared;
 using Omniom.Domain.NutritionDiary.AddNutritionEntries;
 using Omniom.Domain.NutritionDiary.Storage;
+using Omniom.Domain.Nutritionist.MealPlans.PublishingMealPlan;
+using Omniom.Domain.Nutritionist.MealPlans.SavingMealPlan;
 using Omniom.Domain.Nutritionist.RegisteringUserAsNutritionist;
+using Omniom.Domain.Nutritionist.Verification.VerifyingPendingRequests;
 using Omniom.Domain.Shared.BuildingBlocks;
 
 namespace Omniom.Domain.NutritionDiary;
@@ -50,6 +54,40 @@ public class DemoDataInitializer
             await AddIndividualDishesAsync(scope, usersRepository);
             await AddNutritionistRegistrationRequests(scope, usersRepository);
             await AddNutritionDiaryEntries(scope, usersRepository);
+            await VerifyNutritionistRegistrationRequest(scope, usersRepository);
+            await CreateMealPlanForVerifiedNutritionist(scope, usersRepository);
+        }
+    }
+
+    private async Task CreateMealPlanForVerifiedNutritionist(IServiceScope scope, UserInfoRepository usersRepository)
+    {
+        var searchMealsHandler = scope.ServiceProvider.GetRequiredService<IQueryHandler<GetUserMealsQuery, IEnumerable<MealCatalogueItem>>>();
+        var nutritionistMails = _config.GetSection("Demo:ApprovedNutritionistWithMealPlans").GetChildren().Select(x => x.Value).ToList();
+        var createMealPlanCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<SaveMealPlanAsDraft>>();
+        var publishMealPlanCommandHandler = scope.ServiceProvider.GetRequiredService<ICommandHandler<PublishMealPlan>>();
+        foreach (var nutMail in nutritionistMails)
+        {
+            var userId = usersRepository.FindByUserMail(nutMail).UserId;
+            var meals = await searchMealsHandler.HandleAsync(new GetUserMealsQuery(userId), CancellationToken.None);
+            var initializer = new MealPlanInitializer(meals);
+            await createMealPlanCommandHandler.HandleAsync(new SaveMealPlanAsDraft(initializer.AMealPlan(), userId), CancellationToken.None);
+            await createMealPlanCommandHandler.HandleAsync(new SaveMealPlanAsDraft(initializer.AMealPlan(), userId), CancellationToken.None);
+            await createMealPlanCommandHandler.HandleAsync(new SaveMealPlanAsDraft(initializer.AMealPlan(), userId), CancellationToken.None);
+            var mealPlanToPublish = initializer.AMealPlan();
+            await createMealPlanCommandHandler.HandleAsync(new SaveMealPlanAsDraft(mealPlanToPublish, userId), CancellationToken.None);
+            await publishMealPlanCommandHandler.HandleAsync(new PublishMealPlan(mealPlanToPublish.Guid, userId), CancellationToken.None);
+        }
+    }
+
+    private async Task VerifyNutritionistRegistrationRequest(IServiceScope scope, UserInfoRepository usersRepository)
+    {
+        var nutritionistMails = _config.GetSection("Demo:ApprovedNutritionistWithMealPlans").GetChildren().Select(x => x.Value).ToList();
+        foreach (var nutritionistMail in nutritionistMails)
+        {
+            var userId = usersRepository.FindByUserMail(nutritionistMail).UserId;
+            var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<VerifyQualificationsCommand>>();
+            var command = new VerifyQualificationsCommand(userId, VerificationStatus.Approved, "LGTM");
+            await handler.HandleAsync(command, CancellationToken.None);
         }
     }
 
@@ -59,7 +97,7 @@ public class DemoDataInitializer
         var searchProductsQueryHandler = scope.ServiceProvider.GetRequiredService<SearchProductsQueryHandler>();
         var mealInitializer = new MealsInitializer(createMealCommandHandler, searchProductsQueryHandler);
         foreach (var userId in repo.GetAll().Select(x => x.UserId))
-            await mealInitializer.SeedMealsCatalogue(userId, 50);
+            await mealInitializer.SeedMealsCatalogue(userId, 10);
     }
 
     private async Task AddDemoUsersAsync(IServiceScope scope)
