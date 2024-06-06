@@ -52,10 +52,6 @@ public class Program
         {
             app.AddSuperuser(config).GetAwaiter().GetResult();
         }
-        if (config.GetValue<bool>("Configuration:SeedApplicationStateWithData"))
-        {
-            app.AddNutritionDiaryEntries(config);
-        }
 
         app.UseRouting();
         app.UseAntiforgery();
