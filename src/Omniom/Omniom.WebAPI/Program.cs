@@ -77,6 +77,9 @@ public class Program
         app.MapNutritionistEndpoints();
         app.MapMealsEndpoints();
 
+        var demoDataInitializer = new DemoDataInitializer(app, config);
+        demoDataInitializer.SeedApplicationWithDemoData().GetAwaiter().GetResult();
+
         app.Run();
     }
 }

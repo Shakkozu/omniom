@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Omniom.Domain.Auth.FetchingUserFromHttpContext;
 using Omniom.Domain.Catalogue.Meals.Storage;
 using Omniom.Domain.Shared.BuildingBlocks;
+using Microsoft.Extensions.Logging;
 
 namespace Omniom.Domain.Catalogue.Meals.CreatingNewMeal;
 internal static class Route
@@ -43,16 +44,19 @@ public record CreateMealCommand(Guid UserId, Meal Meal) : Domain.Shared.Building
 internal class CreateMealCommandHandler : ICommandHandler<CreateMealCommand>
 {
     private readonly MealsDbContext _dbContext;
+    private readonly ILogger<CreateMealCommandHandler> _logger;
 
-    public CreateMealCommandHandler(MealsDbContext dbContext)
+    public CreateMealCommandHandler(MealsDbContext dbContext, ILogger<CreateMealCommandHandler> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task HandleAsync(CreateMealCommand command, CancellationToken ct)
     {
         _dbContext.Meals.Add(new UserMealDao(command.Meal, command.UserId));
         await _dbContext.SaveChangesAsync(ct);
+        _logger.LogInformation($"New Dish added for user {command.UserId}");
     }
 }
 

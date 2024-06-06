@@ -17,7 +17,7 @@ public class GetUserIdByEmailHandlerQueryHandler
         var user = await _userManager.FindByEmailAsync(query.Email);
         if (user == null)
         {
-            throw new InvalidOperationException("User with email not found ");
+            throw new InvalidOperationException($"User with email {query.Email} not found ");
         }
 
         return user.Id;

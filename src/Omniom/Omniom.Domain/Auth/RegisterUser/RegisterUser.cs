@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Omniom.Domain.Auth.RegisterUser;
 public record UserForRegistrationDto
 {
-
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Incorrect email provided")]
     public string? Email { get; set; }
