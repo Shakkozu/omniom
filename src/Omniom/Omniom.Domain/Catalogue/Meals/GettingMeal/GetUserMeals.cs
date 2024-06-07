@@ -19,7 +19,7 @@ public static class Route
         routeBuilder.MapGet("/api/dishes", async (HttpContext context,
                         [FromServices] IQueryable<UserMealDao> userMeals,
                         IFetchUserIdentifierFromContext userIdProvider,
-                        [FromQuery] string search,
+                        [FromQuery] string? search,
                         IQueryHandler<GetUserMealsQuery, IEnumerable<MealCatalogueItem>> userMealsQueryHandler,
                         CancellationToken cancellationToken) =>
         {

@@ -42,9 +42,14 @@ public class MealCatalogueItem : BaseCatalogueItem
     }
     public MealCatalogueItem(Meal meal)
     {
+        if (meal == null)
+            throw new ArgumentNullException(nameof(meal));
+
+        if (meal.Ingredients == null)
+            throw new ArgumentNullException(nameof(meal.Ingredients));
+
         Guid = meal.Guid;
         Name = meal.Name;
-
         // Calculate total values for the entire meal
         decimal totalKcal = 0;
         decimal totalProteins = 0;
@@ -56,18 +61,21 @@ public class MealCatalogueItem : BaseCatalogueItem
         {
             decimal ingredientWeight = ingredient.PortionInGrams;
             totalWeight += ingredientWeight;
-
             totalKcal += (ingredient.KcalPer100G / 100m) * ingredientWeight;
             totalProteins += (ingredient.ProteinsPer100G / 100m) * ingredientWeight;
             totalFats += (ingredient.FatsPer100G / 100m) * ingredientWeight;
             totalCarbohydrates += (ingredient.CarbohydratesPer100G / 100m) * ingredientWeight;
         }
 
+        var portions = meal.Portions != 0 ? meal.Portions : 1;
+        totalWeight = totalWeight == 0 ? 1 : totalWeight;
+
+
         // Calculate per portion values
-        KcalPerPortion = Math.Round(totalKcal / meal.Portions, 1);
-        ProteinsPerPortion = Math.Round(totalProteins / meal.Portions, 1);
-        FatsPerPortion = Math.Round(totalFats / meal.Portions, 1);
-        CarbohydratesPerPortion = totalCarbohydrates / meal.Portions;
+        KcalPerPortion = Math.Round(totalKcal / portions, 1);
+        ProteinsPerPortion = Math.Round(totalProteins / portions, 1);
+        FatsPerPortion = Math.Round(totalFats / portions, 1);
+        CarbohydratesPerPortion = totalCarbohydrates / portions;
 
         // Calculate per 100g values
         KcalPer100G = Math.Round((totalKcal / totalWeight) * 100m, 1);
@@ -103,7 +111,7 @@ public class ProductCatalogItem : BaseCatalogueItem
 
     public ProductCatalogItem()
     {
-        
+
     }
     public ProductCatalogItem(ProductData productData)
     {
