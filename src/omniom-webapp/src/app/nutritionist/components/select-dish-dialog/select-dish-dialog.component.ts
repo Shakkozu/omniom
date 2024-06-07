@@ -14,16 +14,16 @@ import { MatDialogRef } from '@angular/material/dialog';
   </div>
 </mat-toolbar>
 
-<div class="dialog-content flex flex-col">
-  <div mat-dialog-content>
+<mat-dialog-content>
+  <div class="dialog-content flex flex-col">
       <app-dishes-list
       [selectionList]="false"
       [singleSelectButtonEnabled]="true"
       [addNewDishButtonEnabled]="false"
       (singleMealCatalogueItemSelected)="onDishSelected($event)">
-</app-dishes-list>
-    </div>
+    </app-dishes-list>
 </div>
+</mat-dialog-content>
   `,
   styleUrl: './select-dish-dialog.component.scss'
 })

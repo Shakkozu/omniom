@@ -127,7 +127,7 @@ Takie podejście umożliwi izolację każdej ścieżki biznesowej i wprowadzania
     - [x] Przeglądanie historycznych posiłków
 - **Konfiguracja Profilu Dietetyka**
     - [x] Przegląd zarejestrowanych dań
-    - [ ] Konfiguracja jadłospisów na podstawie przygotowanych wcześniej dań
+    - [x] Konfiguracja jadłospisów na podstawie przygotowanych wcześniej dań
     - [ ] Przypisywanie jadłospisów do klientów
 - **Nawiązywanie współprac**
     - [ ] Podejmowanie współprac pomiędzy dietetykiem a klientem
