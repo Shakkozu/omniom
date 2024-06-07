@@ -49,10 +49,12 @@ import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model
     <div class="flex flex-col w-1/2 p-4 bg-white rounded-2xl shadow-xl">
       <div class="h-full ">
         <h2 class="text-xl mt-4">Składniki</h2>
+        <p>{{getProductsSummary()}}</p>
         <app-presentation-product-list [readonly]="true" [products]="products"></app-presentation-product-list>
       </div>
       <div class="h-full mt-8 ">
         <h2 class="text-xl mt-4">Składniki na porcję</h2>
+        <p>{{getProductsSummaryPerPortion()}}</p>
         <app-presentation-product-list [readonly]="true" [products]="productsPerPortion"></app-presentation-product-list>
       </div>
     </div>
@@ -89,5 +91,23 @@ export class DishDetailsComponent {
       return new ProductCatalogueItem(p.name, p.guid, portionInGrams, p.kcalPer100g, p.proteinsPer100g, p.fatsPer100g, p.carbohydratesPer100g)
     });
   };
+
+
+  public getProductsSummary(): string {
+    return this.getSummary(1);
+  }
+
+
+  public getProductsSummaryPerPortion(): string {
+    return this.getSummary(this.form.value.portions);
+  }
+
+  private getSummary(portions = 1): string {
+    const totalKCal = this.products.reduce((acc, product) => acc + product.kcal, 0) / portions;
+    const totalProtein = this.products.reduce((acc, product) => acc + product.proteins, 0) / portions;
+    const totalCarbs = this.products.reduce((acc, product) => acc + product.carbohydrates, 0) / portions;
+    const totalFats = this.products.reduce((acc, product) => acc + product.fats, 0) / portions;
+    return `Kcal: ${ totalKCal.toFixed(2) }, B: ${ totalProtein.toFixed(2) }, W: ${ totalCarbs.toFixed(2) }, T: ${ totalFats.toFixed(2) }`;
+  }
 }
 
