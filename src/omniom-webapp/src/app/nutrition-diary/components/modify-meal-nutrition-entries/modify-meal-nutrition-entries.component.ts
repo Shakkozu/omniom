@@ -29,14 +29,15 @@ import { DishDeselected, SelectMultipleDishes } from '../../../dish-configuratio
     </mat-toolbar>
     <mat-dialog-content class="h-fit max-h-fit min-h-fit">
       <div class="dialog-content flex flex-row">
-        <div class="w-1/2 h-fit">
+        <div class="w-2/5 h-fit">
           <app-products-catalogue [selectionList]="true"
              (dishListChanged)="onProductListModified($event)"
              (productListChanged)="onProductListModified($event)">
           </app-products-catalogue>
       </div>
-      <div class="w-1/2 ms-4 mt-20 rounded-xl shadow-xl h-fit"  >
-        <app-presentation-product-list (productRemovedFromList)="this.deselectProduct($event)" [products]="products" [loading$]="loading$"></app-presentation-product-list>
+      <div class="w-3/5 ms-4 mt-20 rounded-xl shadow-xl h-fit"  >
+        <app-presentation-product-list (productRemovedFromList)="this.deselectProduct($event)"
+         [products]="products" [loading$]="loading$"></app-presentation-product-list>
       </div>
     </div>
   </mat-dialog-content>
@@ -75,39 +76,30 @@ export class ModifyMealNutritionEntriesComponent {
   onProductListModified(event: ProductListChangedEvent) {
     const productSelected = event.itemType === CatalogueItemType.Product;
     if (event.type === 'selected') {
-      if (productSelected) {
-        const productInfo = this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId);
-        if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
-          return;
+      const productInfo = productSelected
+        ? this.store.selectSnapshot(ProductsCatalogueStore.selectedProducts).find((product) => product.guid === event.catalogueItemId)
+        : this.store.selectSnapshot(DishConfigurationStore.selectedDishes).find((product) => product.guid === event.catalogueItemId);
 
-        this.products.push(productInfo);
+      if (!productInfo || this.products.find((product) => product.guid === productInfo.guid)) {
         return;
       }
-      else if (event.itemType === CatalogueItemType.Meal) {
-        const productInfo = this.store.selectSnapshot(DishConfigurationStore.selectedDishes).find((product) => product.guid === event.catalogueItemId);
-        if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
-          return;
 
+      const catalogueItem = productSelected
+        ? new CatalogueItem(productInfo.name, CatalogueItemType.Product, productInfo.guid, productInfo.portionInGrams, productInfo.kcalPer100g, productInfo.proteinsPer100g, productInfo.fatsPer100g, productInfo.carbohydratesPer100g)
+        : new CatalogueItem(productInfo.name, CatalogueItemType.Meal, productInfo.guid, productInfo.portionInGrams, productInfo.kcalPer100g, productInfo.proteinsPer100g, productInfo.fatsPer100g, productInfo.carbohydratesPer100g);
 
-        this.products.push(new CatalogueItem(productInfo.name, CatalogueItemType.Meal, productInfo.guid, productInfo.portionInGrams, productInfo.kcalPer100g, productInfo.proteinsPer100g, productInfo.fatsPer100g, productInfo.carbohydratesPer100g));
-        return;
-      }
-    }
-    if (productSelected) {
-      const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
-      if (productIndex === -1)
-        return;
-      this.products.splice(productIndex, 1);
-    }
-    else {
-      const productInfo = this.store.selectSnapshot(DishConfigurationStore.selectedDishes).find((product) => product.guid === event.catalogueItemId);
-      if (!productInfo || this.products.find((product) => product.guid === productInfo.guid))
-        return;
-
-      this.products.push(productInfo);
+      this.products.push(catalogueItem);
       return;
     }
+
+    const productIndex = this.products.findIndex((product) => product.guid === event.catalogueItemId);
+    if (productIndex === -1) {
+      return;
+    }
+
+    this.products.splice(productIndex, 1);
   }
+
 
   deselectProduct(catalogueItem: CatalogueItem) {
     if (catalogueItem.type === CatalogueItemType.Product) {

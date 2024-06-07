@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { MealType, NutritionDetailsGroupeByMeal, NutritionDiaryEntry } from '../../model';
 import { MatTableDataSource } from '@angular/material/table';
 import { animate, state, style, transition, trigger } from '@angular/animations';
