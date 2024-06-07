@@ -6,6 +6,8 @@ import { AuthService } from "../auth.service";
 import { FetchUserProfileConfiguration } from "../../user-profile/store/user-profile.actions";
 import { jwtDecode } from 'jwt-decode';
 import { FetchNutritionistProfile } from "../../nutritionist/store/nutritionist.actions";
+import { FetchDishes } from "../../dish-configuration/store/dish-configuration.actions";
+import { FetchProducts } from "../../products/store/products-catalogue.actions";
 
 
 export interface UserSessionStateModel {
@@ -106,6 +108,8 @@ export class AuthorizationState  {
 		});
 		this.store.dispatch(new FetchUserProfileConfiguration());
 		this.store.dispatch(new FetchNutritionistProfile());
+		this.store.dispatch(new FetchProducts(''));
+		this.store.dispatch(new FetchDishes(''));
 		this.router.navigate(['/']);
 	}
 
@@ -128,7 +132,7 @@ export class AuthorizationState  {
 	@Action(OnLogoutSuccess)
 	public onLogoutSuccess(ctx: StateContext<UserSessionStateModel>) {
 		ctx.patchState(defaultState);
-		this.redirect();
+		this.router.navigate(['/']);
 	}
 
 	@Selector()
@@ -149,13 +153,6 @@ export class AuthorizationState  {
 	@Selector()
 	static username(state: UserSessionStateModel) {
 		return state.username;
-	}
-
-	private redirect(): void {
-		// temporary disabled redirect, because it doesn't work with user-products component.
-		// Filtering on products table doesnt work.
-
-		this.router.navigate(['/']);
 	}
 
 	private static isTimestampOlderThan60Minutes(timestamp: number | undefined): boolean {

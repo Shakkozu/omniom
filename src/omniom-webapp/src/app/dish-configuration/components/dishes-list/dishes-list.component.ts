@@ -75,7 +75,7 @@ export class DishesListComponent {
     this.matDialog.open(NewDishDialogComponent, {
       width: '70vw',
       height: '80vh',
-      data: config
+      data: config,
     });
   }
 
@@ -89,11 +89,16 @@ export class DishesListComponent {
     this.dishListChanged.emit({ type: 'deselected', catalogueItemId: dishId, itemType: CatalogueItemType.Meal });
   }
 
-  showDishDetails(dish: any) {
+  showDishDetails(dish: CatalogueItem) {
+    const dishId = dish.guid;
+    const mealCatalogueItem = this.store.selectSnapshot(DishConfigurationStore.dishDetailsById(dishId));
+    if (!mealCatalogueItem)
+      return;
+
     this.matDialog.open(DishDetailsComponent, {
       width: '70vw',
       height: '80vh',
-      data: { dishId: dish.guid }
+      data: { dish: mealCatalogueItem }
     });
   }
 }

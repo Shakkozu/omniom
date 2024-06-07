@@ -7,8 +7,9 @@
 			Cofnij
 		</button>
 		<div class="actions-buttons" *ngIf="!isReadonly">
-			<button mat-raised-button color="primary" (click)="saveMealPlanAsDraft()">Zapisz szkic</button>
-			<button mat-raised-button *ngIf="validateMealPlan()" class="mx-2" color="primary" (click)="publishMealPlan()">Opublikuj</button>
+			<button mat-raised-button color="primary" [disabled]="!mealPlanForm.valid" (click)="saveMealPlanAsDraft()">Zapisz szkic</button>
+			<button mat-raised-button *ngIf="validateMealPlan()" class="mx-2" color="primary"
+				(click)="publishMealPlan()">Opublikuj</button>
 		</div>
 	</mat-card-actions>
 	<mat-card-content>
@@ -37,9 +38,12 @@
 					<mat-expansion-panel [expanded]="true">
 						<mat-expansion-panel-header>
 							<mat-panel-title class="text-headline-small">
-								<mat-icon *ngIf="!IsDayValid(day)" matTooltip="Nie wszystkie posiłki są uzupełnione" class="mr-4" style="color: rgb(253, 224, 71);" color="info">warning</mat-icon>
+								<mat-icon *ngIf="!IsDayValid(day)" matTooltip="Nie wszystkie posiłki są uzupełnione"
+									class="mr-4" style="color: rgb(253, 224, 71);" color="info">warning</mat-icon>
 								Dzień {{ day.dayNumber }}
-								<span class="text-title-medium ms-4">{{ dayDetails.totalCalories }} kcal,  B: {{ dayDetails.totalProteins }}g, T: {{ dayDetails.totalFats }}g, W: {{ dayDetails.totalCarbs }}g
+								<span class="text-title-medium ms-4">{{ dayDetails.totalCalories }} kcal, B: {{
+									dayDetails.totalProteins }}g, T: {{ dayDetails.totalFats }}g, W: {{
+									dayDetails.totalCarbs }}g
 								</span>
 							</mat-panel-title>
 						</mat-expansion-panel-header>
@@ -60,15 +64,23 @@
 												{{mealProduct.product.fats}}g / W:
 												{{mealProduct.product.carbohydrates}}g </span>
 											<span matListItemLine>{{mealProduct.product.kcal}} kcal</span>
-											<div matListItemMeta *ngIf="!isReadonly">
-												<button (click)="modifyMeal(mealProduct.guid)" mat-icon-button
-													color="primary">
-													<mat-icon>edit</mat-icon>
-												</button>
-												<button mat-icon-button (click)="removeMeal(mealProduct.guid)"
-													color="primary">
-													<mat-icon>delete</mat-icon>
-												</button>
+											<div matListItemMeta>
+												<ng-container *ngIf="!isReadonly">
+													<button (click)="modifyMeal(mealProduct.guid)" mat-icon-button
+														color="primary">
+														<mat-icon>edit</mat-icon>
+													</button>
+													<button mat-icon-button (click)="removeMeal(mealProduct.guid)"
+														color="primary">
+														<mat-icon>delete</mat-icon>
+													</button>
+												</ng-container>
+												<ng-container *ngIf="isReadonly">
+													<button mat-icon-button (click)="showMeal(mealProduct.guid)"
+														color="primary">
+														<mat-icon>visibility</mat-icon>
+													</button>
+												</ng-container>
 											</div>
 											<mat-divider></mat-divider>
 										</mat-list-item>

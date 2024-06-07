@@ -75,17 +75,6 @@ export class CatalogueItem {
 		return new MealEntry(this.name, this.type, this.guid, this.portionInGrams, this.kcalPer100g, this.proteinsPer100g, this.fatsPer100g, this.carbohydratesPer100g);
 	}
 
-	static fromDish(dish: DishViewModel): CatalogueItem {
-		return new CatalogueItem(dish.name,
-			CatalogueItemType.Meal,
-			dish.guid,
-			dish.portions,
-			(dish.kcalPerPortion / dish.portions) * 100,
-			(dish.proteinsGramsPerPortion / dish.portions) * 100,
-			(dish.fatsGramsPerPortion / dish.portions) * 100,
-			(dish.carbsGramsPerPortion / dish.portions) * 100);
-	}
-
 	get kcal(): number {
 		return +(this.kcalPer100g * this.portionInGrams / 100).toFixed(2);
 	}
@@ -130,7 +119,7 @@ export class MealCatalogueItem extends CatalogueItem {
 		super(name, CatalogueItemType.Meal, guid, portionInGrams, kcalPer100g, proteinsPer100g, fatsPer100g, carbohydratesPer100g);
 	}
 
-	static override fromDish(dish: Dish): MealCatalogueItem {
+	static fromDish(dish: Dish): MealCatalogueItem {
 		let totalKcal = 0;
 		let totalProteins = 0;
 		let totalFats = 0;

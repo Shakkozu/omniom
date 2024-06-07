@@ -14,6 +14,7 @@ import { PublishMealPlan, SaveMealPlanAsDraft } from '../../store/meal-plan-conf
 import { ActivatedRoute, Router } from '@angular/router';
 import { MealPlanConfigurationRestService } from '../../meal-plan-configuration-rest-service';
 import { SelectDishDialogComponent } from '../select-dish-dialog/select-dish-dialog.component';
+import { DishDetailsComponent } from '../../../dish-configuration/components/dish-details/dish-details.component';
 
 @Component({
   selector: 'app-meal-plan-configurator',
@@ -174,6 +175,24 @@ export class MealPlanConfiguratorComponent implements OnInit {
       default:
         return '';
     }
+
+  }
+
+  public showMeal(mealProductGuid: string) {
+    const mealDetails = this.mealPlan.days.flatMap(d => d.meals).flatMap(m => m.products).find(p => p.guid === mealProductGuid);
+    if (!mealDetails) {
+      console.error('[MealPlanConfigurator] Meal not found');
+      return;
+    }
+
+    this.dialog.open(DishDetailsComponent, {
+      width: '70vw',
+      height: '80vh',
+      data: {
+        dish: mealDetails.product
+      }
+    }
+    )
 
   }
 

@@ -13,3 +13,12 @@ body {
 }
 
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+mat-toolbar {
+	position: sticky;
+	top: 0;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface{
+	height: 88% !important;
+}

@@ -84,8 +84,8 @@ export class DishConfigurationStore {
 	}
 
 	@Action(FetchDishes)
-	fetchDishes(ctx: StateContext<DishConfigurationState>) {
-		this.restService.fetchDishes().subscribe({
+	fetchDishes(ctx: StateContext<DishConfigurationState>, action: FetchDishes) {
+		this.restService.fetchDishes(action.searchPhrase).subscribe({
 			next: (dishes) => {
 				ctx.patchState({
 					dishes: dishes.map(dish => CatalogueItem.fromDto(dish)),

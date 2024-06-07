@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { Observable, of, debounceTime, Subject } from 'rxjs';
+import { debounceTime, Subject } from 'rxjs';
 import { Store } from '@ngxs/store';
 import { FetchProducts } from '../../store/products-catalogue.actions';
-import { ProductListChangedEvent, ProductsListComponent } from '../products-list/products-list.component';
+import { ProductListChangedEvent } from '../products-list/products-list.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { FetchDishes } from '../../../dish-configuration/store/dish-configuration.actions';
 import { CatalogueItem } from '../../model';
@@ -64,6 +64,7 @@ export class ProductsCatalogueComponent implements OnInit {
       debounceTime(200),
     ).subscribe((phrase) => {
       this.store.dispatch(new FetchProducts(phrase));
+      this.store.dispatch(new FetchDishes(phrase));
     });
   }
 }

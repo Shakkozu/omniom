@@ -23,18 +23,20 @@ import { DishFormComponent } from '../dish-form/dish-form.component';
   </div>
 </mat-toolbar>
 
-<div class="dialog-content flex flex-col p-6">
-  <div class="flex">
-    <div class="flex flex-col w-1/3 p-4 mr-4 bg-white rounded-2xl shadow-xl">
-      <app-dish-form [singlePortion]="this.singlePortion" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
-    </div>
-    
-    <div class="flex flex-col w-2/3 p-4 bg-white rounded-2xl shadow-xl">
-      <p>{{getProductsSummary()}}</p>
-      <app-dish-products-selector [products]="products"></app-dish-products-selector>
+<mat-dialog-content>
+  <div class="dialog-content flex flex-col">
+    <div class="flex">
+      <div class=" w-1/3 h-fit p-4 mr-4 bg-white rounded-2xl shadow-xl">
+        <app-dish-form [singlePortion]="this.singlePortion" [products]="products" (formSubmitted)="onFormSubmitted($event)"></app-dish-form>
+      </div>
+      
+      <div class=" w-2/3 p-4 bg-white rounded-2xl shadow-xl">
+        <p>{{getProductsSummary()}}</p>
+        <app-dish-products-selector [products]="products"></app-dish-products-selector>
+      </div>
     </div>
   </div>
-</div>
+</mat-dialog-content>
   `,
 })
 export class NewDishDialogComponent implements OnDestroy, AfterViewInit {
@@ -46,17 +48,17 @@ export class NewDishDialogComponent implements OnDestroy, AfterViewInit {
   constructor (
     public dialogRef: MatDialogRef<NewDishDialogComponent>,
     private store: Store,
-      @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
-      this.products = [];
-    }
-  
+    @Inject(MAT_DIALOG_DATA) public data: NewDishDialogConfiguration) {
+    this.products = [];
+  }
+
   public getProductsSummary(): string {
     const totalKCal = this.products.reduce((acc, product) => acc + product.kcal, 0);
     const totalProtein = this.products.reduce((acc, product) => acc + product.proteins, 0);
     const totalCarbs = this.products.reduce((acc, product) => acc + product.carbohydrates, 0);
     const totalFats = this.products.reduce((acc, product) => acc + product.fats, 0);
-    return `Kcal: ${totalKCal.toFixed(2)}, B: ${totalProtein.toFixed(2)}, W: ${totalCarbs.toFixed(2)}, T: ${totalFats.toFixed(2)}`;
-    
+    return `Kcal: ${ totalKCal.toFixed(2) }, B: ${ totalProtein.toFixed(2) }, W: ${ totalCarbs.toFixed(2) }, T: ${ totalFats.toFixed(2) }`;
+
   }
 
   public save() {
@@ -69,7 +71,7 @@ export class NewDishDialogComponent implements OnDestroy, AfterViewInit {
     }
     this.dialogRef.close($event);
   }
-  
+
   ngAfterViewInit(): void {
     this.singlePortion = this.data.singlePortion ?? false;
     if (this.data.sourceMeal) {

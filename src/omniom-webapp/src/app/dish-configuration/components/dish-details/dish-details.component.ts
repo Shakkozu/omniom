@@ -1,10 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngxs/store';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { DishConfigurationRestService } from '../../dish-configuration-rest-service';
-import { DishConfigurationStore } from '../../store/dish-configuration.state';
-import { CatalogueItem, ProductCatalogueItem } from '../../../products/model';
+import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model';
 
 @Component({
   selector: 'app-dish-details',
@@ -72,35 +69,25 @@ export class DishDetailsComponent {
   public dishName: string = '';
   constructor (
     public dialogRef: MatDialogRef<DishDetailsComponent>,
-    private store: Store,
     private fb: FormBuilder,
     @Inject(MAT_DIALOG_DATA) public data: {
-      dishId: string
+      dish: MealCatalogueItem
     }) {
+    const dish = data.dish;
     this.form = this.fb.group({
-      name: ['', []],
-      portions: [1, []],
-      recipe: [''],
-      description: [],
+      name: [dish.name, []],
+      portions: dish.portions,
+      recipe: dish.recipe,
+      description: dish.description
     });
-    this.store.select(DishConfigurationStore.dishDetailsById(this.data.dishId)).subscribe((dish) => {
-      if (!dish)
-        return;
 
-      this.form.patchValue({
-        name: dish.name,
-        portions: dish.portions,
-        recipe: dish.recipe,
-        description: dish.description
-      });
-      this.dishName = dish.name;
-      this.form.updateValueAndValidity();
-      this.products = dish.ingredients;
-      this.productsPerPortion = dish.ingredients.map(p => {
-        const portionInGrams = Math.round(p.portionInGrams / dish.portions);
-        return new ProductCatalogueItem(p.name, p.guid, portionInGrams, p.kcalPer100g, p.proteinsPer100g, p.fatsPer100g, p.carbohydratesPer100g)
-      });
+    this.dishName = dish.name;
+    this.form.updateValueAndValidity();
+    this.products = dish.ingredients;
+    this.productsPerPortion = dish.ingredients.map(p => {
+      const portionInGrams = Math.round(p.portionInGrams / dish.portions);
+      return new ProductCatalogueItem(p.name, p.guid, portionInGrams, p.kcalPer100g, p.proteinsPer100g, p.fatsPer100g, p.carbohydratesPer100g)
     });
-  }
-
+  };
 }
+

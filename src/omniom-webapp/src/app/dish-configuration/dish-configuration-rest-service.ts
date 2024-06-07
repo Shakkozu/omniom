@@ -14,8 +14,8 @@ export class DishConfigurationRestService {
 		return this.http.post(url, dish);
 	}
 
-	fetchDishes(): Observable<MealCatalogueItemDto[]> {
-		const url = `${ environment.apiUrl }/api/dishes`;
+	fetchDishes(searchPhrase: string): Observable<MealCatalogueItemDto[]> {
+		const url = `${ environment.apiUrl }/api/dishes?search=${searchPhrase}`;
 		return this.http.get<MealCatalogueItemDto[]>(url);
 	}
 }
