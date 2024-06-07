@@ -15,6 +15,7 @@ import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model
   </div>
 </mat-toolbar>
 
+<mat-dialog-content>
 <div class="dialog-content flex flex-col p-6">
   <div class="flex">
     <div class="flex flex-col w-1/2 p-4 mr-4 bg-white rounded-2xl shadow-xl">
@@ -60,6 +61,8 @@ import { MealCatalogueItem, ProductCatalogueItem } from '../../../products/model
     </div>
   </div>
 </div>
+</mat-dialog-content>
+
   `,
   styleUrl: './dish-details.component.scss'
 })
