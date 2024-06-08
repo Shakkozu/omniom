@@ -20,7 +20,7 @@ System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego sta
 
 ---
 
-## Demo
+## Demo - link do filmu prezentującego funkcjonalności w aplikacji
 [![Omniom - demo](https://img.youtube.com/vi/92kY-081AnM/maxresdefault.jpg)](https://www.youtube.com/watch?v=92kY-081AnM)
 
 
