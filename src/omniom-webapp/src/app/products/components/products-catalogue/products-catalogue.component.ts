@@ -45,9 +45,6 @@ export class ProductsCatalogueComponent implements OnInit {
   constructor (private store: Store) {
   }
 
-  onSearchTypeUpdated(event: any) {
-  }
-
   public clearSearchPhrase() {
     this.searchBar.clearSearchPhrase();
     

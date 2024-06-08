@@ -121,7 +121,9 @@ export class AuthorizationState  {
 		this.authorizationService.logout().subscribe({
 			next: () => { },
 			complete: () => {
+				ctx.patchState(defaultState);
 				ctx.dispatch(new OnLogoutSuccess());
+				this.router.navigate(['/auth/login']).then(() => window.location.reload());
 			},
 			error: () => { 
 				console.error('Logout failed');
@@ -132,7 +134,6 @@ export class AuthorizationState  {
 	@Action(OnLogoutSuccess)
 	public onLogoutSuccess(ctx: StateContext<UserSessionStateModel>) {
 		ctx.patchState(defaultState);
-		this.router.navigate(['/']);
 	}
 
 	@Selector()
