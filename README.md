@@ -20,6 +20,11 @@ System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego sta
 
 ---
 
+## Demo
+[![Omniom - demo](https://img.youtube.com/vi/92kY-081AnM/maxresdefault.jpg)](https://www.youtube.com/watch?v=92kY-081AnM)
+
+
+
 ## Uruchomienie projektu 
 
 Do uruchomienia projektu potrzebny jest zainstalowany silnik dockera.
