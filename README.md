@@ -81,6 +81,7 @@ Każdy z modułów wykorzystuje własny stan, oraz serwis do komunikacji z backe
 Projekt wykorzystuje podejście vertical-slice. Dziękuję za artykuły repozytoria oraz wszelakiej maści materiały, którymi mogłem się inspirować w realizacji podejścia w ten sposób Oskarowi Dudycz. https://github.com/oskardudycz/
 
 ![backend_hierarchy](/docs/arch/be/hierarchy.png)
+
 Solucja składa się z 4 projektów:
 - Omniom.DatabaseMigrator - Projekt obsługuje migracje schematu baz postgres. Wykorzystałem bilbiotekę FluentMigrator do zarządzania uruchamianymi skryptami migracyjnymi.
 - Omniom.WebAPI - Projekt odpowiedzialny za przygotowanie i uruchomienie aplikacji, wystawienie Web Api oraz inicjalizacja wszystkich zależności
