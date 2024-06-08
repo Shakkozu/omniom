@@ -23,6 +23,37 @@ System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego sta
 ## Demo - link do filmu prezentującego funkcjonalności w aplikacji
 [![Omniom - demo](https://img.youtube.com/vi/92kY-081AnM/maxresdefault.jpg)](https://www.youtube.com/watch?v=92kY-081AnM)
 
+## Architektura - Frontend
+
+W projekcie zostały użyte:
+- Angular
+- ngxs jako state-manager
+- material-angular
+
+Podjąłem dezyję, aby komponenty o mało rozbudowanej warstwie prezentacji nie miały podziału na osobne pliki `.html`
+Osobne pliki z szablonem są wyłącznie na widokach, w których utrzymywanie całości kodu w jednym pliku uznałem jako problematycze.
+Takie rozwiązanie jest zgodnę z ideą vertical-slice, gdzie komponent jako dostarczający wartość biznesową realizuje wszystkie niezbędne warstwy.
+
+Do zarządzania stanem wykorzystałem bilbiotekę `ngxs`, w większości to klasy zarządzające stanem zajmują się komunikacją z API Backendowym,
+aby uprościć komponenty.
+
+W projekcie wykorzystałem gotowy zestaw kontrolek - `material-angular`.
+Do stylizacji użyta została biblioteka `tailwindcss`, która umożliwia generowanie styli do komponentów z użyciem gotowych, predefiniowanych
+klas, zamiast duplikować powtarzalne w dedykowanych plikach .css
+
+Jeżeli chodzi o hierarchię klas, projekt jest podzielony na moduły - ![fe_class_hierarchy](/docs/arch/fe/hierarchy.png)
+- auth
+- dish-configuration
+- nutrition-diary
+- nutritionist
+- products
+- nutritionist-collaboration
+- user-profile
+
+Każdy z modułów wykorzystuje własny stan, oraz serwis do komunikacji z backendem
+
+
+
 
 
 ## Uruchomienie projektu 
