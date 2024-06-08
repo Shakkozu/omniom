@@ -10,7 +10,7 @@ import { ConfirmVerificationRequest } from '../../store/nutritionist.actions';
   selector: 'app-verification-request-details',
   template: `
     <div class="bg-white p-4 shadow-md rounded-lg" *ngIf="details$ | async as details">
-      <h1 class="text-headline-medium">Verification Request Details</h1>
+      <h1 class="text-headline-medium">Szczegóły wniosku o weryfikację dietetyka</h1>
       <p class="text-body-large">Imię: {{details.name}}</p>
       <p class="text-body-large">Nazwisko: {{details.surname}}</p>
       <p class="text-body-large">Email: {{details.email}}</p>
