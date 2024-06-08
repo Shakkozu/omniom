@@ -5,12 +5,12 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Actions, Store, ofActionDispatched } from '@ngxs/store';
 import { NutritionDiaryStore } from '../../store/nutrition-diary.store';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import {  ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
+import { ModifyMealNutritionEntriesComponent } from '../modify-meal-nutrition-entries/modify-meal-nutrition-entries.component';
 import { ModifyNutritionEntriesSuccess, RemoveNutritionEntry } from '../../store/nutrition-diary.actions';
 import { Subject, takeUntil } from 'rxjs';
 import { UserProfileStore } from '../../../user-profile/store/user-profile.store';
 import { NewDishDialogComponent, NewDishDialogConfiguration } from '../../../dish-configuration/components/new-dish-dialog/new-dish-dialog.component';
-import { ProductCatalogueItem } from '../../../products/model';
+import { ProductsCatalogueStore } from '../../../products/store/products-catalogue.store';
 
 @Component({
   selector: 'app-meal-details',
@@ -33,7 +33,7 @@ export class MealDetailsComponent implements OnDestroy {
   public expandedElements: MealViewModel[] = [];
   private addNutritionDialog: MatDialogRef<ModifyMealNutritionEntriesComponent> | undefined;
   private destroy$ = new Subject<void>();
-  
+
   constructor (private store: Store, private actions$: Actions, private matDialog: MatDialog) {
     this.store.select(NutritionDiaryStore.nutritionDayEntriesGroupedByMeal).subscribe((data) => {
       this.data = this.convertNutritionDetailsToViewModels(data);
@@ -154,8 +154,9 @@ export class MealDetailsComponent implements OnDestroy {
   }
 
   public createNewDish(mealEntries: NutritionDiaryEntry[]) {
-    const products = mealEntries.filter(entry => entry.productId !== null && entry.productId !== undefined)
-      .map(entry => new ProductCatalogueItem(entry.productName, entry.productId, entry.portionInGrams, entry.calories, entry.proteins, entry.fats, entry.carbohydrates));
+    const productsIds = mealEntries.filter(entry => entry.productId !== null && entry.productId !== undefined)
+      .map(p => p.productId);
+    const products = this.store.selectSnapshot(ProductsCatalogueStore.products).filter(p => productsIds.includes(p.guid));
     const config: NewDishDialogConfiguration = {
       products: products,
       createNewDishOnSave: true
@@ -165,7 +166,7 @@ export class MealDetailsComponent implements OnDestroy {
       height: '80vh',
       data: config
     });
-  }
+  };
 }
 
 

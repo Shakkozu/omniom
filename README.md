@@ -24,14 +24,19 @@ System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego sta
 
 Do uruchomienia projektu potrzebny jest zainstalowany silnik dockera.
 
-Repozytorium należy skopiować, następnie przejść do katalogu głównego aplikacji, oraz uruchomić komendę
+Repozytorium należy skopiować za pomoca:
+```
+git clone https://github.com/Shakkozu/omniom.git
+```
+
+następnie przejść do katalogu głównego aplikacji `omniom` oraz uruchomić komendę
 
 ```
 docker compose up --build
 ```
 
 
-Uruchomione zostaną 4 kontenery:
+**Uruchomione zostaną 4 kontenery:**
 - angular-app - Klient angularowy aplikacji
 - omniom-api - .NET API obsługujące żądania aplikacji klienckiej
 - products-catalogue-db - Kontener z bazą danych postgres zawierającą dane dot. produktów (został odseparowany, aby umożliwić łatwe udostępnienie bazy produktów dalej na podstawie licencji z OpenFoodsApi)
@@ -43,15 +48,15 @@ Aplikacja webowa jest udostępniona na porcie `10005`, a więc aplikacja jest do
 http://localhost:10005/
 ```
 
-W aplikacji zostało utworzone konto administratora, na które można się zalogować za pomocą:
+
+Aplikacja uruchomiona z poziomu dockera zawiera przygotowanych wcześniej na potrzeby prezentacji użytkowników z wypełnionymi danymi
+Hasło dla wszystkich użytkowników jest jednakowe - `zaq1@WSX`
+Poniżej emaile dla 
 ```
-login: admin@example.com
-password: zaq1@WSX
+legolas.greenleaf@mirkwood.org - użytkownik
+frodo.baggins@shire.com - dietetyk
+admin@example.com - administrator
 ```
-
-
-
-
 
 ---
 
@@ -65,8 +70,8 @@ Korzystam z niego na codzień i uważam że kierunek rozwoju w celu roszerzenia 
 Zestaw założeń, wedle których planuję zaprojektować system:
 - baza produktowa powinna być zasilona na starcie systemu, żeby użytkownik po rejestracji mógł od razu korzystać z funkcjonalności kalkulatora kalorii
 - rejestracja dietetyków w systemie jest koordynowana przez administratora manualnie
-- system koordynuje współpracę dietetyka z klientem, udostępniając dietetykowi informacje na temat wagi, pomiarów oraz historii odżywiania klientów
 - dietetyk może skonfigurować swój zestaw posiłków/przepisów, aby budować jadłopisy dla swoich klientów
+- system koordynuje współpracę dietetyka z klientem, udostępniając dietetykowi informacje na temat wagi, pomiarów oraz historii odżywiania klientów
 
 ### Możliwości komercjalizacji projektu
 Zakładam że projekt w przypadku wdrożenia na rynek mógłby zarabiać na podstawie:
