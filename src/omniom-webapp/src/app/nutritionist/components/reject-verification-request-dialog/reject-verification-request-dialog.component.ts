@@ -41,7 +41,6 @@ export class RejectVerificationRequestDialogComponent {
   onSubmit() {
     if (this.form.invalid)
       return;
-    console.log('dispatching reject verification request');
 
     this.store.dispatch(new RejectVerificationRequest(
       this.data.requestId,

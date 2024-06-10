@@ -6,6 +6,13 @@
 System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego stanu zdrowia (wagi, pomiarów), rozszerzony o funkcjonalność koordynowania współpracy pomiędzy dietetykami oraz użytkownikami aplikacji, którzy monitorują swoje posiłki i sylwetkę
 
 - [Omniom](#omniom)
+    - [Czego się nauczyłem](#czego-się-nauczyłem)
+  - [Architektura ](#architektura)
+    - [Architektura - Frontend](#architektura-frontend)
+    - [Architektura - Backend](#architektura-backend)
+        - [Struktura katalogów oraz przyjęte konwencje](#struktura-katalogów-oraz-przyjęte-konwencje)
+        - [Testy w aplikacji](#testy-w-aplikacji)
+    - [Podjęte decyzje wraz z argumentacją](#podjęte-decyzje-i-ich-argumentacja)
   - [Powód powstania](#powód-powstania)
   - [Główne założenia](#główne-założenia)
     - [Możliwości komercjalizacji projektu](#możliwości-komercjalizacji-projektu)
@@ -17,6 +24,95 @@ System umożliwiający prowadzenie jadłospisu oraz monitorowania aktualnego sta
         - [C2 - Container level](#c2---container-level)
         - [C3 - Component level](#c3---component-level)
     - [Lista funkcjonalności do zrealizowania w MVP](#lista-funkcjonalności-do-zrealizowania-w-mvp)
+
+---
+
+## Demo - link do filmu prezentującego funkcjonalności w aplikacji
+[![Omniom - demo](https://img.youtube.com/vi/92kY-081AnM/maxresdefault.jpg)](https://www.youtube.com/watch?v=92kY-081AnM)
+
+--- 
+
+## Architektura
+
+### Architektura Frontend
+
+W projekcie zostały użyte:
+- Angular
+- ngxs jako state-manager
+- material-angular
+
+Podjąłem dezyję, aby komponenty o mało rozbudowanej warstwie prezentacji nie miały podziału na osobne pliki `.html`
+Osobne pliki z szablonem są wyłącznie na widokach, w których utrzymywanie całości kodu w jednym pliku uznałem jako problematycze.
+Takie rozwiązanie jest zgodnę z ideą vertical-slice, gdzie komponent jako dostarczający wartość biznesową realizuje wszystkie niezbędne warstwy.
+
+Do zarządzania stanem wykorzystałem bilbiotekę `ngxs`, w większości to klasy zarządzające stanem zajmują się komunikacją z API Backendowym,
+aby uprościć komponenty.
+
+W projekcie wykorzystałem gotowy zestaw kontrolek - `material-angular`.
+Do stylizacji użyta została biblioteka `tailwindcss`, która umożliwia generowanie styli do komponentów z użyciem gotowych, predefiniowanych
+klas, zamiast duplikować powtarzalne w dedykowanych plikach .css
+
+Jeżeli chodzi o hierarchię klas, projekt jest podzielony na moduły - ![fe_class_hierarchy](/docs/arch/fe/hierarchy.png)
+- auth
+- dish-configuration
+- nutrition-diary
+- nutritionist
+- products
+- nutritionist-collaboration
+- user-profile
+
+Każdy z modułów wykorzystuje własny stan, oraz serwis do komunikacji z backendem
+
+### Czego się nauczyłem
+
+- Do obróbki plików csv [csvkit](https://csvkit.readthedocs.io/en/latest/cli.html) jest świetnym narzędziem. Z pomocą CLI można bardzo szybko realizować dużo operacji związanych z konwersją, filtrowaniem i wiele wiele innych
+- Używanie ngxs (lub innych rozwiązań do zarządzania stanem aplikacji FE) należy stosować pragmatycznie. W przypadku prostych komponentów nie obciążających łącza poprzez częste odpytywanie backendu nie ma wartości z ich wykorzystania a dodaje to dodatkowej złożoności
+- Podejście vertical-slice świetnie umożlwia punktowe optymalizacje/poprawki/naprawy błędów. Jest to bardzo efektywne. Po pracy z takimi plikami zawierającymi całą funkcjonalność, praca w architekturze rozbitej na wiele modułów wydaje się jest o wiele trudniejsza :) 
+- Podejście vertical-slice nie do końca łączy się z wzorcem hexagonal-architecture, przez co chociażby zastępowanie portu komunikującego się z bazą danych hashmapą w celu optymalizacji czasu wykonywania testów aplikacji jest nieintuicyjne.
+- Poprawiłem umiejętności związane z UX, uważam, że GUI aplikacji jest dosyć intuicyjne i wygląda całkiem nieźle
+- Przechowywanie snapshotów danych w postaci dokumentowej zajmuje sporo miejsca. W przypadku aplikacji dużych skali, optymalniej byłoby skorzystać z wersjonowania oraz przechowywania informacji o wersji, do której odwołuje się dana relacje
+- Rozwój umiejętności TDD i BDD
+
+---
+
+### Architektura Backend
+
+#### Struktura katalogów oraz przyjęte konwencje
+Projekt wykorzystuje podejście vertical-slice. Dziękuję za artykuły repozytoria oraz wszelakiej maści materiały, którymi mogłem się inspirować w realizacji podejścia w ten sposób Oskarowi Dudycz. https://github.com/oskardudycz/
+
+![backend_hierarchy](/docs/arch/be/hierarchy.png)
+
+Solucja składa się z 4 projektów:
+- Omniom.DatabaseMigrator - Projekt obsługuje migracje schematu baz postgres. Wykorzystałem bilbiotekę FluentMigrator do zarządzania uruchamianymi skryptami migracyjnymi.
+- Omniom.WebAPI - Projekt odpowiedzialny za przygotowanie i uruchomienie aplikacji, wystawienie Web Api oraz inicjalizacja wszystkich zależności
+- Omniom.Tests - Testy jednostkowe, integracyjne
+- Omniom.Domain - Core projektu, logika biznesowa, komunikacja z bazą danych, realizacja oczekiwanych funkcjonalności.
+
+
+Kod odpowiedzialny za realizację poszczególnych funkcjonalności w głównej mierze mieści się w pojedynczych plikach per funkcjonalność. ![hierarchia_modułu_katalogu](/docs/arch/be/catalogue-hierarchy.png)
+
+W projekcie skorzystałem z wzorca CQS, aby rozróżnić operacje pobierające dane od operacji modyfikujących stan aplikacji.
+Skorzystałem z interfejsów ICommand, IQuery do oznaczania komend i zapytań.
+
+W przypadku potrzeby wykonania operacji transakcyjnie, wykorzystałem wzorzec dekorator (przykład dostępny w pliku `SaveMealNutritionEntriesCommand.cs`). Takie podejście umożliwia izolację logiki od operacji związanych z persystencją, oraz umożliwia rozbudowę interakcji z zystemem o dodatkowe zachowania w ramach potrzeb.
+
+Do budowy Rest API skorzystałem z .NET Minimal API.
+Takie rozwiązanie świetnie łączy się z ideą vertical-slice, gdzie w pojedynczym pliku można trzymać kod odpowiedzialny za kompleksową realizację funkcjonalności.
+
+Pierwszy raz miałem okazję pracować w projekcie, gdzie kod odpowiedzialny za całą funkcjonalność jest przechowywane w jednym pliku. Praca w takiej konwencji ma wiele plusów, modyfikacja funkcjonalności sprowadza się do jednego miejsca, a co za tym idzie jest mniejsze ryzyko pominięcia części wymaganych zmian podczas rozwoju systemu.
+![example_single_feature_file](/docs/arch/be/feature-file-example.png) 
+
+#### Testy w aplikacji
+
+Aplikacja w głównej mierze składa się z prostych CRUD'ów, które stanowią przelotkę do bazy danych. Wiele logiki w aplikacji to w głównej mierze logika walidacyjna.
+
+W związku z tym, podjąłem decyzję, iż najbardziej odpowiednimi rodzajami testów będą testy na warstwie http.
+Do utworzenia takich testów wykorzystałem `WebApplicationFactory`, inicjalizacja modułu jest tworzona raz w pliku `OmniomApp` a następnie wykorzystywana w plikach testów integracyjnych.
+
+
+### Podjęte decyzje i ich argumentacja
+- dane dotyczące produktów są trzymane w odrębnym kontenerze bazy postgres, wynika to z licencji na jakiej openfoodsapi udostępnia swoje produkty. W przypadku wdrożenia aplikacji, baza produktów powinna zostać udostępniona dalej wraz z produktami które zostały dodane w ramach aplikacji
+- dane dotyczące produktów oraz posiłków są trzymane w postaci dokumentowej, wynika to z faktu iż odwołania do tych danych nie powinny być mutowalne. Zastosowałem takie podejście w ramach zabezpieczenia przed dodaniem funkcjonalności umożlwiających modyfikację bazy produktowej, co spowodowałoby modyfikację wpisów bazujących na danych z bazy produktowej (np modyfikacja historycznych wpisów w dzienniku żywieniowym). Alternatywnym rozwiązaniem byłoby wersjonowanie produktów i odwoływanie się do konkretnych wersji, aczkolwiek z racji że to MVP skorzystałem z prostszego rozwiązania
 
 ---
 
