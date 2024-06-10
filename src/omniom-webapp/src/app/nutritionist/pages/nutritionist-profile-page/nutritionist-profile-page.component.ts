@@ -9,7 +9,6 @@ import { MealPlanListItem } from '../../components/meal-plans-list/meal-plans-li
 @Component({
   selector: 'app-nutritionist-profile-page',
   templateUrl: './nutritionist-profile-page.component.html',
-  styleUrl: './nutritionist-profile-page.component.scss'
 })
 export class NutritionistProfilePageComponent implements OnInit{
   public profile$ = this.store.select(NutritionistStore.profileDetails);
